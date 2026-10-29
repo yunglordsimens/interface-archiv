@@ -355,6 +355,96 @@
         ]
       },
       "subject": "ssg-com"
+    },
+    {
+      "id": "004",
+      "title": "Convenience store self-checkout terminal",
+      "subject": "emart24-cnu",
+      "category": "Digital",
+      "country": "KR",
+      "service": "emart24",
+      "place": "",
+      "date": null,
+      "scenario": "A customer scans items, checks discounts, and prepares to pay at a self-checkout kiosk.",
+      "access": {
+        "requires": [
+          "Payment by credit card, simple pay, or Apple Pay (no cash acceptance shown)"
+        ],
+        "unverified": [
+          "Can a customer use cash at this counter or is it card-only as indicated by the housing sticker?"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/004-1.jpg",
+          "caption": "emart24 self-checkout kiosk screen showing scanned items and printed operational guide above the bezel",
+          "hash": "59794f0f9b8f5c22"
+        }
+      ],
+      "observed": [
+        "The kiosk screen displays a four-step process bar at the top: 상품등록 (Product registration), 할인적립 (Discount / points), 결제수단 (Payment method), and 결제완료 (Payment complete).",
+        "A printed sticker above the monitor shows a 5-step workflow with matching icons: 준비 (Prepare), 바코드스캔 (Barcode scan), 할인또는적립 (Discount or points), 결제 (Payment), and 완료 (Done).",
+        "A notice below the printed guide states: '※ 술, 담배 구입시 근무자에게 결제 요청 해주세요.' (For alcohol and tobacco purchases, please request staff assistance).",
+        "The registered items table lists item name, quantity, price, and individual line discounts, such as '-600' and '-2,000'.",
+        "Below the item table, a quick-pick section offers items without barcodes: eco shopping bag, paper bag, and multi-pack bottled water.",
+        "A '글자확대' (Enlarge text) button is located in the bottom bar.",
+        "Payment options indicated on the bezel and screen include emart24 simple pay (이마트24 간편결제), SSG Pay, and Apple Pay."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "The physical guide directly mirrors the software flow to reduce friction for first-time or elderly users.",
+        "The quick-pick panel at the bottom specifically targets items that do not have easily scannable individual barcodes, such as plastic/paper bags and case-pack water."
+      ],
+      "open": [
+        "Why does the screen date display 2026-10-07?",
+        "Does the text enlargement toggle reload the screen layout or simply increase font sizes?"
+      ],
+      "sources": [],
+      "related": [],
+      "rights": "Contributed by a guest who confirmed they took the material. Personal data blurred automatically; reviewed before publication.",
+      "breakdown": {
+        "steps": [],
+        "elements": [
+          {
+            "name": "Progress tabs",
+            "role": "Indicates current position in the 4-step checkout process",
+            "text_ko": "상품등록 > 할인적립 > 결제수단 > 결제완료",
+            "text_en": "Product registration > Discount/Points > Payment method > Payment complete"
+          },
+          {
+            "name": "Instruction banner",
+            "role": "Instructs customer on barcode scanning and bottom quick selection",
+            "text_ko": "바코드를 스캔해주세요. 바코드 없는 상품은 하단에서 선택하세요.",
+            "text_en": "Please scan the barcode. For items without a barcode, select from the bottom."
+          },
+          {
+            "name": "Age restriction notice",
+            "role": "Directs customers buying alcohol or tobacco to staff",
+            "text_ko": "※ 술, 담배 구입시 근무자에게 결제 요청 해주세요.",
+            "text_en": "※ For alcohol and tobacco purchases, please ask staff for payment."
+          },
+          {
+            "name": "Text size button",
+            "role": "Toggles larger font size for accessibility",
+            "text_ko": "글자확대",
+            "text_en": "Enlarge text"
+          },
+          {
+            "name": "No-barcode item row",
+            "role": "Allows manual selection of bags and heavy bottled water packs",
+            "text_ko": "e24)친환경생분해쇼핑백 대 / NB)미네랄워터 / e24)종이쇼핑백 중",
+            "text_en": "e24) Eco biodegradable shopping bag L / NB) Mineral water / e24) Paper bag M"
+          }
+        ],
+        "patterns": [
+          "step-guide-mirrored",
+          "per-line-discount",
+          "no-barcode-quick-pick",
+          "text-size-toggle",
+          "age-restricted-handoff"
+        ]
+      },
+      "submitted_via": "inbox:064a1823-4038-4bbd-91bb-199c61bb27c8"
     }
   ],
   "author_access": [
