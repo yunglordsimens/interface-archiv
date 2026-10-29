@@ -14,6 +14,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.request
 
@@ -21,7 +22,7 @@ from PIL import Image, ImageFilter, ImageOps
 
 DATA = "data/observations.json"
 OUT = ".ingest"
-MODELS = [m for m in [os.environ.get("GEMINI_MODEL"), "gemini-flash-latest", "gemini-2.5-flash"] if m]
+MODELS = list(dict.fromkeys(m for m in [os.environ.get("GEMINI_MODEL"), "gemini-flash-latest", "gemini-2.5-flash", "gemini-flash-lite-latest"] if m))
 
 
 def http(url, data=None, headers=None):
@@ -125,14 +126,21 @@ def call_gemini(images, context, patterns):
     last = None
     for model in MODELS:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-        try:
-            res = json.loads(http(url, body, {"Content-Type": "application/json", "x-goog-api-key": os.environ["GEMINI_API_KEY"]}))
-        except urllib.error.HTTPError as e:
-            last = f"{model}: HTTP {e.code} {e.read()[:300]!r}"
-            print(last, file=sys.stderr)
-            if e.code == 404:
-                continue
-            raise SystemExit(last)
+        res = None
+        for wait in (0, 10, 30, 60):
+            time.sleep(wait)
+            try:
+                res = json.loads(http(url, body, {"Content-Type": "application/json", "x-goog-api-key": os.environ["GEMINI_API_KEY"]}))
+                break
+            except urllib.error.HTTPError as e:
+                last = f"{model}: HTTP {e.code} {e.read()[:200]!r}"
+                print(last, file=sys.stderr)
+                if e.code not in (429, 500, 502, 503, 504):
+                    break
+        if res is None:
+            if last and " HTTP 4" in last and " HTTP 429" not in last and " HTTP 404" not in last:
+                raise SystemExit(last)
+            continue
         txt = res["candidates"][0]["content"]["parts"][0]["text"]
         txt = re.sub(r"^```(?:json)?|```$", "", txt.strip()).strip()
         usage = res.get("usageMetadata", {})
