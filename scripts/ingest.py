@@ -197,6 +197,7 @@ PROMPT = """You document everyday interfaces in South Korea for a research archi
 Return ONLY a JSON object, no prose, with this shape:
 
 {
+  "relevance": {"is_everyday_interface": true, "reason": "one sentence: does the material show an interface, device, service or system people use in everyday life?"},
   "entry": {
     "title": "short English name, e.g. 'Ramen shop ordering kiosk'",
     "subject": {"id": "id of the specific thing observed: reuse an existing id from the list below if it is the same store, app, device or service; otherwise a new lowercase-with-hyphens id",
@@ -402,6 +403,10 @@ def build_archive_entry(files, meta, d, submitted_via, audio=None):
               + "\nExisting subjects:\n" + json.dumps({k: v["name"] for k, v in subjects.items()}, ensure_ascii=False)
               + "\n\nAuthor's context:\n" + ctx)
     res = scrub(gemini([{"text": prompt}] + [image_part(it["img"]) for it in items] + audio_part(audio), "MOCK_RESPONSE"))
+    rel = res.get("relevance") or {}
+    if rel.get("is_everyday_interface") is False and not meta.get("force"):
+        raise SystemExit("Looks off-topic: " + (rel.get("reason") or "the model found no everyday interface") +
+                         " Choose Process anyway, Back to New or Discard.")
 
     ids = [int(o["id"]) for o in d["observations"] if str(o["id"]).isdigit()]
     oid = f"{(max(ids) + 1 if ids else 1):03d}"

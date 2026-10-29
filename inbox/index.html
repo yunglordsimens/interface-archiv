@@ -109,7 +109,7 @@
   var STATUS = {
     submitted: ["Waiting for approval", "status-warn"], queued: ["Queued", "status-warn"], processing: ["Processing", "status-warn"],
     in_review: ["Draft ready for review", "status-warn"], published: ["Published", "status-ok"], done: ["Done", "status-ok"],
-    failed: ["Failed", "status-bad"], declined: ["Declined", "muted"]
+    failed: ["Failed", "status-bad"], declined: ["Declined", "muted"], cancelled: ["Cancelled", "muted"]
   };
 
   async function boot() {
@@ -154,7 +154,7 @@
   function counts() {
     var c = {
       "new": uploads.filter(function (u) { return u.status === "new" && !u.guest; }).length,
-      queue: groups.filter(function (g) { return g.status !== "submitted" && g.status !== "declined" && !(g.level === "private" && g.status === "done"); }).length,
+      queue: groups.filter(function (g) { return ["submitted", "declined", "cancelled"].indexOf(g.status) < 0 && !(g.level === "private" && g.status === "done"); }).length,
       guests: groups.filter(function (g) { return g.status === "submitted"; }).length,
       notes: groups.filter(function (g) { return g.level === "private" && g.status === "done"; }).length,
       trash: uploads.filter(function (u) { return u.status === "discarded"; }).length
@@ -362,25 +362,78 @@
     return '<span class="chip ' + s[1] + '">' + esc(s[0]) + '</span>';
   }
 
+  var qsel = [];
   function renderQueue() {
-    var list = groups.filter(function (g) { return g.status !== "submitted" && g.status !== "declined" && !(g.level === "private" && g.status === "done"); });
+    var list = groups.filter(function (g) { return ["submitted", "declined", "cancelled"].indexOf(g.status) < 0 && !(g.level === "private" && g.status === "done"); });
     if (!list.length) { el("view").innerHTML = '<p class="muted">The queue is empty. Select files under New and choose Make observation.</p>'; return; }
-    el("view").innerHTML = '<div class="list">' + list.map(function (g) {
-      return '<div class="item">' + statusLine(g) +
-        '<div><strong>' + esc(g.title || g.context.split("\n")[0] || "Untitled") + '</strong></div>' +
-        '<div class="meta">' + esc([g.level === "private" ? "Private note" : "Archive", g.source === "guest" ? "from guest" : "", g.place, g.date, g.entry_id ? "entry " + g.entry_id : ""].filter(Boolean).join(" · ")) + '</div>' +
-        '<div class="thumbs">' + groupItems(g).map(small).join("") + '</div>' +
-        (g.pr_url ? '<a href="' + esc(g.pr_url) + '" target="_blank" rel="noopener">Review the draft on GitHub</a>' : "") +
-        (g.error ? '<p class="small ' + (g.status === "failed" ? "status-bad" : "status-warn") + '">' + esc(g.error) + '</p>' : "") +
-        (g.status === "failed" ? '<div><button data-retry="' + g.id + '">Try again</button></div>' : "") +
-        '</div>';
-    }).join("") + '</div>';
-    el("view").querySelectorAll("[data-retry]").forEach(function (b) {
-      b.addEventListener("click", async function () {
-        await sb.from("groups").update({ status: "queued", error: null }).eq("id", b.getAttribute("data-retry"));
-        toast("Queued again"); load();
+    qsel = qsel.filter(function (id) { return list.some(function (g) { return g.id === id; }); });
+    var canMerge = qsel.length > 1;
+    el("view").innerHTML =
+      '<div class="row small"><span class="muted">Tick observations that belong together and merge them into one.</span>' +
+      '<button id="mergeSel" class="primary"' + (canMerge ? "" : " disabled") + '>Merge ' + (qsel.length || "") + ' into one</button></div>' +
+      '<div class="list">' + list.map(function (g) {
+        var busy = g.status === "processing" || g.status === "published";
+        var offTopic = /^Looks off-topic/.test(g.error || "");
+        return '<div class="item">' +
+          '<div class="row" style="gap:12px">' + (busy ? "" : '<label class="check small"><input type="checkbox" data-q="' + g.id + '"' + (qsel.indexOf(g.id) >= 0 ? " checked" : "") + '><span>Select</span></label>') + statusLine(g) + '</div>' +
+          '<div><strong>' + esc(g.title || (g.context || "").split("\n")[0] || "Untitled") + '</strong></div>' +
+          '<div class="meta">' + esc([g.level === "private" ? "Private note" : "Archive", g.source === "guest" ? "from guest" : "", g.place, g.date, g.entry_id ? "entry " + g.entry_id : ""].filter(Boolean).join(" · ")) + '</div>' +
+          '<div class="thumbs">' + groupItems(g).map(small).join("") + '</div>' +
+          (g.pr_url && g.status === "in_review" ? '<a href="' + esc(g.pr_url) + '" target="_blank" rel="noopener">Review the draft on GitHub</a>' : "") +
+          (g.error ? '<p class="small ' + (g.status === "failed" ? "status-bad" : "status-warn") + '">' + esc(g.error) + '</p>' : "") +
+          (busy ? "" : '<div class="row">' +
+            (g.status === "failed" ? '<button data-retry="' + g.id + '">Try again</button>' : "") +
+            (offTopic ? '<button data-force="' + g.id + '">Process anyway</button>' : "") +
+            '<button data-back="' + g.id + '">Back to New</button>' +
+            '<button data-drop="' + g.id + '">Discard</button></div>') +
+          '</div>';
+      }).join("") + '</div>';
+    el("view").querySelectorAll("[data-q]").forEach(function (c) {
+      c.addEventListener("change", function () {
+        var id = c.getAttribute("data-q"), i = qsel.indexOf(id);
+        if (c.checked && i < 0) qsel.push(id); if (!c.checked && i >= 0) qsel.splice(i, 1);
+        renderQueue();
       });
     });
+    el("view").querySelectorAll("[data-retry]").forEach(function (b) {
+      b.addEventListener("click", async function () { await sb.from("groups").update({ status: "queued", error: null }).eq("id", b.getAttribute("data-retry")); toast("Queued again"); load(); });
+    });
+    el("view").querySelectorAll("[data-force]").forEach(function (b) {
+      b.addEventListener("click", async function () { await sb.from("groups").update({ status: "queued", error: null, force: true }).eq("id", b.getAttribute("data-force")); toast("Queued; the topic check is skipped"); load(); });
+    });
+    el("view").querySelectorAll("[data-back]").forEach(function (b) {
+      b.addEventListener("click", async function () { await cancelGroups([b.getAttribute("data-back")], "new"); toast("Files are back in New"); load(); });
+    });
+    var armed = null;
+    el("view").querySelectorAll("[data-drop]").forEach(function (b) {
+      b.addEventListener("click", async function () {
+        var id = b.getAttribute("data-drop");
+        if (armed !== id) { armed = id; b.textContent = "Tap again to discard"; return; }
+        await cancelGroups([id], "discarded"); toast("Discarded"); load();
+      });
+    });
+    el("mergeSel").addEventListener("click", async function () {
+      if (qsel.length < 2) return;
+      var gs = qsel.map(function (id) { return groups.find(function (g) { return g.id === id; }); });
+      var files = [].concat.apply([], gs.map(groupItems)).sort(function (a, b) { return when(a) - when(b); });
+      var gid = uuid();
+      var r = await sb.from("groups").insert({
+        id: gid, source: "owner", level: gs.some(function (g) { return g.level === "archive"; }) ? "archive" : "private", status: "queued", consent: true, order_mode: "time",
+        context: Array.from(new Set(gs.map(function (g) { return g.context; }).filter(Boolean))).join("\n"),
+        place: (gs.find(function (g) { return g.place; }) || {}).place || "", date: gs.map(function (g) { return g.date; }).filter(Boolean).sort()[0] || "",
+        category: (gs.find(function (g) { return g.category; }) || {}).category || ""
+      });
+      if (r.error) return toast(r.error.message, 5000);
+      await cancelGroups(qsel.slice(), null);
+      for (var i = 0; i < files.length; i++) await sb.from("uploads").update({ group_id: gid, status: "grouped", sort: i }).eq("id", files[i].id);
+      qsel = []; toast("Merged. Old drafts will be closed."); load();
+    });
+  }
+
+  // Cancel groups: their drafts are closed by the next processing run. fileStatus: "new" | "discarded" | null (keep files grouped for a merge).
+  async function cancelGroups(ids, fileStatus) {
+    await sb.from("groups").update({ status: "cancelled" }).in("id", ids);
+    if (fileStatus) await sb.from("uploads").update({ group_id: null, status: fileStatus }).in("group_id", ids);
   }
 
   function renderGuests() {

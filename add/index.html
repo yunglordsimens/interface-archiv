@@ -22,6 +22,7 @@
   <header class="top">
     <a class="name" href="../">Korea Interface Archive</a>
     <a id="toInbox" class="muted small" href="../inbox/" hidden>Inbox</a>
+    <a id="ownerSignin" class="muted small" href="../inbox/">Owner sign-in</a>
   </header>
 
   <div class="stack">
@@ -79,6 +80,7 @@
     el("guestFields").hidden = true;
     el("ctxLabel").textContent = "Note (optional)";
     el("toInbox").hidden = false;
+    el("ownerSignin").hidden = true;
   }
 
   function refresh() {

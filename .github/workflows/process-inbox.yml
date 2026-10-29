@@ -28,7 +28,7 @@ jobs:
         run: |
           if [ -z "$SUPABASE_SERVICE_KEY" ]; then echo "SUPABASE_SERVICE_KEY secret is missing"; echo "work=0" >> "$GITHUB_OUTPUT"; exit 0; fi
           AUTH=(); case "$SUPABASE_SERVICE_KEY" in eyJ*) AUTH=(-H "Authorization: Bearer $SUPABASE_SERVICE_KEY");; esac
-          N=$(curl -s "$SUPABASE_URL/rest/v1/groups?status=in.(queued,in_review)&select=id" -H "apikey: $SUPABASE_SERVICE_KEY" "${AUTH[@]}" | python3 -c "import sys,json; print(len(json.load(sys.stdin)))" || echo 0)
+          N=$(curl -s "$SUPABASE_URL/rest/v1/groups?status=in.(queued,in_review,cancelled)&select=id" -H "apikey: $SUPABASE_SERVICE_KEY" "${AUTH[@]}" | python3 -c "import sys,json; print(len(json.load(sys.stdin)))" || echo 0)
           echo "work=$N" >> "$GITHUB_OUTPUT"
           echo "groups waiting: $N"
       - uses: actions/setup-python@v5

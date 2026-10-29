@@ -67,6 +67,17 @@ def sync_published():
             print(f"published: {g['id']}")
 
 
+def close_cancelled():
+    """Groups cancelled in the inbox (back to New, discarded, merged): close their draft PRs."""
+    for g in rest("GET", "groups?status=eq.cancelled&select=id,pr_url") or []:
+        if g.get("pr_url") and "/pull/" in g["pr_url"]:
+            subprocess.run(["gh", "pr", "close", g["pr_url"], "--delete-branch", "--comment",
+                            "Cancelled in the inbox (moved back, discarded or merged into another observation)."],
+                           capture_output=True, text=True)
+        patch_group(g["id"], {"status": "declined"})
+        print(f"closed: {g['id']}")
+
+
 def load_files(gid):
     ups = rest("GET", f"uploads?group_id=eq.{gid}&select=*&order=sort.asc") or []
     files, audio = [], None
@@ -85,7 +96,7 @@ def process_archive(g, files, audio):
     git("checkout", "-B", branch, "origin/main")
     d = json.load(open(ingest.DATA, encoding="utf-8"))
     meta = {"context": g.get("context") or "", "place": g.get("place") or "", "date": g.get("date") or "",
-            "category": g.get("category") or ""}
+            "category": g.get("category") or "", "force": bool(g.get("force"))}
     if g["source"] == "guest":
         meta["rights"] = "Contributed by a guest who confirmed they took the material. Personal data blurred automatically; reviewed before publication."
         if g.get("guest_name"):
@@ -125,6 +136,7 @@ def main():
     git("config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com")
     git("fetch", "origin", "main")
     sync_published()
+    close_cancelled()
     queued = rest("GET", f"groups?status=eq.queued&select=*&order=created_at.asc&limit={MAX_PER_RUN}") or []
     print(f"queued: {len(queued)}")
     for g in queued:
