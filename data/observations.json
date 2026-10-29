@@ -355,6 +355,137 @@
         ]
       },
       "subject": "ssg-com"
+    },
+    {
+      "id": "004",
+      "title": "University dormitory app-activated commercial washer",
+      "subject": "metaclub",
+      "category": "Systems",
+      "country": "KR",
+      "service": "MetaClub",
+      "place": "Daejeon CNU dorm",
+      "date": "2026-10-29",
+      "scenario": "A student activates and pays for a dormitory laundromat washing machine by scanning a machine-mounted QR code using a campus lifestyle mobile app.",
+      "access": {
+        "requires": [
+          "Smartphone with camera and internet connection",
+          "MetaClub mobile application"
+        ],
+        "unverified": [
+          "Does point charging require a Korean domestic payment method?",
+          "Is mobile identity verification (본인인증) strictly required to use laundry functions?"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/004-1.jpg",
+          "caption": "In-app promotional popup offering laundry credit rewards",
+          "hash": "b28e4d49432f50b2"
+        },
+        {
+          "src": "media/004-2.jpg",
+          "caption": "Multilingual QR code sticker mounted on washing machine #6",
+          "hash": "4d8d2f97d7c667ef"
+        },
+        {
+          "src": "media/004-3.jpg",
+          "caption": "Front control panel showing courses, duration, and pricing",
+          "hash": "e080626058a072d3"
+        },
+        {
+          "src": "media/004-4.jpg",
+          "caption": "Top and front panel of washer with usage guidelines",
+          "hash": "f46a6313b3b57f37"
+        },
+        {
+          "src": "media/004-5.jpg",
+          "caption": "QR code scanner screen within the MetaClub mobile app",
+          "hash": "793d2f1f3f23b131"
+        },
+        {
+          "src": "media/004-6.jpg",
+          "caption": "MetaClub app home view displaying an ad tracking permission prompt",
+          "hash": "c616370fccc09315"
+        },
+        {
+          "src": "media/004-7.jpg",
+          "caption": "Popup prompting real-name mobile identity verification",
+          "hash": "862103234d0380b3"
+        },
+        {
+          "src": "media/004-8.jpg",
+          "caption": "Campus/public contest listing inside the MetaClub app",
+          "hash": "bab38d38a14060ac"
+        }
+      ],
+      "observed": [
+        "Washing machine #6 is an LG Commercial Washer with a dedicated sticker containing a QR code labeled 'WA001701'.",
+        "The QR sticker includes instructions in Korean, English, Chinese, and Vietnamese directing users to scan with the MetaClub app.",
+        "The washing machine control panel displays courses (강력세탁, 표준세탁, 합성세탁, 울세탁, 헹굼추가) and lists 1,200 KRW for standard wash and 300 KRW for extra rinse.",
+        "The MetaClub app has an in-app QR scanner prompting 'Scan the QR code on your machine.'",
+        "The MetaClub app includes navigation tabs for Laundry, Exchange, Benefit, Teample, and Ticket.",
+        "A modal dialog in the app requests ad tracking permission ('광고 추적 허용이 필요합니다') to earn rewards.",
+        "Another popup prompts for carrier-based identity verification ('본인 명의 휴대폰이 있다면, 본인인증 후 더 많은 기능과 한도를 이용해 보세요')."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "The commercial washers are networked via Wi-Fi and triggered digitally after QR code recognition in the app rather than accepting physical coins.",
+        "The app serves broader campus and lifestyle functions beyond dormitory laundry, such as student contest recruitment and theater ticket sales."
+      ],
+      "open": [
+        "Can foreign students without Korean carrier identity verification register and use the laundry feature without limitations?",
+        "Does the machine start automatically once payment is finalized in the app, or does the user still need to push the physical START button?"
+      ],
+      "sources": [],
+      "related": [],
+      "rights": "Own material. Personal data blurred automatically; reviewed before publication.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "MetaClub app",
+            "action": "Opens the in-app scanner to scan the washer",
+            "text_ko": "Scan the QR code on your machine.",
+            "text_en": "Scan the QR code on your machine."
+          },
+          {
+            "n": 2,
+            "where": "Washing machine sticker",
+            "action": "Points phone camera at the QR code above the machine number sticker",
+            "text_ko": "QR코드를 스캔해 주세요 / Scan the QR code with the MetaClub APP",
+            "text_en": "Please scan the QR code / Scan the QR code with the MetaClub APP"
+          },
+          {
+            "n": 3,
+            "where": "Washing machine panel",
+            "action": "Selects wash course and presses physical start button if prompted",
+            "text_ko": "동작버튼 START",
+            "text_en": "Start button START"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Machine QR code plate",
+            "role": "Identifies the specific washer to the app",
+            "text_ko": "M QR코드를 스캔해 주세요",
+            "text_en": "Please scan the MetaClub QR code"
+          },
+          {
+            "name": "Cycle price label",
+            "role": "Displays base and add-on pricing",
+            "text_ko": "1,200원 / 300원 추가 선택시",
+            "text_en": "1,200 KRW / 300 KRW upon additional selection"
+          },
+          {
+            "name": "Identity verification modal",
+            "role": "Prompts user to complete real-name authentication",
+            "text_ko": "더 많은 기능을 이용하려면 본인인증이 필요해요",
+            "text_en": "Identity verification is needed to use more features"
+          }
+        ],
+        "patterns": []
+      },
+      "submitted_via": "inbox:c9344f7b-0d4b-416e-b254-d3a34da7a88a"
     }
   ],
   "author_access": [
@@ -450,6 +581,12 @@
       "kind": "website",
       "operator": "SSG.com",
       "place": ""
+    },
+    "metaclub": {
+      "name": "MetaClub",
+      "kind": "app",
+      "operator": "MetaClub",
+      "place": "Daejeon"
     }
   }
 }
