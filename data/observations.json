@@ -355,6 +355,113 @@
         ]
       },
       "subject": "ssg-com"
+    },
+    {
+      "id": "004",
+      "title": "Campus laundry and student life app interface",
+      "subject": "metaclub-app",
+      "category": "Digital",
+      "country": "KR",
+      "service": "Meta Club",
+      "place": "Daejeon CNU dorm",
+      "date": "2026-10-29",
+      "scenario": "A student navigates a university dormitory service app to manage prepaid points for laundry and access campus-linked services.",
+      "access": {
+        "requires": [
+          "Smartphone with internet connection",
+          "Registered user account",
+          "Preloaded points balance (Meta Money)"
+        ],
+        "unverified": [
+          "Does triggering a washing machine require scanning a QR code or using Bluetooth/NFC in the app?",
+          "Is the app exclusive to university dormitories or open to general users?"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/004-1.jpg",
+          "caption": "Main home screen of the Meta Club app showing top-up tooltip, balance, and banner promotions",
+          "hash": "969707071e868115"
+        },
+        {
+          "src": "media/004-2.jpg",
+          "caption": "Midsection of the home screen featuring team project listings and affiliate cashback options",
+          "hash": "9683818981869655"
+        },
+        {
+          "src": "media/004-3.jpg",
+          "caption": "Affiliate shopping brands grid offering cashback reward percentages",
+          "hash": "8686969696969155"
+        },
+        {
+          "src": "media/004-4.jpg",
+          "caption": "Upper portion of the sidebar navigation menu listing point management, community, and laundry services",
+          "hash": "8684808281808080"
+        },
+        {
+          "src": "media/004-5.jpg",
+          "caption": "Lower portion of the sidebar navigation menu listing ticketing, benefits, and customer support",
+          "hash": "86a0808080818081"
+        }
+      ],
+      "observed": [
+        "The top header bar displays the user name and a balance of '7,000P' alongside an app icon 'M' and hamburger menu icon.",
+        "A tooltip prompt points directly to the balance reading: 'Tap your Meta Money to go to Top-Up.'",
+        "The bottom navigation bar contains five sections: 'Laundry', 'Exchange', 'Benefit', 'Teample', and 'Ticket'.",
+        "A hero promotional banner advertises a laundry-related discount: '훅딜 세탁하면 시크릿 할인'.",
+        "Below the banner, cards promote campus-related activities such as 'Incruit 와 팀플하기' with student competitions and mentoring.",
+        "A shopping affiliate section titled '쇼핑하고 캐시백받기' offers percentage-based point accruals for services including Coupang (2%), Today's House (3.4%), and E-mart Mall (2.7%).",
+        "The sidebar navigation drawer categorizes options into 'Meta Money' (Charge, Exchange, Refund, MetaMoney • Mileage History), 'Community' (Camfle, Teample), 'Life' (Laundry), 'Meta Club Ticket', 'Benefits', and 'Customer Service'."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "Dormitory laundry payments are not handled by a dedicated single-purpose utility app, but rather embedded into a broader campus lifestyle and reward ecosystem.",
+        "Cashback affiliate links and job portal integrations suggest monetization of student foot traffic alongside essential dorm amenities."
+      ],
+      "open": [
+        "Can unused prepaid 'Meta Money' be refunded to a standard bank account upon dormitory checkout?",
+        "Does the laundry tab show machine availability in real-time or cycle timers?"
+      ],
+      "sources": [],
+      "related": [],
+      "rights": "Own material. Personal data blurred automatically; reviewed before publication.",
+      "breakdown": {
+        "steps": [],
+        "elements": [
+          {
+            "name": "Point balance & top-up tooltip",
+            "role": "Displays current Meta Money balance and prompts the user on how to recharge",
+            "text_ko": "7,000P",
+            "text_en": "7,000P"
+          },
+          {
+            "name": "Laundry promotion banner",
+            "role": "Advertises special discounts activated when doing laundry",
+            "text_ko": "훅딜\n세탁하면\n시크릿 할인",
+            "text_en": "Hook Deal: Secret discount when doing laundry"
+          },
+          {
+            "name": "Student project section header",
+            "role": "Links users to team project matching and competitions via Incruit",
+            "text_ko": "Incruit 와 팀플하기",
+            "text_en": "Do team projects with Incruit"
+          },
+          {
+            "name": "Shopping cashback section header",
+            "role": "Directs users to affiliate partners to earn reward points",
+            "text_ko": "쇼핑하고 캐시백받기",
+            "text_en": "Shop and receive cashback"
+          },
+          {
+            "name": "Sidebar laundry category",
+            "role": "Provides access to dormitory laundry features under everyday life services",
+            "text_ko": "Life\nLaundry",
+            "text_en": "Life / Laundry"
+          }
+        ],
+        "patterns": []
+      },
+      "submitted_via": "inbox:42eecabd-c739-4ab0-8089-3106947c5a4b"
     }
   ],
   "author_access": [
@@ -450,6 +557,12 @@
       "kind": "website",
       "operator": "SSG.com",
       "place": ""
+    },
+    "metaclub-app": {
+      "name": "Meta Club",
+      "kind": "app",
+      "operator": "Meta Club",
+      "place": "Daejeon"
     }
   }
 }
