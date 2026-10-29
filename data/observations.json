@@ -355,6 +355,255 @@
         ]
       },
       "subject": "ssg-com"
+    },
+    {
+      "id": "004",
+      "title": "University dormitory laundry payment and campus life app",
+      "subject": "metaclub",
+      "category": "Digital",
+      "country": "KR",
+      "service": "Meta Club",
+      "place": "Daejeon CNU dorm",
+      "date": "2026-10-29",
+      "scenario": "A student selects a dormitory washing machine, confirms laundry detergent instructions, and pays using in-app points before exploring student community features.",
+      "access": {
+        "requires": [
+          "Meta Club smartphone application",
+          "Bluetooth and Location enabled on smartphone",
+          "Pre-charged MetaMoney / points (1,200P per cycle)",
+          "Proximity to the washing machine during Bluetooth pairing and payment"
+        ],
+        "unverified": [
+          "Is university student email verification required to access campus-specific laundry rooms and community boards?"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/004-1.jpg",
+          "caption": "Modal notice clarifying estimated wash times and warning not to put capsule detergent into the tray",
+          "hash": "8e51316161cc2388"
+        },
+        {
+          "src": "media/004-2.jpg",
+          "caption": "Main laundry interface with options to scan QR code or browse machine list",
+          "hash": "8686c6b292c6a688"
+        },
+        {
+          "src": "media/004-3.jpg",
+          "caption": "Loading indicator showing app connecting to the washing machine",
+          "hash": "b2860b332b07a688"
+        },
+        {
+          "src": "media/004-4.jpg",
+          "caption": "Machine usage prompt showing Washer 6 selected for 1,200P",
+          "hash": "96a013135503c803"
+        },
+        {
+          "src": "media/004-5.jpg",
+          "caption": "Confirmation warning asking user to remain physically at the machine while processing",
+          "hash": "86801b2b4145828e"
+        },
+        {
+          "src": "media/004-6.jpg",
+          "caption": "Payment in progress loading overlay",
+          "hash": "698007332b07c88e"
+        },
+        {
+          "src": "media/004-7.jpg",
+          "caption": "Payment completion screen showing 1,200P deducted from MetaMoney balance",
+          "hash": "867069440000dada"
+        },
+        {
+          "src": "media/004-8.jpg",
+          "caption": "List of dormitory laundry room buildings at Chungnam National University",
+          "hash": "8680a08080a08000"
+        },
+        {
+          "src": "media/004-9.jpg",
+          "caption": "FAQ section explaining Bluetooth connection troubleshooting steps",
+          "hash": "86a6c880c0c09494"
+        },
+        {
+          "src": "media/004-10.jpg",
+          "caption": "Usage history showing current active washing machine cycle and option to reconnect",
+          "hash": "8680c28ad09ab286"
+        },
+        {
+          "src": "media/004-11.jpg",
+          "caption": "Past usage history list showing completed washer and dryer cycles",
+          "hash": "9292e08ee08e82a6"
+        },
+        {
+          "src": "media/004-12.jpg",
+          "caption": "Expanded FAQ list and customer center operating hours",
+          "hash": "86a6889484908686"
+        },
+        {
+          "src": "media/004-13.jpg",
+          "caption": "Discounted gift voucher redemption catalog within the Meta Club app",
+          "hash": "868b121101018101"
+        },
+        {
+          "src": "media/004-14.jpg",
+          "caption": "Extracurricular contests board for university students",
+          "hash": "a200888082008280"
+        },
+        {
+          "src": "media/004-15.jpg",
+          "caption": "Supporters and training program listings for students",
+          "hash": "ae9080808080a080"
+        },
+        {
+          "src": "media/004-16.jpg",
+          "caption": "Modal prompt prompting the user to set a community nickname",
+          "hash": "b28833334d218288"
+        },
+        {
+          "src": "media/004-17.jpg",
+          "caption": "Form field for setting community nickname",
+          "hash": "86a1888000008092"
+        },
+        {
+          "src": "media/004-18.jpg",
+          "caption": "User info profile screen showing empty leader activity tab",
+          "hash": "9644107000000000"
+        },
+        {
+          "src": "media/004-19.jpg",
+          "caption": "Virtual keyboard input while setting up community nickname",
+          "hash": "86a1808a8ce02fc4"
+        },
+        {
+          "src": "media/004-20.jpg",
+          "caption": "Confirmation notice stating nickname registration is complete",
+          "hash": "8610b06884008e8e"
+        },
+        {
+          "src": "media/004-21.jpg",
+          "caption": "User info profile screen showing empty member comments tab",
+          "hash": "9654307000000000"
+        },
+        {
+          "src": "media/004-22.jpg",
+          "caption": "Contest detail view with team recruitment button",
+          "hash": "a2a140e282d0c00c"
+        },
+        {
+          "src": "media/004-23.jpg",
+          "caption": "Team recruitment posting creation form",
+          "hash": "c688929080808092"
+        },
+        {
+          "src": "media/004-24.jpg",
+          "caption": "Team description input field and posting submission button",
+          "hash": "869088808080c0b2"
+        },
+        {
+          "src": "media/004-25.jpg",
+          "caption": "FAQ screen with quick QR scan shortcut button at the bottom",
+          "hash": "86c894949086868e"
+        },
+        {
+          "src": "media/004-26.jpg",
+          "caption": "Recent usage history view displaying active wash in progress",
+          "hash": "8680c28ad0b2a28e"
+        },
+        {
+          "src": "media/004-27.jpg",
+          "caption": "Meta Club side navigation drawer categorizing Community, Life, Tickets, Benefits, and Support",
+          "hash": "8684808080818080"
+        }
+      ],
+      "observed": [
+        "A pop-up modal reminds users that washing machine timers display estimated completion times and instructs users to insert capsule detergent directly into the drum, never into the detergent tray.",
+        "The app requires Bluetooth and location services turned on to scan QR codes or connect to dorm washing machines.",
+        "Connecting to the machine can take up to 1 minute over Bluetooth.",
+        "Standard washer cycle costs 1,200P, deducted from MetaMoney points balance.",
+        "Before payment proceeds, a full-screen warning modal requires confirmation that the user is standing directly in front of the machine and will keep the screen active.",
+        "The app shows a list of CNU dorm buildings (생활관 7동, 11동, 12동, 10동, 8동, 13동, 9동) for selecting laundry rooms.",
+        "A dedicated usage history logs the exact machine, room location, timestamp, and status ('In Use', 'Completed') with a 'Try Again' button if the machine fails to start.",
+        "The app includes peripheral campus features: gift voucher purchases with discounts, student contest/extracurricular boards, team recruitment, and student profile/nickname setup."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "The strict proximity warning modal suggests payments commonly fail or trigger machine lockouts if users walk away before Bluetooth handshake completes.",
+        "Integrating laundry controls with gift card discounts and team project recruitment suggests the app acts as a broader university campus lifestyle platform."
+      ],
+      "open": [
+        "What happens if payment succeeds in the app but the washing machine hardware fails to trigger a start signal?",
+        "Can non-residents or visitors use the washers if they download the app, or is resident dorm verification enforced?"
+      ],
+      "sources": [],
+      "related": [],
+      "rights": "Own material. Personal data blurred automatically; reviewed before publication.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Meta Club app laundry screen modal",
+            "action": "Dismisses guidance on estimated laundry duration and proper capsule detergent placement",
+            "text_ko": "공지 세탁시간과 캡슐세제\nConfirm",
+            "text_en": "Notice: Washing time and capsule detergent / Confirm"
+          },
+          {
+            "n": 2,
+            "where": "Washer selection screen",
+            "action": "Initiates connection to the machine via QR scan or machine list",
+            "text_ko": "Scan QR code or Connect to machine",
+            "text_en": "Scan QR code or Connect to machine"
+          },
+          {
+            "n": 3,
+            "where": "Machine connection prompt",
+            "action": "Waits while app establishes Bluetooth connection to Washer 6",
+            "text_ko": "Connecting to machine\n세탁기 6 1,200P Proceed Payment",
+            "text_en": "Connecting to machine / Washer 6 1,200P Proceed Payment"
+          },
+          {
+            "n": 4,
+            "where": "Proximity check warning modal",
+            "action": "Confirms presence in front of the machine and acknowledges app must stay open",
+            "text_ko": "in front of the machine\nkeep the app open while processing payment!\nI'm at the machine, ready to proceed",
+            "text_en": "in front of the machine / keep the app open while processing payment! / I'm at the machine, ready to proceed"
+          },
+          {
+            "n": 5,
+            "where": "Payment processing modal",
+            "action": "Confirms deduction of 1,200P from MetaMoney balance",
+            "text_ko": "Payment is in progress. Please stay on this screen.",
+            "text_en": "Payment is in progress. Please stay on this screen."
+          },
+          {
+            "n": 6,
+            "where": "Payment completion screen",
+            "action": "Receives confirmation that machine payment succeeded and checks washer status",
+            "text_ko": "The payment has been completed.\nCheck History",
+            "text_en": "The payment has been completed. / Check History"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Detergent usage warning notice",
+            "role": "Explains difference between display time and actual run time, and warns against putting capsule detergent into dispenser trays",
+            "text_ko": "세탁시간과 캡슐세제\n세제함에 절대 넣지 마세요",
+            "text_en": "Washing time and capsule detergent / Never put in the detergent tray"
+          },
+          {
+            "name": "Machine connection status badge",
+            "role": "Displays current running cycle and option to re-link if machine failed to start",
+            "text_ko": "In Use\n세탁기 6 (washer 6)\nNot working? Reconnect with same machine!",
+            "text_en": "In Use / Washer 6 / Not working? Reconnect with same machine!"
+          },
+          {
+            "name": "Troubleshooting FAQ accordion",
+            "role": "Lists common washing machine error codes and recovery procedures",
+            "text_ko": "The washing machine displays error codes like dE1, dE2, UE, OE, or IE and does not work.",
+            "text_en": "The washing machine displays error codes like dE1, dE2, UE, OE, or IE and does not work."
+          }
+        ],
+        "patterns": []
+      },
+      "submitted_via": "inbox:84e6b059-58be-4576-a240-b6967124010e"
     }
   ],
   "author_access": [
@@ -450,6 +699,12 @@
       "kind": "website",
       "operator": "SSG.com",
       "place": ""
+    },
+    "metaclub": {
+      "name": "Meta Club",
+      "kind": "app",
+      "operator": "Metaverse Lab",
+      "place": "Daejeon"
     }
   }
 }
