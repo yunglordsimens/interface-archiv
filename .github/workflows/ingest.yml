@@ -70,4 +70,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue }}
-        run: gh issue comment "$ISSUE_NUMBER" --body "Processing failed. Details are in the Actions log: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --body "Processing failed. Details are in the Actions log: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
