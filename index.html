@@ -116,6 +116,7 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
     <nav>
       <a href="#" id="nav-archive">Archive</a>
       <a href="#patterns" id="nav-patterns">Patterns</a>
+      <a href="#index" id="nav-index">Index</a>
       <a href="#about" id="nav-about">About</a>
       <a href="add/" id="nav-add">Contribute</a>
     </nav>
@@ -149,7 +150,7 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
   function matches(o) {
     if (filter !== "All" && o.category !== filter) return false;
     if (!query) return true;
-    var hay = [o.title, o.service, o.place, o.category, o.scenario].concat(o.observed || [], o.open || []).join(" ").toLowerCase();
+    var hay = [o.title, o.service, o.place, o.category, o.scenario, subjectName(o.subject)].concat(o.observed || [], o.open || []).join(" ").toLowerCase();
     return hay.indexOf(query) !== -1;
   }
 
@@ -193,6 +194,33 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
       '<div><div class="t">' + esc(o.title) + '</div>' +
       '<div class="m">' + esc(o.category) + ' · ' + esc(city(o.place)) + ' · ' + esc(dateText(o.date)) + '</div></div></a>';
   }
+  function subjectName(id) { var x = id && (DATA.subjects || {})[id]; return x ? x.name : ""; }
+  function withSubject(id) { return DATA.observations.filter(function (o) { return o.subject === id; }); }
+  var KINDS = { store: "Stores", app: "Apps", website: "Websites", device: "Devices", service: "Services", place: "Places" };
+
+  function renderIndex() {
+    var subs = DATA.subjects || {}, by = {};
+    Object.keys(subs).forEach(function (id) { var k = subs[id].kind || "other"; (by[k] = by[k] || []).push(id); });
+    var order = Object.keys(KINDS).concat(Object.keys(by).filter(function (k) { return !KINDS[k]; }));
+    view.innerHTML = '<div class="about"><div class="intro"><h1>Index</h1><p>The specific stores, apps, devices and services documented, each with all observations about it.</p></div>' +
+      order.filter(function (k) { return by[k]; }).map(function (k) {
+        return '<div><h2>' + esc(KINDS[k] || k) + '</h2><ul class="plist">' + by[k].sort(function (a, b) { return subs[a].name.localeCompare(subs[b].name); }).map(function (id) {
+          var x = subs[id];
+          return '<li><a href="#s-' + esc(id) + '">' + esc(x.name) + '</a> <span class="small">' + withSubject(id).length + '</span>' +
+            ((x.operator || x.place) ? '<div class="small">' + esc([x.operator !== x.name ? x.operator : "", x.place].filter(Boolean).join(" · ")) + '</div>' : "") + '</li>';
+        }).join("") + '</ul></div>';
+      }).join("") + '</div>';
+    window.scrollTo(0, 0);
+  }
+
+  function renderSubject(id) {
+    var x = DATA.subjects[id];
+    view.innerHTML = '<div class="item"><a class="back" href="#index">← Index</a>' +
+      '<div class="intro"><h1>' + esc(x.name) + '</h1><p>' + esc([KINDS[x.kind] ? KINDS[x.kind].replace(/s$/, "") : x.kind, x.operator !== x.name ? x.operator : "", x.place].filter(Boolean).join(" · ")) + '</p></div>' +
+      '<div class="grid">' + withSubject(id).map(cardHTML).join("") + '</div></div>';
+    window.scrollTo(0, 0);
+  }
+
   function patternLabel(slug) { var p = (DATA.patterns || {})[slug]; return p ? p.label : slug; }
   function withPattern(slug) { return DATA.observations.filter(function (o) { return o.breakdown && (o.breakdown.patterns || []).indexOf(slug) !== -1; }); }
 
@@ -248,7 +276,8 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
       '<article class="item">' +
         '<a class="back" href="#">← Archive</a>' +
         '<div><h1>' + esc(o.title) + '</h1>' +
-        '<p class="meta">' + esc(o.category) + ' · ' + esc(o.service) + ' · ' + esc(o.place) + ' · ' + esc(dateText(o.date)) + '</p></div>' +
+        '<p class="meta">' + esc(o.category) + ' · ' + esc(o.service) + ' · ' + esc(o.place) + ' · ' + esc(dateText(o.date)) + '</p>' +
+        (o.subject && DATA.subjects && DATA.subjects[o.subject] ? '<p class="meta">Part of <a href="#s-' + esc(o.subject) + '">' + esc(subjectName(o.subject)) + '</a>' + (withSubject(o.subject).length > 1 ? ' · ' + withSubject(o.subject).length + ' observations' : '') + '</p>' : '') + '</div>' +
         '<p class="scenario">' + esc(o.scenario) + '</p>' +
         '<div class="media">' + (o.media || []).map(function (m) {
           var note = m.from_video ? 'Video frame, ' + Math.floor(m.t / 60) + ':' + String(Math.floor(m.t % 60)).padStart(2, '0') + '. ' : '';
@@ -304,8 +333,8 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
   function route() {
     if (!DATA) return;
     var h = location.hash.replace(/^#/, "");
-    var section = h === "about" ? "about" : (h === "patterns" || /^p-/.test(h)) ? "patterns" : "archive";
-    ["archive", "patterns", "about"].forEach(function (s) {
+    var section = h === "about" ? "about" : (h === "patterns" || /^p-/.test(h)) ? "patterns" : (h === "index" || /^s-/.test(h)) ? "index" : "archive";
+    ["archive", "patterns", "index", "about"].forEach(function (s) {
       var a = document.getElementById("nav-" + s);
       if (s === section) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
     });
@@ -315,6 +344,8 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
     if (o) { renderItem(o); document.title = o.title + " · Korea Interface Archive"; }
     else if (pm && DATA.patterns && DATA.patterns[pm[1]]) { renderPattern(pm[1]); document.title = DATA.patterns[pm[1]].label + " · Korea Interface Archive"; }
     else if (h === "patterns") { renderPatterns(); document.title = "Patterns · Korea Interface Archive"; }
+    else if (h === "index") { renderIndex(); document.title = "Index · Korea Interface Archive"; }
+    else if (/^s-/.test(h) && DATA.subjects && DATA.subjects[h.slice(2)]) { renderSubject(h.slice(2)); document.title = DATA.subjects[h.slice(2)].name + " · Korea Interface Archive"; }
     else if (h === "about") { renderAbout(); document.title = "About · Korea Interface Archive"; }
     else { renderArchive(); document.title = "Korea Interface Archive"; }
   }

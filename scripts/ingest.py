@@ -199,6 +199,10 @@ Return ONLY a JSON object, no prose, with this shape:
 {
   "entry": {
     "title": "short English name, e.g. 'Ramen shop ordering kiosk'",
+    "subject": {"id": "id of the specific thing observed: reuse an existing id from the list below if it is the same store, app, device or service; otherwise a new lowercase-with-hyphens id",
+                "name": "e.g. 'emart24, Chungnam National University branch' or 'KakaoT'",
+                "kind": "store | app | website | device | service | place",
+                "operator": "brand or company, if visible", "place": "city or area, if known"},
     "category": "Digital | Physical | Services | Systems",
     "service": "brand or operator if visible, else ''",
     "scenario": "one sentence: what a person does here",
@@ -392,7 +396,11 @@ def build_archive_entry(files, meta, d, submitted_via, audio=None):
                       for i, it in enumerate(items))
     ctx = (f"What happened: {meta.get('context') or 'not given'}\nPlace: {meta.get('place') or 'not given'}\n"
            f"Date: {meta.get('date') or 'not given'}\nCategory chosen: {meta.get('category') or 'not given'}\nImages: {order}")
-    prompt = PROMPT + "\nExisting patterns:\n" + json.dumps({k: v["label"] for k, v in patterns.items()}, ensure_ascii=False) + "\n\nAuthor's context:\n" + ctx
+    subjects = d.setdefault("subjects", {})
+    known_subjects = set(subjects)
+    prompt = (PROMPT + "\nExisting patterns:\n" + json.dumps({k: v["label"] for k, v in patterns.items()}, ensure_ascii=False)
+              + "\nExisting subjects:\n" + json.dumps({k: v["name"] for k, v in subjects.items()}, ensure_ascii=False)
+              + "\n\nAuthor's context:\n" + ctx)
     res = scrub(gemini([{"text": prompt}] + [image_part(it["img"]) for it in items] + audio_part(audio), "MOCK_RESPONSE"))
 
     ids = [int(o["id"]) for o in d["observations"] if str(o["id"]).isdigit()]
@@ -420,9 +428,15 @@ def build_archive_entry(files, meta, d, submitted_via, audio=None):
     for k, v in (res.get("new_patterns") or {}).items():
         if k not in patterns:
             patterns[k] = v
+    subj = e.get("subject") or {}
+    sid = re.sub(r"[^a-z0-9-]+", "-", str(subj.get("id", "")).lower()).strip("-")
+    if sid and sid not in subjects:
+        subjects[sid] = {"name": subj.get("name") or sid, "kind": subj.get("kind", ""),
+                         "operator": subj.get("operator", ""), "place": subj.get("place") or meta.get("place") or ""}
     entry = {
         "id": oid,
         "title": e.get("title", "Untitled"),
+        "subject": sid or None,
         "category": meta.get("category") or e.get("category", ""),
         "country": "KR",
         "service": e.get("service", ""),
@@ -447,6 +461,7 @@ def build_archive_entry(files, meta, d, submitted_via, audio=None):
     d["updated"] = datetime.date.today().isoformat()
 
     lines = [f"## {entry['title']}", "", entry["scenario"], "",
+             f"Subject: {subjects.get(sid, {}).get('name', '—')}" + (" (new)" if subj.get("id") and sid and sid not in known_subjects else ""), "",
              f"Category: {entry['category']} · Place: {entry['place'] or '—'} · Date: {entry['date'] or '—'}", ""]
     if dup_notes:
         lines += ["### ⚠ Possible duplicates", *[f"- {n}" for n in dup_notes], ""]

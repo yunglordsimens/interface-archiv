@@ -32,7 +32,7 @@ function withMedia(o) {
 function summary(o) {
   return {
     id: o.id, title: o.title, category: o.category, country: o.country,
-    service: o.service, place: o.place, date: o.date, scenario: o.scenario,
+    subject: o.subject || null, service: o.service, place: o.place, date: o.date, scenario: o.scenario,
     patterns: o.breakdown?.patterns || [],
   };
 }
@@ -46,7 +46,7 @@ function haystack(o) {
     ...(o.observed || []), ...(o.interpretation || []), ...(o.open || []),
     ...(b.steps || []).flatMap((s) => [s.action, s.text_ko, s.text_en]),
     ...(b.elements || []).flatMap((e) => [e.name, e.role, e.text_ko, e.text_en]),
-    ...(b.patterns || []),
+    ...(b.patterns || []), o.subject || "",
   ].join(" ").toLowerCase();
 }
 
@@ -63,15 +63,17 @@ server.registerTool(
       query: z.string().optional().describe("Words to look for, in English or Korean"),
       category: z.string().optional().describe("Digital, Physical, Services or Systems"),
       pattern: z.string().optional().describe("Pattern id, see list_patterns"),
+      subject: z.string().optional().describe("Subject id (a specific store, app, device or service), see list_subjects"),
     },
   },
-  async ({ query, category, pattern }) => {
+  async ({ query, category, pattern, subject }) => {
     const d = await load();
     const q = (query || "").toLowerCase().trim();
     const words = q ? q.split(/\s+/) : [];
     const hits = d.observations.filter((o) =>
       (!category || o.category.toLowerCase() === category.toLowerCase()) &&
       (!pattern || (o.breakdown?.patterns || []).includes(pattern)) &&
+      (!subject || o.subject === subject) &&
       words.every((w) => haystack(o).includes(w)));
     return text({ count: hits.length, results: hits.map(summary), note: NOTE });
   }
@@ -91,7 +93,7 @@ server.registerTool(
     const d = await load();
     const o = d.observations.find((x) => x.id === id);
     if (!o) return { isError: true, content: [{ type: "text", text: `No observation with id ${id}. Use search_observations to find ids.` }] };
-    return text({ observation: withMedia(o), patterns: Object.fromEntries((o.breakdown?.patterns || []).map((p) => [p, d.patterns?.[p]])), note: NOTE });
+    return text({ observation: withMedia(o), subject: o.subject ? { id: o.subject, ...(d.subjects?.[o.subject] || {}) } : null, patterns: Object.fromEntries((o.breakdown?.patterns || []).map((p) => [p, d.patterns?.[p]])), note: NOTE });
   }
 );
 
@@ -109,6 +111,22 @@ server.registerTool(
       observations: d.observations.filter((o) => (o.breakdown?.patterns || []).includes(id)).map((o) => o.id),
     }));
     return text({ count: list.length, patterns: list });
+  }
+);
+
+server.registerTool(
+  "list_subjects",
+  {
+    title: "List subjects",
+    description: "The specific stores, apps, websites, devices and services documented in the archive, with the ids of observations about each.",
+    inputSchema: {},
+  },
+  async () => {
+    const d = await load();
+    const list = Object.entries(d.subjects || {}).map(([id, s]) => ({
+      id, ...s, observations: d.observations.filter((o) => o.subject === id).map((o) => o.id),
+    }));
+    return text({ count: list.length, subjects: list });
   }
 );
 

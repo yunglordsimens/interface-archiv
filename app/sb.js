@@ -63,3 +63,37 @@ window.makeRecorder = function (onDone) {
     stop: function () { if (rec && rec.state !== "inactive") rec.stop(); }
   };
 };
+
+// Capture time from EXIF/XMP (photos, screenshots). Falls back to null; callers use file dates.
+window.captureTime = async function (input) {
+  if (!window.exifr) return null;
+  try {
+    var m = await exifr.parse(input, { tiff: true, exif: true, xmp: true, icc: false, iptc: false, mergeOutput: true });
+    if (!m) return null;
+    var d = m.DateTimeOriginal || m.CreateDate || m.DateCreated || m.DateTimeDigitized || m.ModifyDate || m.DateTime;
+    if (typeof d === "string") d = new Date(d.replace(/^(\d{4}):(\d\d):(\d\d)/, "$1-$2-$3"));
+    return d instanceof Date && !isNaN(d) ? d : null;
+  } catch (e) { return null; }
+};
+
+// 64-bit difference hash of a loaded <img>, as 16 hex chars. Needs a CORS-clean image.
+window.dhashImg = function (img) {
+  try {
+    var mid = document.createElement("canvas"); mid.width = 72; mid.height = 64;
+    var mx = mid.getContext("2d"); mx.imageSmoothingQuality = "high"; mx.drawImage(img, 0, 0, 72, 64);
+    var c = document.createElement("canvas"); c.width = 9; c.height = 8;
+    var x = c.getContext("2d", { willReadFrequently: true });
+    x.imageSmoothingQuality = "high"; x.drawImage(mid, 0, 0, 9, 8);
+    var p = x.getImageData(0, 0, 9, 8).data, g = [], bits = "";
+    for (var i = 0; i < p.length; i += 4) g.push(0.299 * p[i] + 0.587 * p[i + 1] + 0.114 * p[i + 2]);
+    for (var r = 0; r < 8; r++) for (var col = 0; col < 8; col++) bits += g[r * 9 + col] > g[r * 9 + col + 1] ? "1" : "0";
+    var hex = "";
+    for (var k = 0; k < 64; k += 4) hex += parseInt(bits.slice(k, k + 4), 2).toString(16);
+    return hex;
+  } catch (e) { return null; }
+};
+window.hamming = function (a, b) {
+  var d = 0;
+  for (var i = 0; i < 16; i++) { var v = parseInt(a[i], 16) ^ parseInt(b[i], 16); while (v) { d += v & 1; v >>= 1; } }
+  return d;
+};

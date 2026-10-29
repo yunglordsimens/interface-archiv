@@ -27,6 +27,10 @@
 .tile .num { position: absolute; right: 6px; top: 6px; min-width: 24px; height: 24px; padding: 0 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; background: var(--accent); color: var(--on-accent); }
 .tile[aria-pressed="true"] { outline: 3px solid var(--accent); outline-offset: -3px; }
 .tile .audio { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--muted); font-size: var(--s-sm); padding: 8px; text-align: center; }
+.moment { display: flex; flex-direction: column; gap: 8px; }
+.mhead { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; font-size: var(--s-sm); color: var(--muted); }
+.mhead button { background: none; padding: 0; min-height: 0; font-weight: 500; color: var(--fg); }
+.tile .dup { position: absolute; left: 6px; bottom: 6px; font-size: 11px; padding: 2px 6px; background: var(--bad); color: #fff; }
 .tile-note { font-size: var(--s-sm); color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 20;
   padding: 12px max(16px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
@@ -96,6 +100,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js"></script>
 <script src="../app/sb.js"></script>
 <script>
 (function () {
@@ -161,7 +166,7 @@
     var url = urls[u.path] || "";
     if (u.kind === "video") return '<video src="' + esc(url) + '#t=0.1" muted playsinline preload="metadata"></video>' + (extra || "") + '<span class="tag">Video</span>';
     if (u.kind === "audio") return '<div class="audio">Voice note</div>' + (extra || "");
-    return '<img src="' + esc(url) + '" alt="" loading="lazy">' + (extra || "");
+    return '<img src="' + esc(url) + '" alt="" loading="lazy" crossorigin="anonymous" data-h="' + u.id + '">' + (extra || "");
   }
   function small(u) {
     var url = urls[u.path] || "";
@@ -169,7 +174,58 @@
     if (u.kind === "audio") return '<audio src="' + esc(url) + '" controls></audio>';
     return '<img src="' + esc(url) + '" alt="" loading="lazy">';
   }
-  function dayKey(u) { return (u.taken_at || u.created_at || "").slice(0, 10); }
+  function when(u) { return new Date(u.taken_at || u.created_at).getTime(); }
+  function dayKey(u) { var d = new Date(when(u)); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  function hm(t) { var d = new Date(t); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); }
+  var GAP = 10 * 60 * 1000;
+
+  // Fill capture times from EXIF for files uploaded before this was recorded.
+  var backfilling = false;
+  async function backfillTimes() {
+    if (backfilling || !window.exifr) return;
+    var todo = uploads.filter(function (u) { return !u.time_source && u.kind === "image" && urls[u.path]; });
+    if (!todo.length) return;
+    backfilling = true;
+    var changed = 0;
+    for (var i = 0; i < todo.length; i++) {
+      var u = todo[i], t = await captureTime(urls[u.path]);
+      var patch = t ? { taken_at: t.toISOString(), time_source: "exif" } : { time_source: "file" };
+      var r = await sb.from("uploads").update(patch).eq("id", u.id);
+      if (!r.error) { Object.assign(u, patch); if (t) changed++; }
+    }
+    backfilling = false;
+    if (changed && tab === "new") render();
+  }
+
+  // Hash images as they load; save once; flag near-identical files.
+  var hashQueue = {};
+  function hookHashes() {
+    el("view").querySelectorAll("img[data-h]").forEach(function (img) {
+      var id = img.getAttribute("data-h"), u = uploads.find(function (x) { return x.id === id; });
+      if (!u || u.dhash) return;
+      var go = function () {
+        var h = dhashImg(img); if (!h) return;
+        u.dhash = h; hashQueue[id] = h;
+        clearTimeout(hookHashes.t); hookHashes.t = setTimeout(flushHashes, 800);
+      };
+      if (img.complete && img.naturalWidth) go(); else img.addEventListener("load", go, { once: true });
+    });
+  }
+  async function flushHashes() {
+    var ids = Object.keys(hashQueue); if (!ids.length) return;
+    var q = hashQueue; hashQueue = {};
+    for (var i = 0; i < ids.length; i++) await sb.from("uploads").update({ dhash: q[ids[i]] }).eq("id", ids[i]);
+    if (tab === "new") render();
+  }
+  function duplicatesOf(list) {
+    var seen = [], dup = {};
+    list.forEach(function (u) {
+      if (!u.dhash) return;
+      var m = seen.find(function (s) { return hamming(s.dhash, u.dhash) <= 4; });
+      if (m) dup[u.id] = m.id; else seen.push(u);
+    });
+    return dup;
+  }
 
   function render() {
     document.querySelectorAll("[data-tab]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-tab") === tab)); });
@@ -182,18 +238,31 @@
   }
 
   function renderNew() {
-    var list = uploads.filter(function (u) { return u.status === "new" && !u.guest; });
+    var list = uploads.filter(function (u) { return u.status === "new" && !u.guest; }).sort(function (a, b) { return when(a) - when(b); });
     if (!list.length) { el("view").innerHTML = '<p class="muted">Nothing new. Add photos from the <a href="../add/">Add</a> page.</p>'; return; }
+    var moments = [];
+    list.forEach(function (u) {
+      var last = moments[moments.length - 1];
+      if (last && when(u) - when(last[last.length - 1]) <= GAP) last.push(u); else moments.push([u]);
+    });
+    var dup = duplicatesOf(list), nd = Object.keys(dup).length;
     var days = {};
-    list.forEach(function (u) { (days[dayKey(u)] = days[dayKey(u)] || []).push(u); });
-    el("view").innerHTML = Object.keys(days).sort().reverse().map(function (d) {
-      return '<div class="day"><h2>' + esc(d) + '</h2><div class="grid">' + days[d].map(function (u) {
-        var n = selected.indexOf(u.id);
-        return '<div class="stack" style="gap:4px"><button class="tile" data-u="' + u.id + '" aria-pressed="' + (n >= 0) + '" aria-label="Select">' +
-          thumb(u, n >= 0 ? '<span class="num">' + (n + 1) + '</span>' : "") + '</button>' +
-          (u.note ? '<div class="tile-note">' + esc(u.note) + '</div>' : "") + '</div>';
-      }).join("") + '</div></div>';
-    }).join("") + '<div id="sheet"></div>';
+    moments.forEach(function (m, i) { (days[dayKey(m[0])] = days[dayKey(m[0])] || []).push(i); });
+    el("view").innerHTML =
+      (nd ? '<div class="row small"><span class="status-bad">' + nd + ' possible duplicate' + (nd > 1 ? "s" : "") + '</span><button class="link" id="selDup" style="color:var(--fg)">Select them</button></div>' : "") +
+      Object.keys(days).sort().reverse().map(function (d) {
+        return '<div class="day"><h2>' + esc(d) + '</h2>' + days[d].slice().reverse().map(function (mi) {
+          var m = moments[mi];
+          var span = hm(when(m[0])) + (m.length > 1 ? "–" + hm(when(m[m.length - 1])) : "");
+          return '<div class="moment"><div class="mhead"><span>' + span + ' · ' + m.length + (m.length > 1 ? " files" : " file") + '</span>' +
+            '<button data-moment="' + mi + '">Select all</button></div><div class="grid">' + m.map(function (u) {
+              var n = selected.indexOf(u.id);
+              return '<div class="stack" style="gap:4px"><button class="tile" data-u="' + u.id + '" aria-pressed="' + (n >= 0) + '" aria-label="Select">' +
+                thumb(u, (n >= 0 ? '<span class="num">' + (n + 1) + '</span>' : "") + (dup[u.id] ? '<span class="dup">Duplicate?</span>' : "")) + '</button>' +
+                (u.note ? '<div class="tile-note">' + esc(u.note) + '</div>' : "") + '</div>';
+            }).join("") + '</div></div>';
+        }).join("") + '</div>';
+      }).join("") + '<div id="sheet"></div>';
     el("view").querySelectorAll("[data-u]").forEach(function (b) {
       b.addEventListener("click", function () {
         var id = b.getAttribute("data-u"), i = selected.indexOf(id);
@@ -201,7 +270,16 @@
         render();
       });
     });
+    el("view").querySelectorAll("[data-moment]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        moments[+b.getAttribute("data-moment")].forEach(function (u) { if (selected.indexOf(u.id) < 0 && !dup[u.id]) selected.push(u.id); });
+        render();
+      });
+    });
+    if (el("selDup")) el("selDup").addEventListener("click", function () { selected = Object.keys(dup); render(); });
     el("selCount").textContent = selected.length + " selected";
+    hookHashes();
+    backfillTimes();
   }
 
   el("clearSel").addEventListener("click", function () { selected = []; render(); });
@@ -218,8 +296,9 @@
     var places = Array.from(new Set(sel.map(function (u) { return u.place; }).filter(Boolean)));
     var date = sel.map(dayKey).sort()[0] || "";
     var vids = sel.filter(function (u) { return u.kind === "video"; });
-    var level = "archive";
-    var html = '<div class="sheet" id="sheetBox"><h2>New observation · ' + sel.length + ' files, in the order you selected them</h2>' +
+    var level = "archive", orderMode = "time";
+    var html = '<div class="sheet" id="sheetBox"><h2>New observation · ' + sel.length + ' files</h2>' +
+      '<div class="seg" role="group" aria-label="Order"><button type="button" data-order="time" aria-pressed="true">Order by time taken</button><button type="button" data-order="mine" aria-pressed="false">Order as I selected</button></div>' +
       '<div class="seg" role="group" aria-label="Level"><button type="button" data-level="archive" aria-pressed="true">Archive (public after review)</button><button type="button" data-level="private" aria-pressed="false">Private note</button></div>' +
       '<label class="field"><span>What happened</span><textarea id="o-ctx">' + esc(notes) + '</textarea></label>' +
       '<div class="row" style="align-items:stretch"><label class="field" style="flex:2;min-width:200px"><span>Place</span><input id="o-place" type="text" value="' + esc(places[0] || "") + '"></label>' +
@@ -242,6 +321,12 @@
         el("sheet").querySelectorAll("[data-level]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
       });
     });
+    el("sheet").querySelectorAll("[data-order]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        orderMode = b.getAttribute("data-order");
+        el("sheet").querySelectorAll("[data-order]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      });
+    });
     el("sheet").querySelectorAll("[data-now]").forEach(function (b) {
       b.addEventListener("click", function () { el(b.getAttribute("data-now")).value = el(b.getAttribute("data-v")).currentTime.toFixed(1); });
     });
@@ -250,10 +335,11 @@
       el("o-go").disabled = true;
       var gid = uuid();
       var g = await sb.from("groups").insert({
-        id: gid, source: "owner", level: level, status: "queued", consent: true,
+        id: gid, source: "owner", level: level, status: "queued", consent: true, order_mode: orderMode,
         context: el("o-ctx").value.trim(), place: el("o-place").value.trim(), date: el("o-date").value, category: el("o-cat").value
       });
       if (g.error) { el("o-go").disabled = false; return toast(g.error.message, 5000); }
+      if (orderMode === "time") sel = sel.slice().sort(function (a, b) { return when(a) - when(b); });
       for (var i = 0; i < sel.length; i++) {
         var u = sel[i], patch = { group_id: gid, status: "grouped", sort: i };
         if (u.kind === "video") {

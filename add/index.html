@@ -64,6 +64,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js"></script>
 <script src="../app/sb.js"></script>
 <script>
 (async function () {
@@ -150,13 +151,15 @@
       for (var i = 0; i < all.length; i++) {
         var f = all[i];
         f.state = "Uploading…"; renderFiles();
+        var shot = f.isVoice ? null : await captureTime(f.file);
         var path = (owner ? "owner/" + day : "guest/" + groupId) + "/" + f.id + "." + extOf(f.file);
         var up = await sb.storage.from(ARCHIVE.bucket).upload(path, f.file, { contentType: f.file.type || undefined, upsert: false });
         if (up.error) { f.state = "Failed"; failed++; renderFiles(); continue; }
         var row = await sb.from("uploads").insert({
           id: f.id, path: path, kind: kindOf(f.file), mime: f.file.type, size: f.file.size, guest: !owner,
           group_id: groupId, sort: i, note: note, place: place,
-          taken_at: f.file.lastModified ? new Date(f.file.lastModified).toISOString() : null
+          taken_at: shot ? shot.toISOString() : (f.file.lastModified ? new Date(f.file.lastModified).toISOString() : null),
+          time_source: shot ? "exif" : "file"
         });
         if (row.error) { f.state = "Failed"; failed++; } else { f.state = "Uploaded"; }
         renderFiles();

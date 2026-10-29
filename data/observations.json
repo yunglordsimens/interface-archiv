@@ -144,7 +144,8 @@
           "no-barcode-quick-pick",
           "age-restricted-handoff"
         ]
-      }
+      },
+      "subject": "emart24-cnu"
     },
     {
       "id": "002",
@@ -260,7 +261,8 @@
           "photo-proof-of-delivery",
           "recycling-instruction"
         ]
-      }
+      },
+      "subject": "hanjin-express"
     },
     {
       "id": "003",
@@ -351,7 +353,8 @@
           "gift-button-beside-buy",
           "official-partner-badge"
         ]
-      }
+      },
+      "subject": "ssg-com"
     }
   ],
   "author_access": [
@@ -428,5 +431,25 @@
       "description": "A banner states the seller is an official partner and the product is genuine."
     }
   },
-  "schema_version": "0.2"
+  "schema_version": "0.3",
+  "subjects": {
+    "emart24-cnu": {
+      "name": "emart24, Chungnam National University branch",
+      "kind": "store",
+      "operator": "emart24",
+      "place": "Daejeon"
+    },
+    "hanjin-express": {
+      "name": "Hanjin Express delivery",
+      "kind": "service",
+      "operator": "Hanjin Express",
+      "place": ""
+    },
+    "ssg-com": {
+      "name": "SSG.com",
+      "kind": "website",
+      "operator": "SSG.com",
+      "place": ""
+    }
+  }
 }

@@ -20,6 +20,7 @@ It also records **access** (what it takes to use the interface: physical presenc
 - `steps` — the interaction step by step, with original Korean text and a translation
 - `elements` — interface elements with their role and text
 - `patterns` — recurring solutions, defined once in `patterns` at the top of the file
+- `subject` — the specific store, app, device or service observed, defined once in `subjects`; one subject can have many observations
 
 Personal data in screenshots is blurred before publication.
 
@@ -35,7 +36,7 @@ Issues from the owner and collaborators are processed right away. Issues from an
 ## Inbox (phone)
 
 - **Add** (`/add/`): works as an app from the phone home screen (Share → Add to Home Screen). Pick photos or videos from the camera or gallery, record an optional voice note, send. The owner's uploads go to a private inbox; guests' submissions wait for approval.
-- **Inbox** (`/inbox/`, owner only, sign-in by email link): sort new files, discard, group several files into one observation, trim videos, mark it as *Archive* or *Private note*, approve guest submissions, read private notes.
+- **Inbox** (`/inbox/`, owner only, sign-in by email link): sort new files (grouped into moments by capture time, near-duplicates flagged), discard, group several files into one observation (ordered by capture time unless you choose your own order), trim videos, mark it as *Archive* or *Private note*, approve guest submissions, read private notes.
 - Originals are stored in a private Supabase bucket. Row-level security lets guests only add, and only the owner read.
 - `.github/workflows/process-inbox.yml` runs every 10 minutes: queued archive observations become draft pull requests through the same Gemini pipeline; private notes are saved back to the inbox and never reach this repository.
 
@@ -54,7 +55,7 @@ The archive can be connected to Claude Desktop or any MCP client. Add this to th
 }
 ```
 
-Tools: `search_observations`, `get_observation`, `list_patterns`, `access_requirements`. The server is read-only and loads the public data file from this repository. Set `KIA_DATA` to a local path to use a local copy.
+Tools: `search_observations`, `get_observation`, `list_patterns`, `list_subjects`, `access_requirements`. The server is read-only and loads the public data file from this repository. Set `KIA_DATA` to a local path to use a local copy.
 
 ## Scope and limits
 
