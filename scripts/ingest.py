@@ -27,7 +27,7 @@ MODELS = list(dict.fromkeys(m for m in [os.environ.get("GEMINI_MODEL"), "gemini-
 
 def http(url, data=None, headers=None):
     req = urllib.request.Request(url, data=data, headers=headers or {})
-    with urllib.request.urlopen(req, timeout=180) as r:
+    with urllib.request.urlopen(req, timeout=300) as r:
         return r.read()
 
 
@@ -137,6 +137,9 @@ def call_gemini(images, context, patterns):
                 print(last, file=sys.stderr)
                 if e.code not in (429, 500, 502, 503, 504):
                     break
+            except (TimeoutError, urllib.error.URLError, ConnectionError) as e:
+                last = f"{model}: {type(e).__name__} {e}"
+                print(last, file=sys.stderr)
         if res is None:
             if last and " HTTP 4" in last and " HTTP 429" not in last and " HTTP 404" not in last:
                 raise SystemExit(last)
