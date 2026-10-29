@@ -371,7 +371,7 @@
         '<div class="meta">' + esc([g.level === "private" ? "Private note" : "Archive", g.source === "guest" ? "from guest" : "", g.place, g.date, g.entry_id ? "entry " + g.entry_id : ""].filter(Boolean).join(" · ")) + '</div>' +
         '<div class="thumbs">' + groupItems(g).map(small).join("") + '</div>' +
         (g.pr_url ? '<a href="' + esc(g.pr_url) + '" target="_blank" rel="noopener">Review the draft on GitHub</a>' : "") +
-        (g.error ? '<p class="small status-bad">' + esc(g.error) + '</p>' : "") +
+        (g.error ? '<p class="small ' + (g.status === "failed" ? "status-bad" : "status-warn") + '">' + esc(g.error) + '</p>' : "") +
         (g.status === "failed" ? '<div><button data-retry="' + g.id + '">Try again</button></div>' : "") +
         '</div>';
     }).join("") + '</div>';
