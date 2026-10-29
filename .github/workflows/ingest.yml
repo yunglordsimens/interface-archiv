@@ -34,6 +34,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install pillow==11.0.0
+      - run: command -v ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
       - name: Process photos with Gemini
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -67,7 +68,7 @@ jobs:
           else
             URL="https://github.com/${GITHUB_REPOSITORY}/compare/main...${BRANCH}?expand=1"
           fi
-          gh issue comment "$ISSUE_NUMBER" --body "Draft entry ${ID} is ready for review: ${URL}. Check the blurred areas and the text, then merge to publish."
+          gh issue comment "$ISSUE_NUMBER" --body "Draft entry ${ID} is ready for review: ${URL}. $(cat .ingest/summary.txt) Check the blurred areas and the text, then merge to publish."
       - name: Report failure
         if: failure()
         env:

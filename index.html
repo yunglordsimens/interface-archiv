@@ -75,7 +75,7 @@ nav a:not([aria-current="page"]) { color: var(--muted); }
 .item .scenario { font-size: var(--s-lg); margin: 0; max-width: 40rem; }
 .media { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 4px; }
 .media figure { margin: 0; flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px; max-width: min(100%, 520px); }
-.media img { height: min(78vh, 760px); width: auto; max-width: 100%; object-fit: contain; background: var(--ph); display: block; }
+.media img, .media video { height: min(78vh, 760px); width: auto; max-width: 100%; object-fit: contain; background: var(--ph); display: block; }
 .media figcaption { color: var(--muted); font-size: var(--s-sm); max-width: 32rem; }
 .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px 48px; max-width: 1100px; }
 .facts section { min-width: 0; }
@@ -102,7 +102,7 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
 @media (max-width: 520px) {
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 12px; }
   #q { width: 100%; }
-  .media img { height: auto; max-height: 80vh; }
+  .media img, .media video { height: auto; max-height: 80vh; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -249,7 +249,9 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
         '<p class="meta">' + esc(o.category) + ' · ' + esc(o.service) + ' · ' + esc(o.place) + ' · ' + esc(dateText(o.date)) + '</p></div>' +
         '<p class="scenario">' + esc(o.scenario) + '</p>' +
         '<div class="media">' + (o.media || []).map(function (m) {
-          return '<figure><img src="' + esc(m.src) + '" alt="' + esc(m.caption) + '"><figcaption>' + esc(m.caption) + '</figcaption></figure>';
+          var note = m.from_video ? 'Video frame, ' + Math.floor(m.t / 60) + ':' + String(Math.floor(m.t % 60)).padStart(2, '0') + '. ' : '';
+          if (m.type === 'video') return '<figure><video src="' + esc(m.src) + '" controls muted playsinline loop preload="metadata"></video><figcaption>Clip without sound. ' + esc(m.caption) + '</figcaption></figure>';
+          return '<figure><img src="' + esc(m.src) + '" alt="' + esc(m.caption) + '"><figcaption>' + esc(note + (m.caption || '')) + '</figcaption></figure>';
         }).join("") + '</div>' +
         '<div class="facts">' + breakdownHTML(o.breakdown) + '</div>' +
         '<div class="facts">' +
@@ -282,6 +284,13 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
         '</ul></div>' +
         '<div><h2>Access</h2><p>Much of what is documented here cannot be reached from outside the country. Physical devices need presence, but so do many online services: delivery messages arrive only on a Korean mobile number, and some services ask for identity verification with a Korean number or a residence card (ARC). Each entry lists what it takes to use the interface. Requirements that were not tested are marked as things to check. Cases where something could not be used are recorded as observations too.</p>' +
         (DATA.author_access ? '<p class="small" style="margin-top:8px">Author\'s access so far: ' + DATA.author_access.map(function (a) { return esc(a.what) + ' (' + esc(a.status) + ')'; }).join(', ') + '.</p>' : '') + '</div>' +
+        '<div><h2>What is kept and why</h2><ul>' +
+          '<li>Photos and screenshots are compressed and stripped of location data.</li>' +
+          '<li>Personal data (private phone numbers, names, addresses, tracking numbers, faces, licence plates, private chats) is blurred before publication. Detection is automatic and every entry is checked by a person before it goes online.</li>' +
+          '<li>Videos are not stored in full. Key moments are kept as still frames. A short silent clip is kept only when the motion itself matters and nothing personal is visible in it.</li>' +
+          '<li>Each image gets a visual fingerprint, so repeated or near-identical material is flagged before publication.</li>' +
+          '<li>Drafts are prepared with a language model (Gemini) and reviewed by a person. The model never adds facts from outside the material; anything it suggests beyond what is visible is listed as an open question.</li>' +
+        '</ul></div>' +
         '<div><h2>Data</h2><p>Every entry is also published as structured data: <a href="data/observations.json" target="_blank" rel="noopener">observations.json</a>. Besides the observation itself, each entry breaks the interface down into steps, elements with their original Korean text and a translation, and recurring patterns, so it can be used as a reference by people and software.</p></div>' +
         '<div><h2>Scope</h2><p>This version covers South Korea. The method, data schema and code do not depend on the country and can be reused to document another one.</p></div>' +
         '<div><h2>Limits</h2><p>The sample is small and comes mostly from one person living in Daejeon in autumn 2026. It does not describe South Korea as a whole.</p></div>' +

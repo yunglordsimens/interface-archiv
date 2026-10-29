@@ -21,7 +21,8 @@
       "media": [
         {
           "src": "media/001-1.jpg",
-          "caption": "Self-checkout screen with the printed step guide above it."
+          "caption": "Self-checkout screen with the printed step guide above it.",
+          "hash": "59794f0f9b8f5c22"
         }
       ],
       "observed": [
@@ -166,11 +167,13 @@
       "media": [
         {
           "src": "media/002-1.jpg",
-          "caption": "Step 1. Text message: the courier is on the way."
+          "caption": "Step 1. Text message: the courier is on the way.",
+          "hash": "b0d1a8b88090a0e8"
         },
         {
           "src": "media/002-2.jpg",
-          "caption": "Step 2. Text message: delivered, with a photo of the drop-off spot."
+          "caption": "Step 2. Text message: delivered, with a photo of the drop-off spot.",
+          "hash": "929188b091a0a180"
         }
       ],
       "observed": [
@@ -279,7 +282,8 @@
       "media": [
         {
           "src": "media/003-1.jpg",
-          "caption": "Product page, promotion section and fixed bottom bar."
+          "caption": "Product page, promotion section and fixed bottom bar.",
+          "hash": "9e61e0c8ccf2ccd5"
         }
       ],
       "observed": [

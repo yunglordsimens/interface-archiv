@@ -1,19 +1,27 @@
 """Turn a "New observation" issue into a draft archive entry.
 
-Reads the issue, downloads its images, asks Gemini for a structured entry and
-for boxes around personal data, blurs those boxes, compresses the images and
-appends the entry to data/observations.json. The workflow then opens a PR.
+1. Reads the issue and downloads its photos and videos.
+2. Videos: Gemini picks key moments; ffmpeg cuts them into still frames and,
+   only when motion matters and nothing personal is visible, a short silent clip.
+3. Photos and frames: Gemini drafts the entry and marks personal data; the
+   script blurs it, compresses images and drops EXIF/GPS.
+4. Duplicates: every image gets a perceptual hash; near matches against the
+   archive (and inside the submission) are flagged for the reviewer.
+5. Appends the entry to data/observations.json. The workflow then opens a PR.
 
 Env: GEMINI_API_KEY, GEMINI_MODEL (optional), GH_TOKEN, ISSUE_NUMBER, REPO.
-Local test: MOCK_RESPONSE=path/to/response.json skips the Gemini call.
+Local test: MOCK_RESPONSE / MOCK_VIDEO = paths to JSON files skip Gemini calls.
 """
 import base64
 import datetime
+import hashlib
 import io
 import json
 import os
 import re
+import subprocess
 import sys
+import tempfile
 import time
 import urllib.error
 import urllib.request
@@ -23,7 +31,13 @@ from PIL import Image, ImageFilter, ImageOps
 DATA = "data/observations.json"
 OUT = ".ingest"
 MODELS = list(dict.fromkeys(m for m in [os.environ.get("GEMINI_MODEL"), "gemini-flash-latest", "gemini-2.5-flash", "gemini-flash-lite-latest"] if m))
+DUP_DISTANCE = 10          # max differing bits (of 64) to call two images near-duplicates
+MAX_FRAMES_PER_VIDEO = 6
+MAX_CLIP_SECONDS = 20
+VIDEO_MIME = {b"ftypqt": "video/quicktime"}
 
+
+# ---------- input ----------
 
 def http(url, data=None, headers=None):
     req = urllib.request.Request(url, data=data, headers=headers or {})
@@ -52,24 +66,125 @@ def clean(v):
     return "" if v in ("", "_No response_", "Not sure") else v
 
 
-def download(url):
+def fetch(url):
     headers = {"User-Agent": "interface-archive-ingest"}
     if "github.com" in url or "githubusercontent.com" in url:
         headers["Authorization"] = f"Bearer {os.environ['GH_TOKEN']}"
     try:
-        raw = http(url, headers=headers)
+        return http(url, headers=headers)
     except urllib.error.HTTPError:
-        raw = http(url, headers={"User-Agent": "interface-archive-ingest"})
-    img = ImageOps.exif_transpose(Image.open(io.BytesIO(raw)))
-    return img.convert("RGB")
+        return http(url, headers={"User-Agent": "interface-archive-ingest"})
 
 
-def for_model(img):
+def attachment_urls(text):
+    """Images come as ![](url) or <img src>; videos as a bare user-attachments URL on its own line."""
+    found = re.findall(r"!\[[^\]]*\]\((https?://[^)\s]+)\)", text)
+    found += re.findall(r'<img[^>]+src="(https?://[^"]+)"', text)
+    found += re.findall(r'<video[^>]+src="(https?://[^"]+)"', text)
+    found += re.findall(r"^\s*(https://github\.com/user-attachments/assets/[\w-]+)\s*$", text, re.M)
+    found += re.findall(r"^\s*(https?://\S+\.(?:mp4|mov|webm))\s*$", text, re.M | re.I)
+    return list(dict.fromkeys(found))
+
+
+def classify(raw):
+    """Return ('image', PIL.Image) or ('video', mime)."""
+    try:
+        img = Image.open(io.BytesIO(raw))
+        img.load()
+        return "image", ImageOps.exif_transpose(img).convert("RGB")
+    except Exception:
+        pass
+    head = raw[:32]
+    if b"ftyp" in head:
+        return "video", "video/quicktime" if b"ftypqt" in head else "video/mp4"
+    if head.startswith(b"\x1a\x45\xdf\xa3"):
+        return "video", "video/webm"
+    raise SystemExit("An attachment is neither an image nor a supported video (mp4, mov, webm).")
+
+
+# ---------- video ----------
+
+def ffprobe_duration(path):
+    out = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", path],
+                         capture_output=True, text=True).stdout.strip()
+    try:
+        return float(out)
+    except ValueError:
+        return 0.0
+
+
+def frame_at(path, t):
+    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
+        out = f.name
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{max(0.0, t):.2f}", "-i", path, "-frames:v", "1", out], check=True)
+    img = Image.open(out).convert("RGB")
+    os.unlink(out)
+    return img
+
+
+def make_clip(path, start, end, dest):
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{start:.2f}", "-to", f"{end:.2f}", "-i", path,
+                    "-an", "-vf", "scale='min(720,iw)':-2", "-c:v", "libx264", "-preset", "veryfast",
+                    "-crf", "28", "-movflags", "+faststart", "-pix_fmt", "yuv420p", dest], check=True)
+
+
+VIDEO_PROMPT = """You help document everyday interfaces in South Korea. For each video, in order, return ONLY JSON:
+{"videos": [{"index": 0,
+  "moments": [{"t": seconds, "why": "what this moment shows"}],
+  "clip": {"keep": true or false, "start": seconds, "end": seconds,
+           "reason": "why motion matters here, or why not",
+           "personal_data_visible": true or false}}]}
+Rules:
+- moments: up to %d per video, the moments that best show each step or state of the interface. Seconds as numbers.
+- clip.keep is true only if motion itself matters (an animation, a transition, a timing, a moving device) and cannot be
+  shown by still frames. Keep it short, at most %d seconds.
+- personal_data_visible is true if any private phone number, name, address, face, licence plate, card, chat message
+  or tracking number is visible at any time in the clip range. If unsure, true.
+""" % (MAX_FRAMES_PER_VIDEO, MAX_CLIP_SECONDS)
+
+
+# ---------- Gemini ----------
+
+def gemini(parts, mock_env):
+    if os.environ.get(mock_env):
+        return json.load(open(os.environ[mock_env]))
+    body = json.dumps({"contents": [{"parts": parts}],
+                       "generationConfig": {"responseMimeType": "application/json", "temperature": 0.2}}).encode()
+    last = None
+    for model in MODELS:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+        res = None
+        for wait in (0, 10, 30, 60):
+            time.sleep(wait)
+            try:
+                res = json.loads(http(url, body, {"Content-Type": "application/json", "x-goog-api-key": os.environ["GEMINI_API_KEY"]}))
+                break
+            except urllib.error.HTTPError as e:
+                last = f"{model}: HTTP {e.code} {e.read()[:200]!r}"
+                print(last, file=sys.stderr)
+                if e.code not in (429, 500, 502, 503, 504):
+                    break
+            except (TimeoutError, urllib.error.URLError, ConnectionError) as e:
+                last = f"{model}: {type(e).__name__} {e}"
+                print(last, file=sys.stderr)
+        if res is None:
+            if last and " HTTP 4" in last and " HTTP 429" not in last and " HTTP 404" not in last:
+                raise SystemExit(last)
+            continue
+        txt = res["candidates"][0]["content"]["parts"][0]["text"]
+        txt = re.sub(r"^```(?:json)?|```$", "", txt.strip()).strip()
+        usage = res.get("usageMetadata", {})
+        print(f"model={model} tokens in={usage.get('promptTokenCount')} out={usage.get('candidatesTokenCount')}")
+        return json.loads(txt)
+    raise SystemExit(f"No Gemini model available. Last error: {last}")
+
+
+def image_part(img):
     im = img.copy()
     im.thumbnail((1600, 1600))
     buf = io.BytesIO()
     im.save(buf, "JPEG", quality=85)
-    return base64.b64encode(buf.getvalue()).decode()
+    return {"inline_data": {"mime_type": "image/jpeg", "data": base64.b64encode(buf.getvalue()).decode()}}
 
 
 PROMPT = """You document everyday interfaces in South Korea for a research archive.
@@ -103,7 +218,7 @@ Rules:
 - Write in English. Keep Korean text verbatim in text_ko; never invent text you cannot read.
 - Only state what the images show or the author says. No statistics, history or claims about Korea in general.
   Anything you know from outside goes into "open" as a question, never into "observed".
-- Steps only if the images show a sequence; otherwise an empty list.
+- Steps only if the images show a sequence; otherwise an empty list. Frames taken from a video are in time order.
 - Patterns: reuse an existing id when it fits (list below). Add a new id to new_patterns only for a clearly recurring solution. Ids are lowercase-with-hyphens.
 - Never copy personal data into any text field: phone numbers of private people, personal names, home or delivery addresses,
   tracking or order numbers, card or account numbers. Write "(blurred)" instead.
@@ -115,41 +230,20 @@ Rules:
 """
 
 
-def call_gemini(images, context, patterns):
-    if os.environ.get("MOCK_RESPONSE"):
-        return json.load(open(os.environ["MOCK_RESPONSE"]))
-    text = PROMPT + "\nExisting patterns:\n" + json.dumps(
-        {k: v["label"] for k, v in patterns.items()}, ensure_ascii=False) + "\n\nAuthor's context:\n" + context
-    parts = [{"text": text}] + [{"inline_data": {"mime_type": "image/jpeg", "data": for_model(i)}} for i in images]
-    body = json.dumps({"contents": [{"parts": parts}],
-                       "generationConfig": {"responseMimeType": "application/json", "temperature": 0.2}}).encode()
-    last = None
-    for model in MODELS:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-        res = None
-        for wait in (0, 10, 30, 60):
-            time.sleep(wait)
-            try:
-                res = json.loads(http(url, body, {"Content-Type": "application/json", "x-goog-api-key": os.environ["GEMINI_API_KEY"]}))
-                break
-            except urllib.error.HTTPError as e:
-                last = f"{model}: HTTP {e.code} {e.read()[:200]!r}"
-                print(last, file=sys.stderr)
-                if e.code not in (429, 500, 502, 503, 504):
-                    break
-            except (TimeoutError, urllib.error.URLError, ConnectionError) as e:
-                last = f"{model}: {type(e).__name__} {e}"
-                print(last, file=sys.stderr)
-        if res is None:
-            if last and " HTTP 4" in last and " HTTP 429" not in last and " HTTP 404" not in last:
-                raise SystemExit(last)
-            continue
-        txt = res["candidates"][0]["content"]["parts"][0]["text"]
-        txt = re.sub(r"^```(?:json)?|```$", "", txt.strip()).strip()
-        usage = res.get("usageMetadata", {})
-        print(f"model={model} tokens in={usage.get('promptTokenCount')} out={usage.get('candidatesTokenCount')}")
-        return json.loads(txt)
-    raise SystemExit(f"No Gemini model available. Last error: {last}")
+# ---------- images ----------
+
+def dhash(img):
+    g = img.convert("L").resize((9, 8), Image.LANCZOS)
+    px = list(g.getdata())
+    bits = 0
+    for row in range(8):
+        for col in range(8):
+            bits = (bits << 1) | (px[row * 9 + col] > px[row * 9 + col + 1])
+    return f"{bits:016x}"
+
+
+def distance(a, b):
+    return bin(int(a, 16) ^ int(b, 16)).count("1")
 
 
 PHONE = re.compile(r"(?<!\d)(01[016789])[-\s.]?\d{3,4}[-\s.]?\d{4}(?!\d)")
@@ -192,39 +286,109 @@ def save(img, path):
     img.save(path, "JPEG", quality=80, optimize=True)  # re-encoding drops EXIF and GPS
 
 
+# ---------- main ----------
+
 def main():
     issue = gh(f"issues/{os.environ['ISSUE_NUMBER']}")
     s = sections(issue["body"])
-    photos = s.get("Photos or screenshots", issue["body"] or "")
-    urls = re.findall(r"!\[[^\]]*\]\((https?://[^)\s]+)\)", photos) + re.findall(r'<img[^>]+src="(https?://[^"]+)"', photos)
-    urls = list(dict.fromkeys(urls))
+    attach = s.get("Photos, screenshots or videos") or s.get("Photos or screenshots") or issue["body"] or ""
+    urls = attachment_urls(attach)
     if not urls:
-        raise SystemExit("No images found in the issue. Drag photos into the first field.")
-    images = [download(u) for u in urls]
+        raise SystemExit("No photos or videos found in the issue. Drag them into the first field.")
+
+    items = []  # {"kind": "image"|"frame", "img": PIL, "source": url, "t": seconds}
+    videos = []  # {"path", "mime", "duration", "source"}
+    for u in urls:
+        raw = fetch(u)
+        kind, val = classify(raw)
+        if kind == "image":
+            items.append({"kind": "image", "img": val, "source": u, "sha": hashlib.sha256(raw).hexdigest()})
+        else:
+            ext = {"video/quicktime": ".mov", "video/webm": ".webm"}.get(val, ".mp4")
+            f = tempfile.NamedTemporaryFile(suffix=ext, delete=False)
+            f.write(raw)
+            f.close()
+            videos.append({"path": f.name, "mime": val, "duration": ffprobe_duration(f.name), "source": u, "bytes": len(raw)})
+
+    clips_plan, video_notes = [], []
+    if videos:
+        too_big = [v for v in videos if v["bytes"] > 19_000_000]
+        if too_big:
+            raise SystemExit("A video is larger than 19 MB. Trim it before uploading.")
+        parts = [{"text": VIDEO_PROMPT}] + [{"inline_data": {"mime_type": v["mime"], "data": base64.b64encode(open(v["path"], "rb").read()).decode()}} for v in videos]
+        plan = gemini(parts, "MOCK_VIDEO").get("videos", [])
+        by_vi = {p.get("index", i): p for i, p in enumerate(plan)}
+        for vi, v in enumerate(videos):
+            p = by_vi.get(vi, {})
+            moments = sorted({round(float(m["t"]), 2) for m in p.get("moments", []) if "t" in m})[:MAX_FRAMES_PER_VIDEO]
+            if not moments:
+                moments = [round(v["duration"] * k / 4, 2) for k in (1, 2, 3)]
+            for t in moments:
+                t = min(t, max(0.0, v["duration"] - 0.1))
+                img = frame_at(v["path"], t)
+                items.append({"kind": "frame", "img": img, "source": v["source"], "t": t})
+            c = p.get("clip") or {}
+            note = f"video {vi + 1}: {len(moments)} frames"
+            if c.get("keep") and not c.get("personal_data_visible", True):
+                start = max(0.0, float(c.get("start", 0)))
+                end = min(float(c.get("end", start + MAX_CLIP_SECONDS)), start + MAX_CLIP_SECONDS, v["duration"])
+                if end - start >= 1:
+                    clips_plan.append({"video": v, "start": start, "end": end, "reason": c.get("reason", "")})
+                    note += f", clip {start:.1f}–{end:.1f}s kept ({c.get('reason', '')})"
+            elif c.get("keep"):
+                note += ", clip not kept: personal data may be visible"
+            else:
+                note += ", no clip: stills are enough"
+            video_notes.append(note)
+
+    d = json.load(open(DATA, encoding="utf-8"))
+    patterns = d.setdefault("patterns", {})
+
+    # duplicates: against the archive and inside this submission
+    for it in items:
+        it["hash"] = dhash(it["img"])
+    known = [(m["src"], m["hash"]) for o in d["observations"] for m in o.get("media", []) if m.get("hash")]
+    dup_notes = []
+    for i, it in enumerate(items):
+        for src, h in known:
+            dist = distance(it["hash"], h)
+            if dist <= DUP_DISTANCE:
+                dup_notes.append(f"image {i + 1} looks like `{src}` (difference {dist}/64)")
+        for j in range(i):
+            if it["kind"] == "image" and items[j]["kind"] == "image" and distance(it["hash"], items[j]["hash"]) <= 3:
+                dup_notes.append(f"image {i + 1} looks like image {j + 1} in this submission")
 
     context = clean(s.get("What happened", ""))
     place = clean(s.get("Place", ""))
     date = clean(s.get("Date", ""))
     category = clean(s.get("Category", ""))
-
-    d = json.load(open(DATA, encoding="utf-8"))
-    patterns = d.setdefault("patterns", {})
-    ctx = f"What happened: {context}\nPlace: {place or 'not given'}\nDate: {date or 'not given'}\nCategory chosen: {category or 'not given'}"
-    res = scrub(call_gemini(images, ctx, patterns))
+    order = "; ".join(f"image {i}: " + ("photo" if it["kind"] == "image" else f"frame at {it['t']:.1f}s of a video")
+                      for i, it in enumerate(items))
+    ctx = (f"What happened: {context}\nPlace: {place or 'not given'}\nDate: {date or 'not given'}\n"
+           f"Category chosen: {category or 'not given'}\nImages: {order}")
+    prompt = PROMPT + "\nExisting patterns:\n" + json.dumps({k: v["label"] for k, v in patterns.items()}, ensure_ascii=False) + "\n\nAuthor's context:\n" + ctx
+    res = scrub(gemini([{"text": prompt}] + [image_part(it["img"]) for it in items], "MOCK_RESPONSE"))
 
     ids = [int(o["id"]) for o in d["observations"] if str(o["id"]).isdigit()]
     oid = f"{(max(ids) + 1 if ids else 1):03d}"
     os.makedirs("media", exist_ok=True)
     media, redactions = [], []
     by_index = {m.get("index", i): m for i, m in enumerate(res.get("media", []))}
-    for i, img in enumerate(images):
+    for i, it in enumerate(items):
         m = by_index.get(i, {})
         boxes = m.get("redact", []) or []
-        redact(img, boxes)
+        redact(it["img"], boxes)
         path = f"media/{oid}-{i + 1}.jpg"
-        save(img, path)
-        media.append({"src": path, "caption": m.get("caption", "")})
+        save(it["img"], path)
+        item = {"src": path, "caption": m.get("caption", ""), "hash": it["hash"]}
+        if it["kind"] == "frame":
+            item.update({"from_video": True, "t": it["t"]})
+        media.append(item)
         redactions.append((path, [b.get("what", "?") for b in boxes]))
+    for k, c in enumerate(clips_plan):
+        path = f"media/{oid}-clip-{k + 1}.mp4"
+        make_clip(c["video"]["path"], c["start"], c["end"], path)
+        media.append({"src": path, "type": "video", "caption": c["reason"], "start": c["start"], "end": c["end"]})
 
     e = res["entry"]
     for k, v in (res.get("new_patterns") or {}).items():
@@ -247,7 +411,7 @@ def main():
         "open": e.get("open", []),
         "sources": [],
         "related": [],
-        "rights": "Own photo. Personal data blurred automatically; reviewed before publication.",
+        "rights": "Own material. Personal data blurred automatically; reviewed before publication.",
         "breakdown": e.get("breakdown", {"steps": [], "elements": [], "patterns": []}),
         "submitted_via": f"issue #{issue['number']}",
     }
@@ -261,17 +425,23 @@ def main():
     open(f"{OUT}/id", "w").write(oid)
     open(f"{OUT}/title", "w").write(entry["title"])
     lines = [f"Closes #{issue['number']}", "", f"## {entry['title']}", "", entry["scenario"], "",
-             f"Category: {entry['category']} · Place: {entry['place'] or '—'} · Date: {entry['date'] or '—'}", "",
-             "### Blurred areas (check every image)"]
+             f"Category: {entry['category']} · Place: {entry['place'] or '—'} · Date: {entry['date'] or '—'}", ""]
+    if dup_notes:
+        lines += ["### ⚠ Possible duplicates", *[f"- {n}" for n in dup_notes], ""]
+    if video_notes:
+        lines += ["### Video", *[f"- {n}" for n in video_notes], "- Full videos are not stored.", ""]
+    lines += ["### Blurred areas (check every image)"]
     for path, what in redactions:
         lines.append(f"- `{path}`: {', '.join(what) if what else 'nothing blurred'}")
     lines += ["", "### Check before merging",
-              "- Nothing personal is readable in the images or the text.",
+              "- Nothing personal is readable in the images, the clip or the text.",
               "- `observed` holds only what is visible or what you said.",
               "- Korean text in the breakdown matches the images.",
               "", "Edit `data/observations.json` in this PR if something is wrong, then merge to publish."]
     open(f"{OUT}/pr.md", "w").write("\n".join(lines))
-    print(f"Entry {oid}: {entry['title']} ({len(images)} images)")
+    open(f"{OUT}/summary.txt", "w").write(
+        ("Possible duplicates: " + "; ".join(dup_notes) + ". " if dup_notes else "") + ("; ".join(video_notes) + "." if video_notes else ""))
+    print(f"Entry {oid}: {entry['title']} ({len(items)} images, {len(clips_plan)} clips)")
 
 
 if __name__ == "__main__":

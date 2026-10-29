@@ -6,8 +6,8 @@ body:
   - type: textarea
     id: photos
     attributes:
-      label: Photos or screenshots
-      description: Drag images here, in the order of the steps. Personal data is blurred automatically, but check the draft before it is published.
+      label: Photos, screenshots or videos
+      description: Drag files here, in the order of the steps. Videos up to 10 MB (trim long ones); key moments become still frames. Personal data is blurred automatically, but check the draft before it is published.
     validations:
       required: true
   - type: textarea

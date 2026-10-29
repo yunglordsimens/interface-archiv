@@ -26,8 +26,8 @@ Personal data in screenshots is blurred before publication.
 ## Add an observation
 
 1. Open a new issue and choose **New observation** (works from the GitHub mobile app).
-2. Drag in photos or screenshots, write a line about what happened, add place and date.
-3. A GitHub Action sends the images to Gemini, which drafts the entry (steps, elements with Korean text and translation, patterns, access) and marks personal data. The script blurs it, compresses the images, strips location data and opens a pull request.
+2. Drag in photos, screenshots or short videos (up to 10 MB), write a line about what happened, add place and date.
+3. A GitHub Action sends the images to Gemini, which drafts the entry (steps, elements with Korean text and translation, patterns, access) and marks personal data. The script blurs it, compresses the images, strips location data and opens a pull request. Videos are cut into still frames at the key moments; a short silent clip is kept only when motion matters and nothing personal is visible. Every image gets a perceptual hash, and near-duplicates of existing material are flagged in the pull request.
 4. Check the draft and merge it. The site and the MCP server update on their own.
 
 Issues from the owner and collaborators are processed right away. Issues from anyone else wait until the owner adds the `approved` label. The model is set by the `GEMINI_MODEL` repository variable (default: the latest Gemini Flash); the key is the `GEMINI_API_KEY` secret.
