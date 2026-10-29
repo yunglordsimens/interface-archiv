@@ -348,6 +348,107 @@
           "official-partner-badge"
         ]
       }
+    },
+    {
+      "id": "004",
+      "title": "Self-checkout kiosk at emart24",
+      "category": "Physical",
+      "country": "KR",
+      "service": "emart24",
+      "place": "Daejeon, emart24 Chungnam National University branch",
+      "date": "2026-10-07",
+      "scenario": "A customer scans items, applies discounts, and pays at a self-checkout station in a convenience store.",
+      "access": {
+        "requires": [
+          "Card or mobile payment method (Apple Pay, SSG Pay, payment card)"
+        ],
+        "unverified": [
+          "Can cash be used at this kiosk, or is it strictly card-only?"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/004-1.jpg",
+          "caption": "Self-checkout kiosk screen showing scanned items, barcode-less options, and printed workflow guide on bezel"
+        }
+      ],
+      "observed": [
+        "A printed strip above the display outlines a 5-step checkout process with icons: preparation, barcode scanning, discounts/points, payment, and completion.",
+        "A printed notice below the guide instructs scanning all promotional items (1+1, 2+1) and directs alcohol and tobacco buyers to staff.",
+        "The on-screen top navigation bar mirrors the workflow: 상품등록 (Product Registration), 할인적립 (Discounts & Points), 결제수단 (Payment Method), and 결제완료 (Completion).",
+        "Cart line items list quantity, original price, applied discount (e.g., -600, -2,000), and net price.",
+        "A quick-selection bar at the bottom provides touch buttons for items without scannable barcodes, including biodegradable bags and water multipacks.",
+        "The bottom utility bar includes '글자확대' (Enlarge text), '사용방법 안내' (User guide), and '처음으로' (Start over).",
+        "An Apple Pay logo decal is affixed beneath the right edge of the monitor bezel."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "The printed banner directly above the screen duplicates the on-screen steps to reassure first-time self-checkout users before and during interaction.",
+        "Promotional multi-buy items must still be scanned individually rather than bundled under a single barcode."
+      ],
+      "open": [
+        "Does the '글자확대' (Enlarge text) mode reduce the number of visible cart items per screen or reflow the layout?",
+        "What prompts appear if a customer attempts to scan an age-restricted item like alcohol without calling staff?"
+      ],
+      "sources": [],
+      "related": [],
+      "rights": "Own photo. Personal data blurred automatically; reviewed before publication.",
+      "breakdown": {
+        "steps": [],
+        "elements": [
+          {
+            "name": "Printed step workflow strip",
+            "role": "Illustrates the five stages of self-checkout with icons",
+            "text_ko": "①...준비 > ②바코드스캔 > ③할인또는적립 > ④결제 > ⑤완료",
+            "text_en": "1. Preparation > 2. Barcode Scan > 3. Discount or Accumulation > 4. Payment > 5. Complete"
+          },
+          {
+            "name": "Age-restricted item warning",
+            "role": "Directs tobacco and alcohol buyers to cashier staff",
+            "text_ko": "※ 술, 담배 구입시 근무자에게 결제 요청 해주세요.",
+            "text_en": "* When purchasing alcohol or tobacco, please request payment from staff."
+          },
+          {
+            "name": "Screen instructional banner",
+            "role": "Instructs user to scan barcodes or pick non-barcoded items from the bottom panel",
+            "text_ko": "바코드를 스캔해주세요. 바코드 없는 상품은 하단에서 선택하세요.",
+            "text_en": "Please scan barcodes. For items without a barcode, select from the bottom."
+          },
+          {
+            "name": "Quick pick panel",
+            "role": "Allows adding bags and bottled water multipacks without scanning",
+            "text_ko": "e24)친환경생분해쇼핑백 대 100",
+            "text_en": "e24) Eco-friendly biodegradable bag Large 100"
+          },
+          {
+            "name": "Text size toggle",
+            "role": "Enlarges on-screen text for better legibility",
+            "text_ko": "글자확대",
+            "text_en": "Enlarge text"
+          },
+          {
+            "name": "Discount and point button",
+            "role": "Triggers partner discount and membership point accrual step before payment",
+            "text_ko": "제휴할인/포인트적립",
+            "text_en": "Affiliate discount / Point accrual"
+          },
+          {
+            "name": "Checkout proceed button",
+            "role": "Navigates to the payment selection screen",
+            "text_ko": "결제하기",
+            "text_en": "Pay"
+          }
+        ],
+        "patterns": [
+          "step-guide-mirrored",
+          "per-line-discount",
+          "discount-step-before-payment",
+          "text-size-toggle",
+          "no-barcode-quick-pick",
+          "age-restricted-handoff"
+        ]
+      },
+      "submitted_via": "issue #1"
     }
   ],
   "author_access": [
