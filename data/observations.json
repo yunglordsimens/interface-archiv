@@ -1,0 +1,428 @@
+{
+  "updated": "2026-10-29",
+  "observations": [
+    {
+      "id": "001",
+      "title": "emart24 self-checkout",
+      "category": "Physical",
+      "country": "KR",
+      "service": "emart24",
+      "place": "Daejeon, emart24 Chungnam National University branch",
+      "date": "2026-10-07",
+      "scenario": "Scanning and paying for purchases without a cashier in a convenience store.",
+      "access": {
+        "requires": [
+          "Physical presence"
+        ],
+        "unverified": [
+          "Which payment methods work with a foreign card"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/001-1.jpg",
+          "caption": "Self-checkout screen with the printed step guide above it."
+        }
+      ],
+      "observed": [
+        "A printed guide above the screen shows five steps: prepare, scan barcode, discount or points, pay (card or SSG PAY), done.",
+        "The guide adds two rules: scan every item in a 1+1 or 2+1 promotion, and ask staff to process alcohol and tobacco.",
+        "The screen repeats the same steps as tabs: 상품등록 (add items), 할인적립 (discounts and points), 결제수단 (payment method), 결제완료 (done).",
+        "Each item shows its own discount on a separate red line. Two jellies show −2,000 ₩, so the second one is free (1+1).",
+        "Totals: 8,300 ₩, discount −2,600 ₩, to pay 5,700 ₩.",
+        "Quick buttons at the bottom cover items without a barcode: shopping bags at 100 and 250 ₩, bottled water.",
+        "A 글자확대 (enlarge text) button sits in the bottom bar.",
+        "Separate buttons for partner discounts or points and for emart24's own quick payment.",
+        "An Apple Pay sticker on the frame. A handwritten yellow sticky note reads 가져가세요 (“please take it”)."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "Discounts and loyalty points are a separate step placed between scanning and payment."
+      ],
+      "open": [
+        "How common are 1+1 and 2+1 promotions in Korean convenience stores, and why? Needs a source.",
+        "When did Apple Pay launch in Korea? Check.",
+        "What does the 가져가세요 note refer to?"
+      ],
+      "sources": [],
+      "related": [],
+      "rights": "Own photo.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Printed guide",
+            "action": "Prepare the items",
+            "text_ko": "준비",
+            "text_en": "Prepare"
+          },
+          {
+            "n": 2,
+            "where": "Screen tab 상품등록",
+            "action": "Scan each barcode; pick items without a barcode from the tiles below",
+            "text_ko": "바코드를 스캔해주세요. 바코드 없는 상품은 하단에서 선택하세요.",
+            "text_en": "Please scan the barcode. Choose items without a barcode below."
+          },
+          {
+            "n": 3,
+            "where": "Screen tab 할인적립",
+            "action": "Apply partner discounts or collect points",
+            "text_ko": "할인또는적립",
+            "text_en": "Discount or points"
+          },
+          {
+            "n": 4,
+            "where": "Screen tab 결제수단",
+            "action": "Pay by card or SSG PAY",
+            "text_ko": "결제",
+            "text_en": "Pay"
+          },
+          {
+            "n": 5,
+            "where": "Screen tab 결제완료",
+            "action": "Finish and take the receipt",
+            "text_ko": "완료",
+            "text_en": "Done"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Item row",
+            "role": "Name, quantity stepper (− 1 +), price, delete icon",
+            "text_ko": "옐로우)프루티알로에우롱1.5l · 2,400 (−600)",
+            "text_en": "Yellow) Fruity aloe oolong 1.5 l · 2,400 (−600)"
+          },
+          {
+            "name": "Discount line",
+            "role": "Red line under the price of each discounted item",
+            "text_ko": "할인 (−2,000)",
+            "text_en": "Discount (−2,000)"
+          },
+          {
+            "name": "Promotion panel",
+            "role": "Right column naming the active price promotion",
+            "text_ko": "가격행사 [600원 할인]",
+            "text_en": "Price promotion [600 ₩ off]"
+          },
+          {
+            "name": "Totals",
+            "role": "Item count, discount and amount to pay",
+            "text_ko": "총 4개 8,300 · 할인금액 −2,600 · 결제할 금액 5,700원",
+            "text_en": "Total 4 items 8,300 · Discount −2,600 · Amount to pay 5,700 ₩"
+          },
+          {
+            "name": "Quick-pick tiles",
+            "role": "Items without a barcode",
+            "text_ko": "e24)친환경생분해쇼핑백 대 100 · e24)종이쇼핑백 250 · 상품 더보기",
+            "text_en": "Biodegradable shopping bag, large 100 · Paper bag 250 · More items"
+          },
+          {
+            "name": "Action buttons",
+            "role": "Discounts, own quick payment, pay, cancel all",
+            "text_ko": "제휴할인/포인트적립 · 이마트24 간편결제 · 결제하기 · 전체취소",
+            "text_en": "Partner discount / points · emart24 quick pay · Pay · Cancel all"
+          },
+          {
+            "name": "Bottom bar",
+            "role": "Help, text size, start over",
+            "text_ko": "사용방법 안내 · 글자확대 · 처음으로",
+            "text_en": "How to use · Enlarge text · Start over"
+          },
+          {
+            "name": "Printed rules",
+            "role": "Notes under the step guide",
+            "text_ko": "1+1, 2+1 등 행사 상품 포함 모든 상품을 스캔 해주세요. · 술, 담배 구입시 근무자에게 결제 요청 해주세요.",
+            "text_en": "Scan every item, including 1+1 and 2+1 promotions. · For alcohol or tobacco, ask staff to process payment."
+          }
+        ],
+        "patterns": [
+          "step-guide-mirrored",
+          "per-line-discount",
+          "discount-step-before-payment",
+          "text-size-toggle",
+          "no-barcode-quick-pick",
+          "age-restricted-handoff"
+        ]
+      }
+    },
+    {
+      "id": "002",
+      "title": "Hanjin delivery notifications",
+      "category": "Systems",
+      "country": "KR",
+      "service": "Hanjin Express (한진택배)",
+      "place": "Daejeon, university dormitory",
+      "date": "2026-10-07",
+      "scenario": "Receiving a parcel while not at home.",
+      "access": {
+        "requires": [
+          "Korean mobile phone number (SMS)",
+          "Korean delivery address"
+        ],
+        "unverified": [
+          "Can the drop-off and tracking page be used without a Korean phone number?"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/002-1.jpg",
+          "caption": "Step 1. Text message: the courier is on the way."
+        },
+        {
+          "src": "media/002-2.jpg",
+          "caption": "Step 2. Text message: delivered, with a photo of the drop-off spot."
+        }
+      ],
+      "observed": [
+        "Both messages come from an ordinary mobile number (+82 10-…), not a short service number.",
+        "The first message lists the item name, tracking number, sender, address and a delivery window of 14:00–16:00.",
+        "It links to a page for choosing a drop-off spot (위탁장소) and tracking the courier in real time.",
+        "It ends by asking the recipient to remove the label and packaging and sort them for recycling.",
+        "The second message says the parcel was left at the drop-off spot (문앞, “in front of the door”) because nobody was home, with the exact time 13:39:27.",
+        "A photo is attached. It shows a pile of many residents' parcels on the floor of a shared hallway, not a door."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "The photo works as proof of delivery.",
+        "In a dormitory, “in front of the door” in practice means a shared hallway."
+      ],
+      "open": [
+        "Is the sender number the courier's personal phone or a masked relay number? Check.",
+        "Is the delivery photo a Hanjin standard or up to the courier?"
+      ],
+      "sources": [],
+      "related": [
+        "003"
+      ],
+      "rights": "Own screenshots. Phone number, tracking number, address, sender and parcel labels are blurred.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Text message",
+            "action": "Courier departs; recipient gets item, tracking, time window and a link",
+            "text_ko": "[한진택배] 상품 배송 안내 … 배송예정 시간 : 14시~16시",
+            "text_en": "[Hanjin] Delivery notice … Expected delivery: 14:00–16:00"
+          },
+          {
+            "n": 2,
+            "where": "Text message",
+            "action": "Parcel left at the drop-off spot; photo attached",
+            "text_ko": "부재중이신 고객님을 위해 위탁장소(문앞)에 2026-10-07 13:39:27에 배송하였습니다.",
+            "text_en": "As you were away, we delivered to the drop-off spot (in front of the door) at 2026-10-07 13:39:27."
+          }
+        ],
+        "elements": [
+          {
+            "name": "Greeting",
+            "role": "Brand slogan at the top of the message",
+            "text_ko": "기쁨을 전하는 행복상자 한진택배입니다.",
+            "text_en": "This is Hanjin, the happy box that delivers joy."
+          },
+          {
+            "name": "Field list",
+            "role": "Item, tracking number, sender, address, time window as ■ bullets",
+            "text_ko": "■ 상품명 · ■ 운송장번호 · ■ 보내신 분 · ■ 배송(도착)주소 · ■ 배송예정 시간",
+            "text_en": "■ Item · ■ Tracking number · ■ Sender · ■ Delivery address · ■ Expected time"
+          },
+          {
+            "name": "Link",
+            "role": "Choose drop-off spot and track live",
+            "text_ko": "위탁장소 지정 및 실시간 배송현황 조회하기",
+            "text_en": "Choose a drop-off spot and check live delivery status"
+          },
+          {
+            "name": "Recycling note",
+            "role": "Closing instruction",
+            "text_ko": "택배 상자는 운송장, 포장재 등을 제거 후 분리배출해 주시기 바랍니다.",
+            "text_en": "Please remove the label and packaging from the box and sort them for recycling."
+          },
+          {
+            "name": "Photo attachment",
+            "role": "Picture of the parcel where it was left",
+            "text_ko": "",
+            "text_en": ""
+          },
+          {
+            "name": "Customer centre",
+            "role": "Phone number at the end of the delivery message",
+            "text_ko": "한진택배 고객센터 : 1588-0011",
+            "text_en": "Hanjin customer centre: 1588-0011"
+          }
+        ],
+        "patterns": [
+          "sms-as-interface",
+          "delivery-time-window",
+          "recipient-sets-dropoff",
+          "photo-proof-of-delivery",
+          "recycling-instruction"
+        ]
+      }
+    },
+    {
+      "id": "003",
+      "title": "SSG.com product page",
+      "category": "Digital",
+      "country": "KR",
+      "service": "SSG.com",
+      "place": "Mobile browser",
+      "date": null,
+      "scenario": "Checking a product and its promotions before buying.",
+      "access": {
+        "requires": [
+          "None to view the page"
+        ],
+        "unverified": [
+          "Does buying require identity verification with a Korean phone number (본인인증)?"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/003-1.jpg",
+          "caption": "Product page, promotion section and fixed bottom bar."
+        }
+      ],
+      "observed": [
+        "The product description is made of images with the text set inside them, including promotions (“Benefit 2: free GO5 speaker”) and fine print.",
+        "Tabs at the top: 정보 (info), 리뷰 14 (reviews), Q&A 3.",
+        "A banner states the seller is an official Samsung online partner selling genuine products.",
+        "A fixed bottom bar shows 오늘출발 (“ships today”) for orders paid by 15:00, a gift-box icon button and a large 구매하기 (buy) button."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "The gift-box icon next to the buy button probably means “send as a gift” (선물하기)."
+      ],
+      "open": [
+        "Does the icon open a gifting flow? Check by tapping it.",
+        "Are image-based product descriptions (상세페이지) standard across Korean online shops? Needs a source. How do screen readers and search handle them?"
+      ],
+      "sources": [],
+      "related": [
+        "002"
+      ],
+      "rights": "Own screenshot. Contains the seller's and brand's promotional images.",
+      "breakdown": {
+        "steps": [],
+        "elements": [
+          {
+            "name": "Tabs",
+            "role": "Sections of the product page with counts",
+            "text_ko": "정보 · 리뷰 14 · Q&A 3",
+            "text_en": "Info · Reviews 14 · Q&A 3"
+          },
+          {
+            "name": "Promotion block",
+            "role": "Image with text set inside it",
+            "text_ko": "혜택 2 GO5 스피커 무상 증정",
+            "text_en": "Benefit 2: free GO5 speaker"
+          },
+          {
+            "name": "Fine print",
+            "role": "Note under the promotion image",
+            "text_ko": "※GO5 스피커 색상은 임의로 발송됩니다.",
+            "text_en": "※ The GO5 speaker colour is chosen at random."
+          },
+          {
+            "name": "Partner banner",
+            "role": "Seller credibility",
+            "text_ko": "삼성전자 온라인 파트너 · 본 제품은 삼성전자가 공식 파트너사에 직접 공급하는 정품입니다.",
+            "text_en": "Samsung Electronics online partner · This product is genuine, supplied by Samsung directly to its official partners."
+          },
+          {
+            "name": "Shipping strip",
+            "role": "Fixed above the buy button",
+            "text_ko": "오늘출발 · 15시까지 결제 시 오늘 배송출발",
+            "text_en": "Ships today · Paid by 15:00, ships today"
+          },
+          {
+            "name": "Bottom bar",
+            "role": "Gift icon button and main purchase button",
+            "text_ko": "구매하기",
+            "text_en": "Buy"
+          }
+        ],
+        "patterns": [
+          "image-based-product-detail",
+          "same-day-shipping-cutoff",
+          "gift-button-beside-buy",
+          "official-partner-badge"
+        ]
+      }
+    }
+  ],
+  "author_access": [
+    {
+      "what": "Korean mobile phone number",
+      "status": "yes",
+      "since": null
+    },
+    {
+      "what": "ARC (residence card)",
+      "status": "pending",
+      "since": null
+    }
+  ],
+  "patterns": {
+    "step-guide-mirrored": {
+      "label": "Printed guide mirrors on-screen steps",
+      "description": "A physical sticker or sign repeats the same numbered steps that the screen shows as tabs."
+    },
+    "per-line-discount": {
+      "label": "Discount shown per item",
+      "description": "Each item line shows its own discount, instead of one discount at the total."
+    },
+    "discount-step-before-payment": {
+      "label": "Discount step before payment",
+      "description": "Discounts and loyalty points are a separate step between adding items and paying."
+    },
+    "text-size-toggle": {
+      "label": "Text size toggle",
+      "description": "A visible button enlarges the text on a public device."
+    },
+    "no-barcode-quick-pick": {
+      "label": "Quick pick for items without a barcode",
+      "description": "Tiles for common items that cannot be scanned, such as bags."
+    },
+    "age-restricted-handoff": {
+      "label": "Handoff to staff for age-restricted items",
+      "description": "Self-service stops and sends the customer to staff for alcohol or tobacco."
+    },
+    "sms-as-interface": {
+      "label": "Text message as the interface",
+      "description": "A service runs its whole flow through text messages with links, without an app."
+    },
+    "delivery-time-window": {
+      "label": "Delivery time window",
+      "description": "The recipient is told a narrow time window for the delivery."
+    },
+    "recipient-sets-dropoff": {
+      "label": "Recipient chooses drop-off spot",
+      "description": "A link lets the recipient choose where the parcel is left."
+    },
+    "photo-proof-of-delivery": {
+      "label": "Photo as proof of delivery",
+      "description": "The courier sends a photo of the parcel at the drop-off spot."
+    },
+    "recycling-instruction": {
+      "label": "Recycling instruction in a service message",
+      "description": "A service message tells the user how to sort packaging for recycling."
+    },
+    "image-based-product-detail": {
+      "label": "Product description as images (상세페이지)",
+      "description": "Product information is published as long images with text set inside them."
+    },
+    "same-day-shipping-cutoff": {
+      "label": "Same-day shipping cutoff",
+      "description": "A fixed order time for shipping the same day, shown next to the buy button."
+    },
+    "gift-button-beside-buy": {
+      "label": "Gift button next to buy",
+      "description": "A gift action sits next to the main purchase button."
+    },
+    "official-partner-badge": {
+      "label": "Official partner badge",
+      "description": "A banner states the seller is an official partner and the product is genuine."
+    }
+  },
+  "schema_version": "0.2"
+}

@@ -1,0 +1,54 @@
+# Korea Interface Archive
+
+A research archive of digital and physical interfaces of everyday life in South Korea: apps, services, kiosks, terminals, delivery and payment systems, documented on site.
+
+- Site: https://yunglordsimens.github.io/interface-archiv/
+- Data: [`data/observations.json`](data/observations.json)
+- MCP server for AI clients: [`mcp/server.js`](mcp/server.js)
+
+## What an entry contains
+
+Each observation keeps four levels apart:
+
+- **observed** — what was seen directly
+- **confirmed** — what external sources support (with links and access dates)
+- **interpretation** — the author's reading
+- **open** — questions and hypotheses
+
+It also records **access** (what it takes to use the interface: physical presence, a Korean phone number, a residence card, a Korean card or address, identity verification) and a **breakdown** for reuse as a reference:
+
+- `steps` — the interaction step by step, with original Korean text and a translation
+- `elements` — interface elements with their role and text
+- `patterns` — recurring solutions, defined once in `patterns` at the top of the file
+
+Personal data in screenshots is blurred before publication.
+
+## Use it from an AI client (MCP)
+
+The archive can be connected to Claude Desktop or any MCP client. Add this to the client's MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "korea-interface-archive": {
+      "command": "npx",
+      "args": ["-y", "github:yunglordsimens/interface-archiv"]
+    }
+  }
+}
+```
+
+Tools: `search_observations`, `get_observation`, `list_patterns`, `access_requirements`. The server is read-only and loads the public data file from this repository. Set `KIA_DATA` to a local path to use a local copy.
+
+## Scope and limits
+
+This version covers South Korea and is collected mostly by one person living in Daejeon in autumn 2026. It does not describe the country as a whole. The method, schema and code do not depend on the country and can be reused for another one.
+
+## Licenses
+
+- Code (site and MCP server): MIT, see [LICENSE](LICENSE).
+- Photos, screenshots and texts: see [LICENSE-CONTENT.md](LICENSE-CONTENT.md). Screenshots may contain third-party brands and material that keep their own rights.
+
+## Support
+
+Field documentation was supported by a travel stipend from Nadání Josefa, Marie a Zdeňky Hlávkových during an exchange semester at Chungnam National University.

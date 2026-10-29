@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Korea Interface Archive</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: catalog first. Title and one line on top, filters and search, then the grid. No rules, borders or ornament; structure comes from grid, size and spacing. */
+:root {
+  --bg: #ffffff;
+  --fg: #111111;
+  --muted: #6e6e6e;
+  --field: #f3f3f3;
+  --ph: #ececec;
+  --font: "Noto Sans KR", -apple-system, "Apple SD Gothic Neo", "Segoe UI", Roboto, sans-serif;
+  --s-sm: 0.8125rem;
+  --s-base: 0.9375rem;
+  --s-lg: 1.125rem;
+  --s-xl: 1.75rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #121212; --fg: #ededed; --muted: #9a9a9a; --field: #1f1f1f; --ph: #1c1c1c; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #121212; --fg: #ededed; --muted: #9a9a9a; --field: #1f1f1f; --ph: #1c1c1c; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font); font-size: var(--s-base); line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1320px; margin: 0 auto; padding-block: 28px 40px; display: flex; flex-direction: column; gap: 40px; min-height: 100vh; }
+a { color: inherit; text-decoration: none; }
+a:hover { color: var(--muted); }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+
+header.top { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+.name { font-weight: 700; }
+nav { display: flex; gap: 20px; }
+nav a[aria-current="page"] { font-weight: 700; }
+nav a:not([aria-current="page"]) { color: var(--muted); }
+
+.intro { display: flex; flex-direction: column; gap: 6px; max-width: 40rem; }
+.intro h1 { font-size: var(--s-xl); font-weight: 700; line-height: 1.2; margin: 0; text-wrap: balance; }
+.intro p { margin: 0; color: var(--muted); }
+
+.tools { display: flex; justify-content: space-between; align-items: center; gap: 16px 28px; flex-wrap: wrap; }
+.filters { display: flex; gap: 6px 20px; flex-wrap: wrap; }
+.filters button { color: var(--muted); }
+.filters button[aria-pressed="true"] { color: var(--fg); font-weight: 700; }
+.filters .n { font-size: var(--s-sm); margin-left: 4px; font-variant-numeric: tabular-nums; }
+#q { font: inherit; color: var(--fg); background: var(--field); border: 0; border-radius: 0; padding: 8px 12px; width: 16rem; max-width: 100%; }
+#q::placeholder { color: var(--muted); }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 36px 20px; }
+.card { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card .img { aspect-ratio: 3 / 4; background: var(--ph); overflow: hidden; max-width: 100%; }
+.card img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.card:hover img { opacity: 0.88; }
+.card .t { font-weight: 500; }
+.card .m { color: var(--muted); font-size: var(--s-sm); }
+.empty { color: var(--muted); }
+
+.item { display: flex; flex-direction: column; gap: 32px; }
+.item .back { color: var(--muted); }
+.item h1 { font-size: var(--s-xl); font-weight: 700; line-height: 1.2; margin: 0 0 6px; text-wrap: balance; }
+.item .meta { color: var(--muted); margin: 0; }
+.item .scenario { font-size: var(--s-lg); margin: 0; max-width: 40rem; }
+.media { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 4px; }
+.media figure { margin: 0; flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px; max-width: min(100%, 520px); }
+.media img { height: min(78vh, 760px); width: auto; max-width: 100%; object-fit: contain; background: var(--ph); display: block; }
+.media figcaption { color: var(--muted); font-size: var(--s-sm); max-width: 32rem; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px 48px; max-width: 1100px; }
+.facts section { min-width: 0; }
+.facts h2, .about h2 { font-size: var(--s-sm); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; margin: 0 0 10px; }
+.facts ul { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 6px; max-width: 38rem; }
+.facts .none { color: var(--muted); margin: 0; }
+.small { color: var(--muted); font-size: var(--s-sm); margin: 0; max-width: 40rem; }
+.facts .bd { grid-column: 1 / -1; }
+.steps { margin: 0; padding-left: 1.4em; display: flex; flex-direction: column; gap: 12px; max-width: 46rem; }
+.ko { margin-top: 2px; }
+.tbl { overflow-x: auto; }
+.tbl table { border-collapse: collapse; font-size: var(--s-base); min-width: 640px; }
+.tbl th { text-align: left; font-weight: 500; color: var(--muted); font-size: var(--s-sm); padding: 0 24px 8px 0; }
+.tbl td { vertical-align: top; padding: 0 24px 14px 0; max-width: 26rem; }
+.plinks, .plist { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.plist { gap: 14px; }
+
+.about { display: flex; flex-direction: column; gap: 28px; max-width: 40rem; }
+.about p, .about ul { margin: 0; }
+.about ul { padding-left: 1.1em; display: flex; flex-direction: column; gap: 6px; }
+
+footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; color: var(--muted); font-size: var(--s-sm); }
+
+@media (max-width: 520px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 12px; }
+  #q { width: 100%; }
+  .media img { height: auto; max-height: 80vh; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="name" href="#">Korea Interface Archive</a>
+    <nav>
+      <a href="#" id="nav-archive">Archive</a>
+      <a href="#patterns" id="nav-patterns">Patterns</a>
+      <a href="#about" id="nav-about">About</a>
+    </nav>
+  </header>
+
+  <main id="view">
+    <p class="empty">Loading observations…</p>
+  </main>
+
+  <footer>
+    <span>S podporou Nadání Josefa, Marie a Zdeňky Hlávkových</span>
+    <span id="upd"></span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var DATA = null, filter = "All", query = "";
+  var ORDER = ["Digital", "Physical", "Services", "Systems"];
+  var view = document.getElementById("view");
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function byId(id) { return DATA.observations.find(function (o) { return o.id === id; }); }
+  function dateText(d) { return d ? d : "date unknown"; }
+  function city(p) { return (p || "").split(",")[0]; }
+
+  function matches(o) {
+    if (filter !== "All" && o.category !== filter) return false;
+    if (!query) return true;
+    var hay = [o.title, o.service, o.place, o.category, o.scenario].concat(o.observed || [], o.open || []).join(" ").toLowerCase();
+    return hay.indexOf(query) !== -1;
+  }
+
+  function renderArchive() {
+    var obs = DATA.observations;
+    var cats = ORDER.filter(function (c) { return obs.some(function (o) { return o.category === c; }); });
+    obs.forEach(function (o) { if (cats.indexOf(o.category) === -1) cats.push(o.category); });
+    var count = function (c) { return obs.filter(function (o) { return c === "All" || o.category === c; }).length; };
+    var list = obs.filter(matches);
+
+    view.innerHTML =
+      '<div style="display:flex;flex-direction:column;gap:40px">' +
+        '<div class="intro"><h1>South Korea interface archive</h1>' +
+        '<p>Digital and physical interfaces of everyday life in South Korea, documented on site. ' + obs.length + ' observations so far.</p></div>' +
+        '<div class="tools"><div class="filters" role="group" aria-label="Category">' +
+          ["All"].concat(cats).map(function (c) {
+            return '<button type="button" data-cat="' + esc(c) + '" aria-pressed="' + (c === filter) + '">' + esc(c) + '<span class="n">' + count(c) + '</span></button>';
+          }).join("") +
+        '</div><input id="q" type="search" placeholder="Search" aria-label="Search observations" value="' + esc(query) + '"></div>' +
+        (list.length
+          ? '<div class="grid">' + list.map(cardHTML).join("") + '</div>'
+          : '<p class="empty">Nothing matches this search.</p>') +
+      '</div>';
+
+    view.querySelectorAll("[data-cat]").forEach(function (b) {
+      b.addEventListener("click", function () { filter = b.getAttribute("data-cat"); renderArchive(); });
+    });
+    var q = document.getElementById("q");
+    q.addEventListener("input", function () {
+      query = q.value.trim().toLowerCase();
+      var pos = q.selectionStart;
+      renderArchive();
+      var nq = document.getElementById("q"); nq.focus(); try { nq.setSelectionRange(pos, pos); } catch (e) {}
+    });
+  }
+
+  function cardHTML(o) {
+    var m = o.media && o.media[0];
+    return '<a class="card" href="#o-' + esc(o.id) + '">' +
+      '<div class="img">' + (m ? '<img src="' + esc(m.src) + '" alt="' + esc(o.title) + '" loading="lazy">' : "") + '</div>' +
+      '<div><div class="t">' + esc(o.title) + '</div>' +
+      '<div class="m">' + esc(o.category) + ' · ' + esc(city(o.place)) + ' · ' + esc(dateText(o.date)) + '</div></div></a>';
+  }
+  function patternLabel(slug) { var p = (DATA.patterns || {})[slug]; return p ? p.label : slug; }
+  function withPattern(slug) { return DATA.observations.filter(function (o) { return o.breakdown && (o.breakdown.patterns || []).indexOf(slug) !== -1; }); }
+
+  function breakdownHTML(b) {
+    if (!b) return "";
+    var out = "";
+    if ((b.steps || []).length) {
+      out += '<section class="bd"><h2>Steps</h2><ol class="steps">' + b.steps.map(function (s) {
+        return '<li><div>' + esc(s.action) + ' <span class="small">' + esc(s.where) + '</span></div>' +
+          (s.text_ko ? '<div class="ko" lang="ko">' + esc(s.text_ko) + '</div>' : "") +
+          (s.text_en ? '<div class="small">' + esc(s.text_en) + '</div>' : "") + '</li>';
+      }).join("") + '</ol></section>';
+    }
+    if ((b.elements || []).length) {
+      out += '<section class="bd"><h2>Elements</h2><div class="tbl"><table><thead><tr><th>Element</th><th>Original text</th><th>Translation</th></tr></thead><tbody>' +
+        b.elements.map(function (e) {
+          return '<tr><td><div>' + esc(e.name) + '</div><div class="small">' + esc(e.role) + '</div></td><td lang="ko">' + esc(e.text_ko || "—") + '</td><td>' + esc(e.text_en || "—") + '</td></tr>';
+        }).join("") + '</tbody></table></div></section>';
+    }
+    if ((b.patterns || []).length) {
+      out += '<section class="bd"><h2>Patterns</h2><ul class="plinks">' + b.patterns.map(function (p) {
+        return '<li><a href="#p-' + esc(p) + '">' + esc(patternLabel(p)) + '</a> <span class="small">' + withPattern(p).length + '</span></li>';
+      }).join("") + '</ul></section>';
+    }
+    return out;
+  }
+
+  function renderPatterns() {
+    var slugs = Object.keys(DATA.patterns || {}).sort(function (a, b) { return withPattern(b).length - withPattern(a).length || patternLabel(a).localeCompare(patternLabel(b)); });
+    view.innerHTML = '<div class="about"><div class="intro"><h1>Patterns</h1><p>Recurring solutions found across observations. Each links to the entries where it was seen.</p></div>' +
+      '<ul class="plist">' + slugs.map(function (s) {
+        return '<li><a href="#p-' + esc(s) + '">' + esc(patternLabel(s)) + '</a> <span class="small">' + withPattern(s).length + '</span><div class="small">' + esc(DATA.patterns[s].description) + '</div></li>';
+      }).join("") + '</ul></div>';
+    window.scrollTo(0, 0);
+  }
+
+  function renderPattern(slug) {
+    var p = DATA.patterns[slug];
+    view.innerHTML = '<div class="item"><a class="back" href="#patterns">← Patterns</a>' +
+      '<div class="intro"><h1>' + esc(p.label) + '</h1><p>' + esc(p.description) + '</p></div>' +
+      '<div class="grid">' + withPattern(slug).map(cardHTML).join("") + '</div></div>';
+    window.scrollTo(0, 0);
+  }
+
+  function listOrNone(arr, none) {
+    return arr && arr.length ? '<ul>' + arr.map(function (x) { return '<li>' + esc(typeof x === "string" ? x : x.text) + '</li>'; }).join("") + '</ul>' : '<p class="none">' + esc(none) + '</p>';
+  }
+
+  function renderItem(o) {
+    var rel = (o.related || []).map(byId).filter(Boolean);
+    var src = o.sources || [];
+    view.innerHTML =
+      '<article class="item">' +
+        '<a class="back" href="#">← Archive</a>' +
+        '<div><h1>' + esc(o.title) + '</h1>' +
+        '<p class="meta">' + esc(o.category) + ' · ' + esc(o.service) + ' · ' + esc(o.place) + ' · ' + esc(dateText(o.date)) + '</p></div>' +
+        '<p class="scenario">' + esc(o.scenario) + '</p>' +
+        '<div class="media">' + (o.media || []).map(function (m) {
+          return '<figure><img src="' + esc(m.src) + '" alt="' + esc(m.caption) + '"><figcaption>' + esc(m.caption) + '</figcaption></figure>';
+        }).join("") + '</div>' +
+        '<div class="facts">' + breakdownHTML(o.breakdown) + '</div>' +
+        '<div class="facts">' +
+          (o.access ? '<section><h2>Access</h2>' + listOrNone(o.access.requires, "Not recorded yet.") +
+            ((o.access.unverified || []).length ? '<p class="small" style="margin-top:8px">To check: ' + o.access.unverified.map(esc).join(" ") + '</p>' : "") + '</section>' : "") +
+          '<section><h2>Observed</h2>' + listOrNone(o.observed, "Nothing recorded yet.") + '</section>' +
+          '<section><h2>Confirmed by sources</h2>' + listOrNone(o.confirmed, "Not confirmed by external sources yet.") + '</section>' +
+          '<section><h2>Interpretation</h2>' + listOrNone(o.interpretation, "None yet.") + '</section>' +
+          '<section><h2>Open questions</h2>' + listOrNone(o.open, "None.") + '</section>' +
+          '<section><h2>Sources</h2>' + (src.length
+            ? '<ul>' + src.map(function (s) { return '<li><a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.title || s.url) + '</a>' + (s.accessed ? ' <span class="small">accessed ' + esc(s.accessed) + '</span>' : "") + '</li>'; }).join("") + '</ul>'
+            : '<p class="none">No external sources yet.</p>') + '</section>' +
+          (rel.length ? '<section><h2>Related</h2><ul>' + rel.map(function (r) { return '<li><a href="#o-' + esc(r.id) + '">' + esc(r.title) + '</a></li>'; }).join("") + '</ul></section>' : "") +
+        '</div>' +
+        '<p class="small">' + esc(o.rights) + '</p>' +
+      '</article>';
+    window.scrollTo(0, 0);
+  }
+
+  function renderAbout() {
+    view.innerHTML =
+      '<div class="about">' +
+        '<div class="intro"><h1>About</h1></div>' +
+        '<p>This archive collects observations of apps, services, devices and systems met in everyday life in South Korea. Each entry records what was seen, where and when, with photos or screenshots and the steps of the interaction.</p>' +
+        '<div><h2>Method</h2><ul>' +
+          '<li>Each entry separates four levels: what was observed directly, what is confirmed by external sources, interpretation, and open questions.</li>' +
+          '<li>A difference in how two interfaces look or work is not treated as evidence of why they differ. Explanations stay hypotheses until a source supports them.</li>' +
+          '<li>Comparisons are made between specific scenarios, not between countries as a whole.</li>' +
+          '<li>Personal data in screenshots (phone numbers, addresses, names, tracking numbers) is blurred before publication.</li>' +
+        '</ul></div>' +
+        '<div><h2>Access</h2><p>Much of what is documented here cannot be reached from outside the country. Physical devices need presence, but so do many online services: delivery messages arrive only on a Korean mobile number, and some services ask for identity verification with a Korean number or a residence card (ARC). Each entry lists what it takes to use the interface. Requirements that were not tested are marked as things to check. Cases where something could not be used are recorded as observations too.</p>' +
+        (DATA.author_access ? '<p class="small" style="margin-top:8px">Author\'s access so far: ' + DATA.author_access.map(function (a) { return esc(a.what) + ' (' + esc(a.status) + ')'; }).join(', ') + '.</p>' : '') + '</div>' +
+        '<div><h2>Data</h2><p>Every entry is also published as structured data: <a href="data/observations.json" target="_blank" rel="noopener">observations.json</a>. Besides the observation itself, each entry breaks the interface down into steps, elements with their original Korean text and a translation, and recurring patterns, so it can be used as a reference by people and software.</p></div>' +
+        '<div><h2>Scope</h2><p>This version covers South Korea. The method, data schema and code do not depend on the country and can be reused to document another one.</p></div>' +
+        '<div><h2>Limits</h2><p>The sample is small and comes mostly from one person living in Daejeon in autumn 2026. It does not describe South Korea as a whole.</p></div>' +
+        '<div><h2>Support</h2><p>Field documentation was supported by a travel stipend from Nadání Josefa, Marie a Zdeňky Hlávkových during an exchange semester at Chungnam National University.</p></div>' +
+      '</div>';
+    window.scrollTo(0, 0);
+  }
+
+  function route() {
+    if (!DATA) return;
+    var h = location.hash.replace(/^#/, "");
+    var section = h === "about" ? "about" : (h === "patterns" || /^p-/.test(h)) ? "patterns" : "archive";
+    ["archive", "patterns", "about"].forEach(function (s) {
+      var a = document.getElementById("nav-" + s);
+      if (s === section) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    var m = h.match(/^o-(.+)$/);
+    var o = m && byId(m[1]);
+    var pm = h.match(/^p-(.+)$/);
+    if (o) { renderItem(o); document.title = o.title + " · Korea Interface Archive"; }
+    else if (pm && DATA.patterns && DATA.patterns[pm[1]]) { renderPattern(pm[1]); document.title = DATA.patterns[pm[1]].label + " · Korea Interface Archive"; }
+    else if (h === "patterns") { renderPatterns(); document.title = "Patterns · Korea Interface Archive"; }
+    else if (h === "about") { renderAbout(); document.title = "About · Korea Interface Archive"; }
+    else { renderArchive(); document.title = "Korea Interface Archive"; }
+  }
+
+  window.addEventListener("hashchange", route);
+  fetch("data/observations.json")
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (d) {
+      DATA = d;
+      document.getElementById("upd").textContent = "Updated " + d.updated;
+      route();
+    })
+    .catch(function () {
+      view.innerHTML = '<p class="empty">The observation data could not be loaded. Reload the page to try again.</p>';
+    });
+})();
+</script>
+
+</body>
+</html>

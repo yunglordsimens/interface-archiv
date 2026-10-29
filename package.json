@@ -1,0 +1,27 @@
+{
+  "name": "korea-interface-archive",
+  "version": "0.2.0",
+  "description": "Research archive of everyday interfaces in South Korea, with an MCP server for AI clients.",
+  "main": "mcp/server.js",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.6.7"
+  },
+  "type": "module",
+  "bin": {
+    "korea-interface-archive": "mcp/server.js"
+  },
+  "files": [
+    "mcp/",
+    "data/"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yunglordsimens/interface-archiv"
+  },
+  "homepage": "https://yunglordsimens.github.io/interface-archiv/"
+}
