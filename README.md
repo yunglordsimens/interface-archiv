@@ -32,6 +32,13 @@ Personal data in screenshots is blurred before publication.
 
 Issues from the owner and collaborators are processed right away. Issues from anyone else wait until the owner adds the `approved` label. The model is set by the `GEMINI_MODEL` repository variable (default: the latest Gemini Flash); the key is the `GEMINI_API_KEY` secret.
 
+## Inbox (phone)
+
+- **Add** (`/add/`): works as an app from the phone home screen (Share → Add to Home Screen). Pick photos or videos from the camera or gallery, record an optional voice note, send. The owner's uploads go to a private inbox; guests' submissions wait for approval.
+- **Inbox** (`/inbox/`, owner only, sign-in by email link): sort new files, discard, group several files into one observation, trim videos, mark it as *Archive* or *Private note*, approve guest submissions, read private notes.
+- Originals are stored in a private Supabase bucket. Row-level security lets guests only add, and only the owner read.
+- `.github/workflows/process-inbox.yml` runs every 10 minutes: queued archive observations become draft pull requests through the same Gemini pipeline; private notes are saved back to the inbox and never reach this repository.
+
 ## Use it from an AI client (MCP)
 
 The archive can be connected to Claude Desktop or any MCP client. Add this to the client's MCP configuration:

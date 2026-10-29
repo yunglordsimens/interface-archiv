@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Add · Korea Interface Archive</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Archive +">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#ffffff">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../app/icon-180.png">
+<link rel="icon" href="../app/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../app/app.css">
+</head>
+<body>
+<div class="wrap" style="max-width:640px">
+  <header class="top">
+    <a class="name" href="../">Korea Interface Archive</a>
+    <a id="toInbox" class="muted small" href="../inbox/" hidden>Inbox</a>
+  </header>
+
+  <div class="stack">
+    <h1 id="h">Add to the archive</h1>
+    <p class="muted" id="lead">Photos, screenshots or short videos of an interface you met in South Korea. Personal data is blurred before anything is published, and every entry is reviewed by a person.</p>
+  </div>
+
+  <div class="stack">
+    <label class="btn primary big" for="pick">Add photos or videos</label>
+    <input id="pick" type="file" accept="image/*,video/*" multiple hidden>
+    <div class="files" id="files"></div>
+    <p class="muted small" id="filesNote" hidden></p>
+  </div>
+
+  <div class="stack">
+    <h2>Voice note <span class="muted" style="text-transform:none;letter-spacing:0;font-weight:400">optional</span></h2>
+    <div class="rec">
+      <button type="button" id="recBtn">Record</button>
+      <span id="recState" class="muted small"></span>
+    </div>
+    <audio id="recAudio" controls hidden></audio>
+  </div>
+
+  <form id="form" class="stack" novalidate>
+    <label class="field"><span id="ctxLabel">What happened</span>
+      <textarea id="ctx" placeholder="Ordering at a kiosk in a ramen shop; could not pay with a foreign card."></textarea></label>
+    <label class="field"><span>Place</span>
+      <input id="place" type="text" placeholder="Daejeon, Eunhaeng-dong" autocomplete="off"></label>
+    <div id="guestFields" class="stack">
+      <label class="field"><span>Your name (shown as contributor, optional)</span>
+        <input id="gname" type="text" autocomplete="name"></label>
+      <label class="field"><span>Contact for questions (not published, optional)</span>
+        <input id="gcontact" type="text" autocomplete="email"></label>
+      <label class="check"><input id="consent" type="checkbox">
+        <span>I took these photos or videos myself and agree to publish them in this archive under its license.</span></label>
+    </div>
+    <button class="primary big" id="send" type="submit" disabled>Send</button>
+    <p class="muted small" id="after"></p>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="../app/sb.js"></script>
+<script>
+(async function () {
+  var files = [];  // {file, id, state}
+  var voice = null;
+  var owner = await isOwner();
+  var el = function (id) { return document.getElementById(id); };
+
+  if (owner) {
+    el("h").textContent = "Add to inbox";
+    el("lead").textContent = "Everything goes to your private inbox. Sort, group and publish later.";
+    el("guestFields").hidden = true;
+    el("ctxLabel").textContent = "Note (optional)";
+    el("toInbox").hidden = false;
+  }
+
+  function refresh() {
+    var ready = files.length > 0 && (owner || (el("consent").checked && el("ctx").value.trim()));
+    el("send").disabled = !ready;
+    el("filesNote").hidden = !files.length;
+    el("filesNote").textContent = files.length + (files.length === 1 ? " file" : " files") + " selected. Tap a file to remove it.";
+  }
+
+  function renderFiles() {
+    el("files").innerHTML = files.map(function (f, i) {
+      var url = f.url || (f.url = URL.createObjectURL(f.file));
+      var media = kindOf(f.file) === "video" ? '<video src="' + url + '#t=0.1" muted playsinline preload="metadata"></video>' : '<img src="' + url + '" alt="">';
+      var st = f.state ? '<span class="st ' + (f.state === "Uploaded" ? "status-ok" : f.state === "Failed" ? "status-bad" : "") + '">' + esc(f.state) + '</span>' : "";
+      return '<button type="button" class="f" data-i="' + i + '" aria-label="Remove file ' + (i + 1) + '" style="padding:0">' + media + st + '</button>';
+    }).join("");
+    el("files").querySelectorAll("[data-i]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        if (sending) return;
+        files.splice(+b.getAttribute("data-i"), 1); renderFiles(); refresh();
+      });
+    });
+  }
+
+  el("pick").addEventListener("change", function (e) {
+    Array.prototype.forEach.call(e.target.files, function (f) {
+      if (f.size > 50 * 1024 * 1024) { toast(f.name + " is larger than 50 MB. Trim it in Photos first.", 5000); return; }
+      files.push({ file: f, id: uuid() });
+    });
+    e.target.value = "";
+    renderFiles(); refresh();
+  });
+  ["ctx", "consent"].forEach(function (id) { el(id).addEventListener("input", refresh); el(id).addEventListener("change", refresh); });
+
+  var recording = false;
+  var recorder = makeRecorder(function (blob) {
+    voice = blob;
+    el("recAudio").src = URL.createObjectURL(blob); el("recAudio").hidden = false;
+    el("recState").textContent = "Recorded. Record again to replace it.";
+  });
+  if (!recorder.supported) { el("recBtn").disabled = true; el("recState").textContent = "Voice notes are not supported in this browser."; }
+  el("recBtn").addEventListener("click", async function () {
+    if (!recording) {
+      try { await recorder.start(); } catch (e) { el("recState").textContent = "Microphone access was refused."; return; }
+      recording = true; el("recBtn").textContent = "Stop"; el("recState").innerHTML = '<span class="dot"></span> Recording';
+    } else {
+      recording = false; el("recBtn").textContent = "Record"; recorder.stop();
+    }
+  });
+
+  var sending = false;
+  el("form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    if (sending || el("send").disabled) return;
+    sending = true; el("send").disabled = true; el("send").textContent = "Sending…";
+    var day = new Date().toISOString().slice(0, 10);
+    var groupId = owner ? null : uuid();
+    var note = el("ctx").value.trim(), place = el("place").value.trim();
+    try {
+      if (!owner) {
+        var g = await sb.from("groups").insert({
+          id: groupId, source: "guest", status: "submitted", level: "archive", consent: true,
+          context: note, place: place, guest_name: el("gname").value.trim(), guest_contact: el("gcontact").value.trim()
+        });
+        if (g.error) throw g.error;
+      }
+      var all = files.slice();
+      if (voice) all.push({ file: new File([voice], "voice." + (voice.type.indexOf("mp4") >= 0 ? "m4a" : "webm"), { type: voice.type }), id: uuid(), isVoice: true });
+      var failed = 0;
+      for (var i = 0; i < all.length; i++) {
+        var f = all[i];
+        f.state = "Uploading…"; renderFiles();
+        var path = (owner ? "owner/" + day : "guest/" + groupId) + "/" + f.id + "." + extOf(f.file);
+        var up = await sb.storage.from(ARCHIVE.bucket).upload(path, f.file, { contentType: f.file.type || undefined, upsert: false });
+        if (up.error) { f.state = "Failed"; failed++; renderFiles(); continue; }
+        var row = await sb.from("uploads").insert({
+          id: f.id, path: path, kind: kindOf(f.file), mime: f.file.type, size: f.file.size, guest: !owner,
+          group_id: groupId, sort: i, note: note, place: place,
+          taken_at: f.file.lastModified ? new Date(f.file.lastModified).toISOString() : null
+        });
+        if (row.error) { f.state = "Failed"; failed++; } else { f.state = "Uploaded"; }
+        renderFiles();
+      }
+      if (failed) throw new Error(failed + " file(s) failed to upload. Tap Send to retry the failed ones.");
+      el("after").textContent = owner ? "Saved to your inbox." : "Thank you. Your submission will be reviewed before it appears in the archive.";
+      toast(owner ? "Saved to inbox" : "Sent");
+      files = []; voice = null; el("recAudio").hidden = true; el("recState").textContent = "";
+      el("ctx").value = ""; el("place").value = ""; el("consent").checked = false;
+      renderFiles();
+    } catch (err) {
+      files = files.filter(function (f) { return f.state !== "Uploaded"; });
+      renderFiles();
+      el("after").textContent = (err && err.message) || "Sending failed. Check the connection and try again.";
+    }
+    sending = false; el("send").textContent = "Send"; refresh();
+  });
+  refresh();
+})();
+</script>
+</body>
+</html>

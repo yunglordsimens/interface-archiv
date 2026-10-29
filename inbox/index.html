@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inbox · Korea Interface Archive</title>
+<meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Archive">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../app/icon-180.png">
+<link rel="icon" href="../app/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../app/app.css">
+<style>
+.tabs { display: flex; gap: 6px 20px; flex-wrap: wrap; }
+.tabs button { background: none; padding: 0; min-height: 0; color: var(--muted); font-weight: 400; }
+.tabs button[aria-pressed="true"] { color: var(--fg); font-weight: 700; }
+.tabs .n { font-size: var(--s-sm); margin-left: 4px; }
+.day { display: flex; flex-direction: column; gap: 10px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.tile { position: relative; padding: 0; background: var(--ph); aspect-ratio: 3 / 4; overflow: hidden; display: block; width: 100%; min-height: 0; }
+.tile img, .tile video { width: 100%; height: 100%; object-fit: cover; }
+.tile .tag { position: absolute; left: 6px; top: 6px; font-size: 11px; padding: 2px 6px; background: var(--bg); color: var(--fg); }
+.tile .num { position: absolute; right: 6px; top: 6px; min-width: 24px; height: 24px; padding: 0 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; background: var(--accent); color: var(--on-accent); }
+.tile[aria-pressed="true"] { outline: 3px solid var(--accent); outline-offset: -3px; }
+.tile .audio { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--muted); font-size: var(--s-sm); padding: 8px; text-align: center; }
+.tile-note { font-size: var(--s-sm); color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 20;
+  padding: 12px max(16px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  box-shadow: 0 -1px 0 color-mix(in srgb, var(--fg) 12%, transparent); }
+.bar .in { max-width: 1100px; margin: 0 auto; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.bar .count { margin-right: auto; font-weight: 500; }
+.sheet { display: flex; flex-direction: column; gap: 16px; background: var(--field); padding: 16px; }
+.sheet input, .sheet textarea, .sheet select { background: var(--bg); }
+.seg { display: flex; gap: 0; }
+.seg button { flex: 1; background: var(--bg); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+.vtrim { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 12px; align-items: start; }
+.vtrim video { width: 100%; background: #000; }
+@media (max-width: 520px) { .vtrim { grid-template-columns: 1fr; } .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } }
+.list { display: flex; flex-direction: column; gap: 22px; }
+.item { display: flex; flex-direction: column; gap: 6px; }
+.item .meta { font-size: var(--s-sm); color: var(--muted); }
+.thumbs { display: flex; gap: 6px; overflow-x: auto; }
+.thumbs img, .thumbs video { height: 96px; width: auto; background: var(--ph); }
+.chip { font-size: var(--s-sm); font-weight: 500; }
+.note-body ul { margin: 4px 0 0; padding-left: 1.1em; }
+.note-body h3 { font-size: var(--s-sm); margin: 10px 0 0; color: var(--muted); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="name" href="../">Korea Interface Archive</a>
+    <div class="row small">
+      <a class="muted" href="../add/">Add</a>
+      <button class="link small" id="signout" hidden>Sign out</button>
+    </div>
+  </header>
+
+  <section id="login" class="stack" hidden style="max-width:420px">
+    <h1>Inbox</h1>
+    <p class="muted">Sign in with your email. A one-time link will be sent to it.</p>
+    <label class="field"><span>Email</span><input id="email" type="email" autocomplete="email"></label>
+    <button class="primary" id="sendLink">Send sign-in link</button>
+    <p class="muted small" id="loginMsg"></p>
+  </section>
+
+  <section id="app" class="stack" hidden style="gap:24px">
+    <div class="stack" style="gap:6px">
+      <h1>Inbox</h1>
+      <p class="muted small">Queued observations are processed automatically every 10 minutes. Archive drafts open as pull requests for review; private notes appear under Notes.</p>
+    </div>
+    <div class="tabs" role="tablist">
+      <button data-tab="new" aria-pressed="true">New<span class="n" id="n-new"></span></button>
+      <button data-tab="queue" aria-pressed="false">Queue<span class="n" id="n-queue"></span></button>
+      <button data-tab="guests" aria-pressed="false">Guests<span class="n" id="n-guests"></span></button>
+      <button data-tab="notes" aria-pressed="false">Notes<span class="n" id="n-notes"></span></button>
+      <button data-tab="trash" aria-pressed="false">Discarded<span class="n" id="n-trash"></span></button>
+    </div>
+    <div id="view"></div>
+  </section>
+</div>
+
+<div class="bar" id="bar" hidden>
+  <div class="in">
+    <span class="count" id="selCount"></span>
+    <button id="clearSel" class="link">Clear</button>
+    <button id="discardSel">Discard</button>
+    <button id="makeObs" class="primary">Make observation</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="../app/sb.js"></script>
+<script>
+(function () {
+  var el = function (id) { return document.getElementById(id); };
+  var tab = "new", uploads = [], groups = [], urls = {}, selected = [];
+  var STATUS = {
+    submitted: ["Waiting for approval", "status-warn"], queued: ["Queued", "status-warn"], processing: ["Processing", "status-warn"],
+    in_review: ["Draft ready for review", "status-warn"], published: ["Published", "status-ok"], done: ["Done", "status-ok"],
+    failed: ["Failed", "status-bad"], declined: ["Declined", "muted"]
+  };
+
+  async function boot() {
+    var owner = await isOwner();
+    var s = (await sb.auth.getSession()).data.session;
+    el("login").hidden = owner; el("app").hidden = !owner; el("signout").hidden = !s;
+    if (s && !owner) { el("login").hidden = false; el("loginMsg").textContent = "This account has no access to the inbox."; }
+    if (owner) load();
+  }
+  el("email").value = ARCHIVE.owner;
+  el("sendLink").addEventListener("click", async function () {
+    var r = await sb.auth.signInWithOtp({ email: el("email").value.trim(), options: { emailRedirectTo: location.origin + location.pathname } });
+    el("loginMsg").textContent = r.error ? r.error.message : "Link sent. Open it on this device.";
+  });
+  el("signout").addEventListener("click", async function () { await sb.auth.signOut(); location.reload(); });
+  sb.auth.onAuthStateChange(function (ev) { if (ev === "SIGNED_IN" || ev === "SIGNED_OUT") boot(); });
+
+  async function load() {
+    var a = await sb.from("uploads").select("*").order("created_at", { ascending: false }).limit(1000);
+    var b = await sb.from("groups").select("*").order("created_at", { ascending: false }).limit(300);
+    if (a.error || b.error) { el("view").innerHTML = '<p class="status-bad">' + esc((a.error || b.error).message) + '</p>'; return; }
+    uploads = a.data; groups = b.data;
+    var need = uploads.filter(function (u) { return !urls[u.path]; }).map(function (u) { return u.path; });
+    for (var i = 0; i < need.length; i += 100) {
+      var r = await sb.storage.from(ARCHIVE.bucket).createSignedUrls(need.slice(i, i + 100), 3600 * 6);
+      (r.data || []).forEach(function (x) { if (x.signedUrl) urls[x.path] = x.signedUrl; });
+    }
+    counts(); render();
+  }
+
+  function counts() {
+    var c = {
+      "new": uploads.filter(function (u) { return u.status === "new" && !u.guest; }).length,
+      queue: groups.filter(function (g) { return g.status !== "submitted" && g.status !== "declined" && !(g.level === "private" && g.status === "done"); }).length,
+      guests: groups.filter(function (g) { return g.status === "submitted"; }).length,
+      notes: groups.filter(function (g) { return g.level === "private" && g.status === "done"; }).length,
+      trash: uploads.filter(function (u) { return u.status === "discarded"; }).length
+    };
+    Object.keys(c).forEach(function (k) { el("n-" + k).textContent = c[k] || ""; });
+  }
+
+  function thumb(u, extra) {
+    var url = urls[u.path] || "";
+    if (u.kind === "video") return '<video src="' + esc(url) + '#t=0.1" muted playsinline preload="metadata"></video>' + (extra || "") + '<span class="tag">Video</span>';
+    if (u.kind === "audio") return '<div class="audio">Voice note</div>' + (extra || "");
+    return '<img src="' + esc(url) + '" alt="" loading="lazy">' + (extra || "");
+  }
+  function small(u) {
+    var url = urls[u.path] || "";
+    if (u.kind === "video") return '<video src="' + esc(url) + '#t=0.1" muted playsinline preload="metadata"></video>';
+    if (u.kind === "audio") return '<audio src="' + esc(url) + '" controls></audio>';
+    return '<img src="' + esc(url) + '" alt="" loading="lazy">';
+  }
+  function dayKey(u) { return (u.taken_at || u.created_at || "").slice(0, 10); }
+
+  function render() {
+    document.querySelectorAll("[data-tab]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-tab") === tab)); });
+    el("bar").hidden = !(tab === "new" && selected.length);
+    if (tab === "new") renderNew();
+    else if (tab === "queue") renderQueue();
+    else if (tab === "guests") renderGuests();
+    else if (tab === "notes") renderNotes();
+    else renderTrash();
+  }
+
+  function renderNew() {
+    var list = uploads.filter(function (u) { return u.status === "new" && !u.guest; });
+    if (!list.length) { el("view").innerHTML = '<p class="muted">Nothing new. Add photos from the <a href="../add/">Add</a> page.</p>'; return; }
+    var days = {};
+    list.forEach(function (u) { (days[dayKey(u)] = days[dayKey(u)] || []).push(u); });
+    el("view").innerHTML = Object.keys(days).sort().reverse().map(function (d) {
+      return '<div class="day"><h2>' + esc(d) + '</h2><div class="grid">' + days[d].map(function (u) {
+        var n = selected.indexOf(u.id);
+        return '<div class="stack" style="gap:4px"><button class="tile" data-u="' + u.id + '" aria-pressed="' + (n >= 0) + '" aria-label="Select">' +
+          thumb(u, n >= 0 ? '<span class="num">' + (n + 1) + '</span>' : "") + '</button>' +
+          (u.note ? '<div class="tile-note">' + esc(u.note) + '</div>' : "") + '</div>';
+      }).join("") + '</div></div>';
+    }).join("") + '<div id="sheet"></div>';
+    el("view").querySelectorAll("[data-u]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var id = b.getAttribute("data-u"), i = selected.indexOf(id);
+        if (i >= 0) selected.splice(i, 1); else selected.push(id);
+        render();
+      });
+    });
+    el("selCount").textContent = selected.length + " selected";
+  }
+
+  el("clearSel").addEventListener("click", function () { selected = []; render(); });
+  el("discardSel").addEventListener("click", async function () {
+    var r = await sb.from("uploads").update({ status: "discarded" }).in("id", selected);
+    if (r.error) return toast(r.error.message, 5000);
+    toast("Moved to Discarded"); selected = []; load();
+  });
+  el("makeObs").addEventListener("click", function () { openSheet(); });
+
+  function openSheet() {
+    var sel = selected.map(function (id) { return uploads.find(function (u) { return u.id === id; }); }).filter(Boolean);
+    var notes = Array.from(new Set(sel.map(function (u) { return u.note; }).filter(Boolean))).join("\n");
+    var places = Array.from(new Set(sel.map(function (u) { return u.place; }).filter(Boolean)));
+    var date = sel.map(dayKey).sort()[0] || "";
+    var vids = sel.filter(function (u) { return u.kind === "video"; });
+    var level = "archive";
+    var html = '<div class="sheet" id="sheetBox"><h2>New observation · ' + sel.length + ' files, in the order you selected them</h2>' +
+      '<div class="seg" role="group" aria-label="Level"><button type="button" data-level="archive" aria-pressed="true">Archive (public after review)</button><button type="button" data-level="private" aria-pressed="false">Private note</button></div>' +
+      '<label class="field"><span>What happened</span><textarea id="o-ctx">' + esc(notes) + '</textarea></label>' +
+      '<div class="row" style="align-items:stretch"><label class="field" style="flex:2;min-width:200px"><span>Place</span><input id="o-place" type="text" value="' + esc(places[0] || "") + '"></label>' +
+      '<label class="field" style="flex:1;min-width:150px"><span>Date</span><input id="o-date" type="date" value="' + esc(date) + '"></label></div>' +
+      '<label class="field"><span>Category</span><select id="o-cat"><option value="">Let the model decide</option><option>Digital</option><option>Physical</option><option>Services</option><option>Systems</option></select></label>' +
+      vids.map(function (v) {
+        return '<div class="vtrim"><video src="' + esc(urls[v.path] || "") + '" controls muted playsinline preload="metadata" id="v-' + v.id + '"></video>' +
+          '<div class="stack"><span class="small muted">Trim this video (seconds). Leave empty to use all of it.</span>' +
+          '<div class="row"><label class="field" style="width:110px"><span>Start</span><input type="number" step="0.1" min="0" id="ts-' + v.id + '" value="' + (v.trim_start ?? "") + '"></label>' +
+          '<button type="button" data-now="ts-' + v.id + '" data-v="v-' + v.id + '">Set to current</button></div>' +
+          '<div class="row"><label class="field" style="width:110px"><span>End</span><input type="number" step="0.1" min="0" id="te-' + v.id + '" value="' + (v.trim_end ?? "") + '"></label>' +
+          '<button type="button" data-now="te-' + v.id + '" data-v="v-' + v.id + '">Set to current</button></div></div></div>';
+      }).join("") +
+      '<div class="row"><button type="button" id="o-cancel">Cancel</button><button type="button" class="primary" id="o-go">Queue for processing</button></div></div>';
+    el("sheet").innerHTML = html;
+    el("sheetBox").scrollIntoView({ behavior: "smooth", block: "start" });
+    el("sheet").querySelectorAll("[data-level]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        level = b.getAttribute("data-level");
+        el("sheet").querySelectorAll("[data-level]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      });
+    });
+    el("sheet").querySelectorAll("[data-now]").forEach(function (b) {
+      b.addEventListener("click", function () { el(b.getAttribute("data-now")).value = el(b.getAttribute("data-v")).currentTime.toFixed(1); });
+    });
+    el("o-cancel").addEventListener("click", function () { el("sheet").innerHTML = ""; });
+    el("o-go").addEventListener("click", async function () {
+      el("o-go").disabled = true;
+      var gid = uuid();
+      var g = await sb.from("groups").insert({
+        id: gid, source: "owner", level: level, status: "queued", consent: true,
+        context: el("o-ctx").value.trim(), place: el("o-place").value.trim(), date: el("o-date").value, category: el("o-cat").value
+      });
+      if (g.error) { el("o-go").disabled = false; return toast(g.error.message, 5000); }
+      for (var i = 0; i < sel.length; i++) {
+        var u = sel[i], patch = { group_id: gid, status: "grouped", sort: i };
+        if (u.kind === "video") {
+          var ts = parseFloat(el("ts-" + u.id).value), te = parseFloat(el("te-" + u.id).value);
+          patch.trim_start = isNaN(ts) ? null : ts; patch.trim_end = isNaN(te) ? null : te;
+        }
+        var r = await sb.from("uploads").update(patch).eq("id", u.id);
+        if (r.error) { toast(r.error.message, 5000); }
+      }
+      toast(level === "private" ? "Queued as a private note" : "Queued for the archive");
+      selected = []; tab = "queue"; load();
+    });
+  }
+
+  function groupItems(g) {
+    return uploads.filter(function (u) { return u.group_id === g.id; }).sort(function (a, b) { return a.sort - b.sort; });
+  }
+  function statusLine(g) {
+    var s = STATUS[g.status] || [g.status, ""];
+    return '<span class="chip ' + s[1] + '">' + esc(s[0]) + '</span>';
+  }
+
+  function renderQueue() {
+    var list = groups.filter(function (g) { return g.status !== "submitted" && g.status !== "declined" && !(g.level === "private" && g.status === "done"); });
+    if (!list.length) { el("view").innerHTML = '<p class="muted">The queue is empty. Select files under New and choose Make observation.</p>'; return; }
+    el("view").innerHTML = '<div class="list">' + list.map(function (g) {
+      return '<div class="item">' + statusLine(g) +
+        '<div><strong>' + esc(g.title || g.context.split("\n")[0] || "Untitled") + '</strong></div>' +
+        '<div class="meta">' + esc([g.level === "private" ? "Private note" : "Archive", g.source === "guest" ? "from guest" : "", g.place, g.date, g.entry_id ? "entry " + g.entry_id : ""].filter(Boolean).join(" · ")) + '</div>' +
+        '<div class="thumbs">' + groupItems(g).map(small).join("") + '</div>' +
+        (g.pr_url ? '<a href="' + esc(g.pr_url) + '" target="_blank" rel="noopener">Review the draft on GitHub</a>' : "") +
+        (g.error ? '<p class="small status-bad">' + esc(g.error) + '</p>' : "") +
+        (g.status === "failed" ? '<div><button data-retry="' + g.id + '">Try again</button></div>' : "") +
+        '</div>';
+    }).join("") + '</div>';
+    el("view").querySelectorAll("[data-retry]").forEach(function (b) {
+      b.addEventListener("click", async function () {
+        await sb.from("groups").update({ status: "queued", error: null }).eq("id", b.getAttribute("data-retry"));
+        toast("Queued again"); load();
+      });
+    });
+  }
+
+  function renderGuests() {
+    var list = groups.filter(function (g) { return g.status === "submitted"; });
+    if (!list.length) { el("view").innerHTML = '<p class="muted">No guest submissions waiting. Guests can send material from the <a href="../add/">Add</a> page.</p>'; return; }
+    el("view").innerHTML = '<div class="list">' + list.map(function (g) {
+      return '<div class="item"><div class="meta">' + esc(new Date(g.created_at).toLocaleString()) + (g.guest_name ? " · " + esc(g.guest_name) : "") + (g.guest_contact ? " · " + esc(g.guest_contact) : "") + '</div>' +
+        '<p>' + esc(g.context) + '</p>' + (g.place ? '<div class="meta">' + esc(g.place) + '</div>' : "") +
+        '<div class="thumbs">' + groupItems(g).map(small).join("") + '</div>' +
+        '<div class="row"><button data-decline="' + g.id + '">Decline</button><button class="primary" data-approve="' + g.id + '">Approve and process</button></div></div>';
+    }).join("") + '</div>';
+    el("view").querySelectorAll("[data-approve]").forEach(function (b) {
+      b.addEventListener("click", async function () { await sb.from("groups").update({ status: "queued" }).eq("id", b.getAttribute("data-approve")); toast("Approved"); load(); });
+    });
+    el("view").querySelectorAll("[data-decline]").forEach(function (b) {
+      b.addEventListener("click", async function () { await sb.from("groups").update({ status: "declined" }).eq("id", b.getAttribute("data-decline")); toast("Declined"); load(); });
+    });
+  }
+
+  function renderNotes() {
+    var list = groups.filter(function (g) { return g.level === "private" && g.status === "done"; });
+    if (!list.length) { el("view").innerHTML = '<p class="muted">No private notes yet. When making an observation, choose Private note.</p>'; return; }
+    var LABELS = { kind_of_place: "Kind of place", setup: "How it is set up", payment: "Payment", staffing: "Staffing", hours_and_access: "Hours and access", prices_seen: "Prices seen", how_it_likely_earns: "How it likely earns (hypotheses)", exists_at_home: "Does it exist in Czechia / the EU? (to check)", ideas: "Ideas", observed: "Observed", open: "Open questions" };
+    el("view").innerHTML = '<div class="list">' + list.map(function (g) {
+      var n = (g.result && g.result.note) || {};
+      var body = Object.keys(LABELS).map(function (k) {
+        var v = n[k]; if (!v || (Array.isArray(v) && !v.length)) return "";
+        return '<h3>' + esc(LABELS[k]) + '</h3>' + (Array.isArray(v) ? '<ul>' + v.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul>' : '<p>' + esc(v) + '</p>');
+      }).join("");
+      return '<div class="item"><strong>' + esc(n.title || g.context || "Note") + '</strong><div class="meta">' + esc([g.place, g.date].filter(Boolean).join(" · ")) + '</div>' +
+        '<div class="thumbs">' + groupItems(g).map(small).join("") + '</div><div class="note-body">' + body + '</div></div>';
+    }).join("") + '</div>';
+  }
+
+  function renderTrash() {
+    var list = uploads.filter(function (u) { return u.status === "discarded"; });
+    if (!list.length) { el("view").innerHTML = '<p class="muted">Nothing discarded.</p>'; return; }
+    el("view").innerHTML = '<div class="stack"><div class="row"><button id="restoreAll">Restore all</button><button id="purge">Delete all forever</button></div><div class="grid">' +
+      list.map(function (u) { return '<div class="tile">' + thumb(u) + '</div>'; }).join("") + '</div></div>';
+    el("restoreAll").addEventListener("click", async function () {
+      await sb.from("uploads").update({ status: "new" }).eq("status", "discarded"); toast("Restored"); load();
+    });
+    var armed = false;
+    el("purge").addEventListener("click", async function () {
+      if (!armed) { armed = true; el("purge").textContent = "Tap again to delete " + list.length + " files"; return; }
+      var paths = list.map(function (u) { return u.path; });
+      for (var i = 0; i < paths.length; i += 100) await sb.storage.from(ARCHIVE.bucket).remove(paths.slice(i, i + 100));
+      await sb.from("uploads").delete().in("id", list.map(function (u) { return u.id; }));
+      toast("Deleted"); load();
+    });
+  }
+
+  document.querySelectorAll("[data-tab]").forEach(function (b) {
+    b.addEventListener("click", function () { tab = b.getAttribute("data-tab"); if (tab !== "new") selected = []; render(); });
+  });
+  boot();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+name: Process inbox
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: process-inbox
+  cancel-in-progress: false
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check the queue
+        id: q
+        env:
+          SUPABASE_URL: https://oyuwwnydlxoxpwkaxtdh.supabase.co
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_SERVICE_KEY" ]; then echo "SUPABASE_SERVICE_KEY secret is missing"; echo "work=0" >> "$GITHUB_OUTPUT"; exit 0; fi
+          AUTH=(); case "$SUPABASE_SERVICE_KEY" in eyJ*) AUTH=(-H "Authorization: Bearer $SUPABASE_SERVICE_KEY");; esac
+          N=$(curl -s "$SUPABASE_URL/rest/v1/groups?status=in.(queued,in_review)&select=id" -H "apikey: $SUPABASE_SERVICE_KEY" "${AUTH[@]}" | python3 -c "import sys,json; print(len(json.load(sys.stdin)))" || echo 0)
+          echo "work=$N" >> "$GITHUB_OUTPUT"
+          echo "groups waiting: $N"
+      - uses: actions/setup-python@v5
+        if: steps.q.outputs.work != '0'
+        with:
+          python-version: "3.12"
+      - if: steps.q.outputs.work != '0'
+        run: |
+          pip install pillow==11.0.0 pillow-heif==0.20.0
+          command -v ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
+      - name: Process
+        if: steps.q.outputs.work != '0'
+        env:
+          SUPABASE_URL: https://oyuwwnydlxoxpwkaxtdh.supabase.co
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/process_inbox.py

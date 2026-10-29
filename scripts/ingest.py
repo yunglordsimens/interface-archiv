@@ -28,6 +28,12 @@ import urllib.request
 
 from PIL import Image, ImageFilter, ImageOps
 
+try:  # iPhone photos (HEIC)
+    import pillow_heif
+    pillow_heif.register_heif_opener()
+except ImportError:
+    pass
+
 DATA = "data/observations.json"
 OUT = ".ingest"
 MODELS = list(dict.fromkeys(m for m in [os.environ.get("GEMINI_MODEL"), "gemini-flash-latest", "gemini-2.5-flash", "gemini-flash-lite-latest"] if m))
@@ -286,65 +292,89 @@ def save(img, path):
     img.save(path, "JPEG", quality=80, optimize=True)  # re-encoding drops EXIF and GPS
 
 
-# ---------- main ----------
+# ---------- pipeline (shared by the issue form and the inbox) ----------
 
-def main():
-    issue = gh(f"issues/{os.environ['ISSUE_NUMBER']}")
-    s = sections(issue["body"])
-    attach = s.get("Photos, screenshots or videos") or s.get("Photos or screenshots") or issue["body"] or ""
-    urls = attachment_urls(attach)
-    if not urls:
-        raise SystemExit("No photos or videos found in the issue. Drag them into the first field.")
+def trim_video(path, start, end):
+    """Cut [start, end] and scale to 720p so the file is small enough for Gemini."""
+    out = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False).name
+    cmd = ["ffmpeg", "-v", "error", "-y"]
+    if start:
+        cmd += ["-ss", f"{float(start):.2f}"]
+    if end:
+        cmd += ["-to", f"{float(end):.2f}"]
+    cmd += ["-i", path, "-vf", "scale='min(720,iw)':-2", "-c:v", "libx264", "-preset", "veryfast", "-crf", "30",
+            "-c:a", "aac", "-b:a", "64k", "-movflags", "+faststart", "-pix_fmt", "yuv420p", out]
+    subprocess.run(cmd, check=True)
+    return out
 
-    items = []  # {"kind": "image"|"frame", "img": PIL, "source": url, "t": seconds}
-    videos = []  # {"path", "mime", "duration", "source"}
-    for u in urls:
-        raw = fetch(u)
-        kind, val = classify(raw)
+
+def prepare(files):
+    """files: list of {"raw": bytes, "trim": (start, end) or None}. Returns items (images) and videos."""
+    items, videos = [], []
+    for f in files:
+        kind, val = classify(f["raw"])
         if kind == "image":
-            items.append({"kind": "image", "img": val, "source": u, "sha": hashlib.sha256(raw).hexdigest()})
+            items.append({"kind": "image", "img": val})
+            continue
+        ext = {"video/quicktime": ".mov", "video/webm": ".webm"}.get(val, ".mp4")
+        tmp = tempfile.NamedTemporaryFile(suffix=ext, delete=False)
+        tmp.write(f["raw"])
+        tmp.close()
+        start, end = (f.get("trim") or (None, None))
+        path = trim_video(tmp.name, start, end)
+        size = os.path.getsize(path)
+        if size > 19_000_000:
+            raise SystemExit("A video is still larger than 19 MB after compression. Trim it shorter.")
+        videos.append({"path": path, "mime": "video/mp4", "duration": ffprobe_duration(path), "bytes": size})
+    return items, videos
+
+
+def video_frames(items, videos):
+    clips_plan, notes = [], []
+    if not videos:
+        return clips_plan, notes
+    parts = [{"text": VIDEO_PROMPT}] + [{"inline_data": {"mime_type": v["mime"], "data": base64.b64encode(open(v["path"], "rb").read()).decode()}} for v in videos]
+    plan = gemini(parts, "MOCK_VIDEO").get("videos", [])
+    by_vi = {p.get("index", i): p for i, p in enumerate(plan)}
+    for vi, v in enumerate(videos):
+        p = by_vi.get(vi, {})
+        moments = sorted({round(float(m["t"]), 2) for m in p.get("moments", []) if "t" in m})[:MAX_FRAMES_PER_VIDEO]
+        if not moments:
+            moments = [round(v["duration"] * k / 4, 2) for k in (1, 2, 3)]
+        for t in moments:
+            t = min(t, max(0.0, v["duration"] - 0.1))
+            items.append({"kind": "frame", "img": frame_at(v["path"], t), "t": t})
+        c = p.get("clip") or {}
+        note = f"video {vi + 1}: {len(moments)} frames"
+        if c.get("keep") and not c.get("personal_data_visible", True):
+            start = max(0.0, float(c.get("start", 0)))
+            end = min(float(c.get("end", start + MAX_CLIP_SECONDS)), start + MAX_CLIP_SECONDS, v["duration"])
+            if end - start >= 1:
+                clips_plan.append({"video": v, "start": start, "end": end, "reason": c.get("reason", "")})
+                note += f", clip {start:.1f}–{end:.1f}s kept ({c.get('reason', '')})"
+        elif c.get("keep"):
+            note += ", clip not kept: personal data may be visible"
         else:
-            ext = {"video/quicktime": ".mov", "video/webm": ".webm"}.get(val, ".mp4")
-            f = tempfile.NamedTemporaryFile(suffix=ext, delete=False)
-            f.write(raw)
-            f.close()
-            videos.append({"path": f.name, "mime": val, "duration": ffprobe_duration(f.name), "source": u, "bytes": len(raw)})
+            note += ", no clip: stills are enough"
+        notes.append(note)
+    return clips_plan, notes
 
-    clips_plan, video_notes = [], []
-    if videos:
-        too_big = [v for v in videos if v["bytes"] > 19_000_000]
-        if too_big:
-            raise SystemExit("A video is larger than 19 MB. Trim it before uploading.")
-        parts = [{"text": VIDEO_PROMPT}] + [{"inline_data": {"mime_type": v["mime"], "data": base64.b64encode(open(v["path"], "rb").read()).decode()}} for v in videos]
-        plan = gemini(parts, "MOCK_VIDEO").get("videos", [])
-        by_vi = {p.get("index", i): p for i, p in enumerate(plan)}
-        for vi, v in enumerate(videos):
-            p = by_vi.get(vi, {})
-            moments = sorted({round(float(m["t"]), 2) for m in p.get("moments", []) if "t" in m})[:MAX_FRAMES_PER_VIDEO]
-            if not moments:
-                moments = [round(v["duration"] * k / 4, 2) for k in (1, 2, 3)]
-            for t in moments:
-                t = min(t, max(0.0, v["duration"] - 0.1))
-                img = frame_at(v["path"], t)
-                items.append({"kind": "frame", "img": img, "source": v["source"], "t": t})
-            c = p.get("clip") or {}
-            note = f"video {vi + 1}: {len(moments)} frames"
-            if c.get("keep") and not c.get("personal_data_visible", True):
-                start = max(0.0, float(c.get("start", 0)))
-                end = min(float(c.get("end", start + MAX_CLIP_SECONDS)), start + MAX_CLIP_SECONDS, v["duration"])
-                if end - start >= 1:
-                    clips_plan.append({"video": v, "start": start, "end": end, "reason": c.get("reason", "")})
-                    note += f", clip {start:.1f}–{end:.1f}s kept ({c.get('reason', '')})"
-            elif c.get("keep"):
-                note += ", clip not kept: personal data may be visible"
-            else:
-                note += ", no clip: stills are enough"
-            video_notes.append(note)
 
-    d = json.load(open(DATA, encoding="utf-8"))
+def audio_part(audio):
+    if not audio:
+        return []
+    return [{"text": "The author's voice note about this observation follows. Use it as context only; never quote personal data from it."},
+            {"inline_data": {"mime_type": audio["mime"], "data": base64.b64encode(audio["raw"]).decode()}}]
+
+
+def build_archive_entry(files, meta, d, submitted_via, audio=None):
+    """Runs the full archive pipeline. Writes media files, appends the entry to d. Returns (entry, pr_lines, summary)."""
+    items, videos = prepare(files)
+    clips_plan, video_notes = video_frames(items, videos)
+    if not items:
+        raise SystemExit("No images or video frames to process.")
     patterns = d.setdefault("patterns", {})
 
-    # duplicates: against the archive and inside this submission
     for it in items:
         it["hash"] = dhash(it["img"])
     known = [(m["src"], m["hash"]) for o in d["observations"] for m in o.get("media", []) if m.get("hash")]
@@ -358,16 +388,12 @@ def main():
             if it["kind"] == "image" and items[j]["kind"] == "image" and distance(it["hash"], items[j]["hash"]) <= 3:
                 dup_notes.append(f"image {i + 1} looks like image {j + 1} in this submission")
 
-    context = clean(s.get("What happened", ""))
-    place = clean(s.get("Place", ""))
-    date = clean(s.get("Date", ""))
-    category = clean(s.get("Category", ""))
     order = "; ".join(f"image {i}: " + ("photo" if it["kind"] == "image" else f"frame at {it['t']:.1f}s of a video")
                       for i, it in enumerate(items))
-    ctx = (f"What happened: {context}\nPlace: {place or 'not given'}\nDate: {date or 'not given'}\n"
-           f"Category chosen: {category or 'not given'}\nImages: {order}")
+    ctx = (f"What happened: {meta.get('context') or 'not given'}\nPlace: {meta.get('place') or 'not given'}\n"
+           f"Date: {meta.get('date') or 'not given'}\nCategory chosen: {meta.get('category') or 'not given'}\nImages: {order}")
     prompt = PROMPT + "\nExisting patterns:\n" + json.dumps({k: v["label"] for k, v in patterns.items()}, ensure_ascii=False) + "\n\nAuthor's context:\n" + ctx
-    res = scrub(gemini([{"text": prompt}] + [image_part(it["img"]) for it in items], "MOCK_RESPONSE"))
+    res = scrub(gemini([{"text": prompt}] + [image_part(it["img"]) for it in items] + audio_part(audio), "MOCK_RESPONSE"))
 
     ids = [int(o["id"]) for o in d["observations"] if str(o["id"]).isdigit()]
     oid = f"{(max(ids) + 1 if ids else 1):03d}"
@@ -397,11 +423,11 @@ def main():
     entry = {
         "id": oid,
         "title": e.get("title", "Untitled"),
-        "category": category or e.get("category", ""),
+        "category": meta.get("category") or e.get("category", ""),
         "country": "KR",
         "service": e.get("service", ""),
-        "place": place or "",
-        "date": date or None,
+        "place": meta.get("place") or "",
+        "date": meta.get("date") or None,
         "scenario": e.get("scenario", ""),
         "access": e.get("access", {"requires": [], "unverified": []}),
         "media": media,
@@ -411,20 +437,16 @@ def main():
         "open": e.get("open", []),
         "sources": [],
         "related": [],
-        "rights": "Own material. Personal data blurred automatically; reviewed before publication.",
+        "rights": meta.get("rights") or "Own material. Personal data blurred automatically; reviewed before publication.",
         "breakdown": e.get("breakdown", {"steps": [], "elements": [], "patterns": []}),
-        "submitted_via": f"issue #{issue['number']}",
+        "submitted_via": submitted_via,
     }
+    if meta.get("contributor"):
+        entry["contributor"] = meta["contributor"]
     d["observations"].append(entry)
     d["updated"] = datetime.date.today().isoformat()
-    with open(DATA, "w", encoding="utf-8") as f:
-        json.dump(d, f, ensure_ascii=False, indent=2)
-        f.write("\n")
 
-    os.makedirs(OUT, exist_ok=True)
-    open(f"{OUT}/id", "w").write(oid)
-    open(f"{OUT}/title", "w").write(entry["title"])
-    lines = [f"Closes #{issue['number']}", "", f"## {entry['title']}", "", entry["scenario"], "",
+    lines = [f"## {entry['title']}", "", entry["scenario"], "",
              f"Category: {entry['category']} · Place: {entry['place'] or '—'} · Date: {entry['date'] or '—'}", ""]
     if dup_notes:
         lines += ["### ⚠ Possible duplicates", *[f"- {n}" for n in dup_notes], ""]
@@ -438,10 +460,63 @@ def main():
               "- `observed` holds only what is visible or what you said.",
               "- Korean text in the breakdown matches the images.",
               "", "Edit `data/observations.json` in this PR if something is wrong, then merge to publish."]
-    open(f"{OUT}/pr.md", "w").write("\n".join(lines))
-    open(f"{OUT}/summary.txt", "w").write(
-        ("Possible duplicates: " + "; ".join(dup_notes) + ". " if dup_notes else "") + ("; ".join(video_notes) + "." if video_notes else ""))
-    print(f"Entry {oid}: {entry['title']} ({len(items)} images, {len(clips_plan)} clips)")
+    summary = ("Possible duplicates: " + "; ".join(dup_notes) + ". " if dup_notes else "") + ("; ".join(video_notes) + "." if video_notes else "")
+    return entry, lines, summary
+
+
+NOTE_PROMPT = """You help the author keep PRIVATE field notes about places and small businesses in South Korea
+(vending machines, unmanned shops, laundries, kiosks, photo booths and similar). Return ONLY JSON:
+{"note": {
+  "title": "short English name of the place or setup",
+  "kind_of_place": "e.g. unmanned ice cream shop",
+  "observed": ["what is visible in the material or said by the author"],
+  "setup": ["equipment, layout, size, signage, how a customer moves through it"],
+  "payment": ["payment methods visible"],
+  "staffing": ["staff present or not, remote support numbers, cameras"],
+  "hours_and_access": ["opening hours, access rules visible"],
+  "prices_seen": ["prices exactly as shown, with the item"],
+  "how_it_likely_earns": ["hypotheses about the business model, each clearly a hypothesis"],
+  "exists_at_home": ["questions to check whether this exists in Czechia or the EU"],
+  "ideas": ["short business ideas this suggests, marked as ideas"],
+  "open": ["questions to research"]
+}}
+Write in English. Keep Korean text verbatim when quoting signs. Do not invent numbers or facts that are not visible or said.
+"""
+
+
+def build_private_note(files, meta, audio=None):
+    """Private level: no redaction, no files written. Videos go to Gemini as they are (after trimming)."""
+    items, videos = prepare(files)
+    ctx = f"What happened: {meta.get('context') or 'not given'}\nPlace: {meta.get('place') or 'not given'}\nDate: {meta.get('date') or 'not given'}"
+    parts = [{"text": NOTE_PROMPT + "\n\nAuthor's context:\n" + ctx}] + [image_part(it["img"]) for it in items]
+    parts += [{"inline_data": {"mime_type": v["mime"], "data": base64.b64encode(open(v["path"], "rb").read()).decode()}} for v in videos]
+    parts += audio_part(audio)
+    return gemini(parts, "MOCK_NOTE")
+
+
+# ---------- issue form entry point ----------
+
+def main():
+    issue = gh(f"issues/{os.environ['ISSUE_NUMBER']}")
+    s = sections(issue["body"])
+    attach = s.get("Photos, screenshots or videos") or s.get("Photos or screenshots") or issue["body"] or ""
+    urls = attachment_urls(attach)
+    if not urls:
+        raise SystemExit("No photos or videos found in the issue. Drag them into the first field.")
+    files = [{"raw": fetch(u), "trim": None} for u in urls]
+    meta = {"context": clean(s.get("What happened", "")), "place": clean(s.get("Place", "")),
+            "date": clean(s.get("Date", "")), "category": clean(s.get("Category", ""))}
+    d = json.load(open(DATA, encoding="utf-8"))
+    entry, lines, summary = build_archive_entry(files, meta, d, f"issue #{issue['number']}")
+    with open(DATA, "w", encoding="utf-8") as f:
+        json.dump(d, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    os.makedirs(OUT, exist_ok=True)
+    open(f"{OUT}/id", "w").write(entry["id"])
+    open(f"{OUT}/title", "w").write(entry["title"])
+    open(f"{OUT}/pr.md", "w").write("\n".join([f"Closes #{issue['number']}", ""] + lines))
+    open(f"{OUT}/summary.txt", "w").write(summary)
+    print(f"Entry {entry['id']}: {entry['title']} ({len(entry['media'])} media)")
 
 
 if __name__ == "__main__":
