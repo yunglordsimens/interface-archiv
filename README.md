@@ -23,6 +23,15 @@ It also records **access** (what it takes to use the interface: physical presenc
 
 Personal data in screenshots is blurred before publication.
 
+## Add an observation
+
+1. Open a new issue and choose **New observation** (works from the GitHub mobile app).
+2. Drag in photos or screenshots, write a line about what happened, add place and date.
+3. A GitHub Action sends the images to Gemini, which drafts the entry (steps, elements with Korean text and translation, patterns, access) and marks personal data. The script blurs it, compresses the images, strips location data and opens a pull request.
+4. Check the draft and merge it. The site and the MCP server update on their own.
+
+Issues from the owner and collaborators are processed right away. Issues from anyone else wait until the owner adds the `approved` label. The model is set by the `GEMINI_MODEL` repository variable (default: the latest Gemini Flash); the key is the `GEMINI_API_KEY` secret.
+
 ## Use it from an AI client (MCP)
 
 The archive can be connected to Claude Desktop or any MCP client. Add this to the client's MCP configuration:

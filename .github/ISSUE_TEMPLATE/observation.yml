@@ -1,0 +1,47 @@
+name: New observation
+description: Add an interface you met in everyday life. Photos are processed automatically and a draft entry is opened for review.
+title: "Observation: "
+labels: ["observation"]
+body:
+  - type: textarea
+    id: photos
+    attributes:
+      label: Photos or screenshots
+      description: Drag images here, in the order of the steps. Personal data is blurred automatically, but check the draft before it is published.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: What happened
+      description: One or two lines in any language. What you were doing, what was unusual, what you could not do.
+      placeholder: Ordering at a kiosk in a ramen shop; could not pay with a foreign card.
+    validations:
+      required: true
+  - type: input
+    id: place
+    attributes:
+      label: Place
+      placeholder: Daejeon, Eunhaeng-dong
+  - type: input
+    id: date
+    attributes:
+      label: Date
+      placeholder: 2026-10-29
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Not sure
+        - Digital
+        - Physical
+        - Services
+        - Systems
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: Rights
+      options:
+        - label: I took these photos or screenshots myself and agree to publish them in this archive.
+          required: true

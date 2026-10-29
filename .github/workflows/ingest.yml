@@ -1,0 +1,73 @@
+name: Ingest observation
+
+on:
+  issues:
+    types: [opened, labeled]
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: Issue number to process again
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: ingest-${{ github.event.issue.number || inputs.issue }}
+  cancel-in-progress: true
+
+jobs:
+  ingest:
+    # Owner and collaborators: runs on open. Anyone else: runs when the owner adds the "approved" label.
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (contains(github.event.issue.labels.*.name, 'observation') && (
+        (github.event.action == 'opened' && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)) ||
+        (github.event.action == 'labeled' && github.event.label.name == 'approved')
+      ))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow==11.0.0
+      - name: Process photos with Gemini
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue }}
+          REPO: ${{ github.repository }}
+        run: python scripts/ingest.py
+      - name: Open pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue }}
+        run: |
+          set -e
+          ID=$(cat .ingest/id)
+          BRANCH="observation/issue-${ISSUE_NUMBER}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BRANCH"
+          git add data/observations.json media/
+          git commit -m "Add observation ${ID} from issue #${ISSUE_NUMBER}"
+          git push -f origin "$BRANCH"
+          if gh pr view "$BRANCH" >/dev/null 2>&1; then
+            URL=$(gh pr view "$BRANCH" --json url -q .url)
+            gh pr edit "$BRANCH" --body-file .ingest/pr.md
+          elif URL=$(gh pr create --head "$BRANCH" --title "Observation ${ID}: $(cat .ingest/title)" --body-file .ingest/pr.md); then
+            :
+          else
+            URL="https://github.com/${GITHUB_REPOSITORY}/compare/main...${BRANCH}?expand=1"
+          fi
+          gh issue comment "$ISSUE_NUMBER" --body "Draft entry ${ID} is ready for review: ${URL}. Check the blurred areas and the text, then merge to publish."
+      - name: Report failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue }}
+        run: gh issue comment "$ISSUE_NUMBER" --body "Processing failed. Details are in the Actions log: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
