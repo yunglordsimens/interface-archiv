@@ -63,9 +63,13 @@
 
   <section id="login" class="stack" hidden style="max-width:420px">
     <h1>Inbox</h1>
-    <p class="muted">Sign in with your email. A one-time link will be sent to it.</p>
+    <p class="muted">Sign in with your email. A one-time code will be sent to it.</p>
     <label class="field"><span>Email</span><input id="email" type="email" autocomplete="email"></label>
-    <button class="primary" id="sendLink">Send sign-in link</button>
+    <button class="primary" id="sendLink">Send sign-in code</button>
+    <div class="stack" id="codeBox" hidden>
+      <label class="field"><span>Code from the email</span><input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10"></label>
+      <button class="primary" id="verify">Sign in</button>
+    </div>
     <p class="muted small" id="loginMsg"></p>
   </section>
 
@@ -115,9 +119,21 @@
   }
   el("email").value = ARCHIVE.owner;
   el("sendLink").addEventListener("click", async function () {
-    var r = await sb.auth.signInWithOtp({ email: el("email").value.trim(), options: { emailRedirectTo: location.origin + location.pathname } });
-    el("loginMsg").textContent = r.error ? r.error.message : "Link sent. Open it on this device.";
+    el("sendLink").disabled = true;
+    var r = await sb.auth.signInWithOtp({ email: el("email").value.trim(), options: { emailRedirectTo: location.origin + location.pathname, shouldCreateUser: false } });
+    el("sendLink").disabled = false;
+    if (r.error) { el("loginMsg").textContent = r.error.message; return; }
+    el("codeBox").hidden = false; el("code").focus();
+    el("loginMsg").textContent = "Code sent. Type it here. The email can only be used once.";
   });
+  el("verify").addEventListener("click", async function () {
+    var r = await sb.auth.verifyOtp({ email: el("email").value.trim(), token: el("code").value.trim(), type: "email" });
+    el("loginMsg").textContent = r.error ? r.error.message + ". Request a new code." : "Signed in.";
+  });
+  (function () {
+    var h = new URLSearchParams(location.hash.replace(/^#/, ""));
+    if (h.get("error_description")) el("loginMsg").textContent = h.get("error_description") + ". Request a new code below.";
+  })();
   el("signout").addEventListener("click", async function () { await sb.auth.signOut(); location.reload(); });
   sb.auth.onAuthStateChange(function (ev) { if (ev === "SIGNED_IN" || ev === "SIGNED_OUT") boot(); });
 
