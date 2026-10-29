@@ -41,7 +41,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue }}
           REPO: ${{ github.repository }}
-        run: python scripts/ingest.py
+        run: |
+          set -o pipefail
+          mkdir -p .ingest
+          python scripts/ingest.py 2>&1 | tee .ingest/log.txt
       - name: Open pull request
         env:
           GH_TOKEN: ${{ github.token }}
@@ -71,4 +74,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue }}
         run: |
-          gh issue comment "$ISSUE_NUMBER" --body "Processing failed. Details are in the Actions log: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          {
+            echo "Processing failed. Last lines of the log:"
+            echo '```'
+            tail -n 15 .ingest/log.txt 2>/dev/null || echo "(no log)"
+            echo '```'
+            echo "Full log: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          } > .ingest/fail.md 2>/dev/null || true
+          gh issue comment "$ISSUE_NUMBER" --body-file .ingest/fail.md
