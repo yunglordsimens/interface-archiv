@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-29",
+  "updated": "2026-10-30",
   "observations": [
     {
       "id": "001",
@@ -604,6 +604,356 @@
         "patterns": []
       },
       "submitted_via": "inbox:84e6b059-58be-4576-a240-b6967124010e"
+    },
+    {
+      "id": "005",
+      "title": "University library seat reservation kiosk and mobile app",
+      "subject": "cnu-library",
+      "category": "Digital",
+      "country": "KR",
+      "service": "Chungnam National University",
+      "place": "",
+      "date": "2026-10-17",
+      "scenario": "A university student uses a mobile app and on-site touchscreen kiosk to authenticate, reserve reading room seats, and pass through access gates.",
+      "access": {
+        "requires": [
+          "University student credentials to log into the library app",
+          "Student ID card or dynamic mobile QR card for kiosk and gate authentication"
+        ],
+        "unverified": [
+          "Can visitors without university affiliation obtain a daily pass without a Korean resident registration or phone number?"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/005-1.jpg",
+          "caption": "KakaoTalk chat discussing midterm study chapters and cyber campus",
+          "hash": "d11f0b13630b134b"
+        },
+        {
+          "src": "media/005-2.jpg",
+          "caption": "TikTok Tako AI chat advice on walking workout",
+          "hash": "86c8908084a88083"
+        },
+        {
+          "src": "media/005-3.jpg",
+          "caption": "TikTok Tako AI chat advice continuation",
+          "hash": "8680a48884848443"
+        },
+        {
+          "src": "media/005-4.jpg",
+          "caption": "TikTok well-being box breathing screen",
+          "hash": "870719074f05270f"
+        },
+        {
+          "src": "media/005-5.jpg",
+          "caption": "TikTok Time and well-being sound and breathing menu",
+          "hash": "e0f09e9c8e968cb4"
+        },
+        {
+          "src": "media/005-6.jpg",
+          "caption": "TikTok Time and well-being daily affirmation selection",
+          "hash": "d8c89898a2e0ba9e"
+        },
+        {
+          "src": "media/005-7.jpg",
+          "caption": "TikTok prompt to choose affirmation keywords",
+          "hash": "9ed1f12d017afa92"
+        },
+        {
+          "src": "media/005-8.jpg",
+          "caption": "Google Lens translation of library QR access gate guidelines",
+          "hash": "9b0b0fb6b60885a4"
+        },
+        {
+          "src": "media/005-9.jpg",
+          "caption": "Google Lens translation of daily pass QR code poster",
+          "hash": "0f0b90792123c4a4"
+        },
+        {
+          "src": "media/005-10.jpg",
+          "caption": "Notice on issuing daily passes via QR code at library counter",
+          "hash": "4ce8b2692933f270"
+        },
+        {
+          "src": "media/005-11.jpg",
+          "caption": "Chungnam National University Library mobile app main screen",
+          "hash": "9eecac929619aa8c"
+        },
+        {
+          "src": "media/005-12.jpg",
+          "caption": "App Store listing for Chungnam National University Library app",
+          "hash": "9eb4a5b296b60eb1"
+        },
+        {
+          "src": "media/005-13.jpg",
+          "caption": "Shopping promotion popup with discount banner",
+          "hash": "610a0f4b4959c815"
+        },
+        {
+          "src": "media/005-14.jpg",
+          "caption": "Payment completed screen on emart24 self-checkout POS",
+          "hash": "0d27270d2fa3b292"
+        },
+        {
+          "src": "media/005-15.jpg",
+          "caption": "Chungjeon Dwaeji power bank rental kiosk at convenience store",
+          "hash": "9d059f9f94948483"
+        },
+        {
+          "src": "media/005-16.jpg",
+          "caption": "Unmanned parcel scale and registration kiosk at emart24",
+          "hash": "1d8d8bcc4c8868f9"
+        },
+        {
+          "src": "media/005-17.jpg",
+          "caption": "Prepaid gift card display stand in retail store",
+          "hash": "79d35961493362b2"
+        },
+        {
+          "src": "media/005-18.jpg",
+          "caption": "Grocery store window poster with Kakao open chat room QR code",
+          "hash": "c9c3031f39383a7e"
+        },
+        {
+          "src": "media/005-19.jpg",
+          "caption": "Unmanned convenience store self-checkout counter and notice board",
+          "hash": "c2d3d34f074ad191"
+        },
+        {
+          "src": "media/005-20.jpg",
+          "caption": "Takoyaki shop storefront with order kiosk visible inside",
+          "hash": "b1b066c4448d8485"
+        },
+        {
+          "src": "media/005-21.jpg",
+          "caption": "Storefront door of takoyaki shop",
+          "hash": "1b7bb9352d4dc9e3"
+        },
+        {
+          "src": "media/005-22.jpg",
+          "caption": "Isaac Toast store entrance with order kiosk inside",
+          "hash": "7d43cd59e5e5e9cd"
+        },
+        {
+          "src": "media/005-23.jpg",
+          "caption": "Isaac Toast ordering kiosk through front window",
+          "hash": "5b076c6ecc747071"
+        },
+        {
+          "src": "media/005-24.jpg",
+          "caption": "Isaac Toast entrance and payment service signage",
+          "hash": "7d43cd7971e561c9"
+        },
+        {
+          "src": "media/005-25.jpg",
+          "caption": "Paik's Coffee storefront with hygiene certificate and kiosks",
+          "hash": "3e032b3831393126"
+        },
+        {
+          "src": "media/005-26.jpg",
+          "caption": "Paik's Coffee ordering kiosks with beverage menu promos",
+          "hash": "a810153796363636"
+        },
+        {
+          "src": "media/005-27.jpg",
+          "caption": "Frozen bread and food items in convenience store freezer",
+          "hash": "9b33b632b747c2d1"
+        },
+        {
+          "src": "media/005-28.jpg",
+          "caption": "Cafeteria meal tray with rice, stew, and side dishes",
+          "hash": "3a3a13311c4c4c24"
+        },
+        {
+          "src": "media/005-29.jpg",
+          "caption": "Payment completed confirmation on emart24 self POS",
+          "hash": "f33f1b0b23230393"
+        },
+        {
+          "src": "media/005-30.jpg",
+          "caption": "CJ Logistics text message confirming parcel delivery at dormitory shelf",
+          "hash": "92918089d2f28890"
+        },
+        {
+          "src": "media/005-31.jpg",
+          "caption": "Desk with prepared instant noodles and boiled egg",
+          "hash": "1655874b59bab8b8"
+        },
+        {
+          "src": "media/005-32.jpg",
+          "caption": "Chungnam National University library reading room seat reservation kiosk",
+          "hash": "391494f8d04b6971"
+        },
+        {
+          "src": "media/005-33.jpg",
+          "caption": "Close-up of university library seat reservation kiosk screen and controls",
+          "hash": "3b3137949ca4b258"
+        },
+        {
+          "src": "media/005-34.jpg",
+          "caption": "Quad-split CCTV monitor in unmanned store",
+          "hash": "3f00b266a6a0b82c"
+        },
+        {
+          "src": "media/005-35.jpg",
+          "caption": "Naver Map transit directions from university campus to Sungsimdang",
+          "hash": "868098844240234b"
+        },
+        {
+          "src": "media/005-36.jpg",
+          "caption": "Shelves and product display inside small community mart",
+          "hash": "83b20ad8ed66aeff",
+          "from_video": true,
+          "t": 0.5
+        },
+        {
+          "src": "media/005-37.jpg",
+          "caption": "Packaged snack shelves inside grocery shop",
+          "hash": "d177369296a33467",
+          "from_video": true,
+          "t": 4.5
+        },
+        {
+          "src": "media/005-38.jpg",
+          "caption": "Checkout counter and self-checkout kiosk in community mart",
+          "hash": "968d2d2f41c3f83e",
+          "from_video": true,
+          "t": 6.8
+        },
+        {
+          "src": "media/005-39.jpg",
+          "caption": "University library seat kiosk screen prompting card or QR scan",
+          "hash": "7de43232dcbab7b1",
+          "from_video": true,
+          "t": 0.5
+        },
+        {
+          "src": "media/005-40.jpg",
+          "caption": "User pressing numeric keypad on library seat kiosk",
+          "hash": "f3313039437ab3b2",
+          "from_video": true,
+          "t": 4.5
+        },
+        {
+          "src": "media/005-41.jpg",
+          "caption": "User interacting with prompt modal on library seat kiosk touchscreen",
+          "hash": "4732120fe3f26366",
+          "from_video": true,
+          "t": 7.0
+        },
+        {
+          "src": "media/005-42.jpg",
+          "caption": "Unmanned store kiosk displaying live camera feed of customer at checkout",
+          "hash": "91b1b464e68fa393",
+          "from_video": true,
+          "t": 0.0
+        },
+        {
+          "src": "media/005-43.jpg",
+          "caption": "Scanning promotional bundled ice cream item at self-checkout kiosk",
+          "hash": "a6f19989cc366626",
+          "from_video": true,
+          "t": 1.7
+        },
+        {
+          "src": "media/005-44.jpg",
+          "caption": "Item selected and total calculated on unmanned self POS screen",
+          "hash": "3d4640c9cdac86ce",
+          "from_video": true,
+          "t": 3.0
+        },
+        {
+          "src": "media/005-45.jpg",
+          "caption": "Card payment instructions displayed on unmanned checkout kiosk",
+          "hash": "86f8b86c6486466c",
+          "from_video": true,
+          "t": 5.0
+        }
+      ],
+      "observed": [
+        "The library kiosk features a touchscreen displaying '열람실 좌석 이용 신청' (Reading room seat reservation) and instructions to scan a student ID or QR code to log in.",
+        "The kiosk hardware includes an RFID card reader, a QR and barcode scanner, an accessible tactile numeric keypad, a headphone jack, a volume knob, assistance call and magnification buttons, and a motorized height adjustment switch.",
+        "The library mobile app provides a dynamic 'Mobile Card' QR code with a 60-second countdown timer alongside student enrollment details and local weather.",
+        "Entrance posters instruct users to scan a QR code with a smartphone camera to issue a daily pass ('일일이용증 발급 및 출입 안내').",
+        "The mobile application mixes English ('Seat Reservation', 'Mobile Loan', 'Loan History') with Korean text ('디자인창의학과', '재학')."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "The author interpreted the seat allocation request ('좌석 이용 신청') as purchasing tickets ('покупка билетов').",
+        "The partial English localization in the university app can cause confusion for international students despite selecting English as the interface language."
+      ],
+      "open": [
+        "Does the seat reservation kiosk support a full English interface mode when toggling the on-screen language selector?",
+        "How long does an allocated seat reservation remain active before expiring if the student fails to swipe into the reading room gate?"
+      ],
+      "sources": [],
+      "related": [],
+      "rights": "Own material. Personal data blurred automatically; reviewed before publication.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Kiosk authentication panel",
+            "action": "Scan student mobile QR code or tap RFID card on the reader",
+            "text_ko": "로그인하려면 QR코드 또는 학생증을 리더기에 스캔하세요",
+            "text_en": "To log in, please scan your QR code or student ID at the reader"
+          },
+          {
+            "n": 2,
+            "where": "Kiosk touchscreen",
+            "action": "Select seat usage application button",
+            "text_ko": "열람실 좌석 이용 신청",
+            "text_en": "Reading room seat application"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Language selector",
+            "role": "Toggles display language",
+            "text_ko": "언어 : KO",
+            "text_en": "Language: KO"
+          },
+          {
+            "name": "RFID card reader",
+            "role": "Scans physical student ID cards",
+            "text_ko": "RFID 신분증",
+            "text_en": "RFID ID card"
+          },
+          {
+            "name": "QR / barcode scanner",
+            "role": "Scans mobile student ID QR codes",
+            "text_ko": "QR / 바코드 신분증",
+            "text_en": "QR / barcode ID card"
+          },
+          {
+            "name": "Accessible keypad",
+            "role": "Physical numeric keypad for tactile interaction",
+            "text_ko": "키패드",
+            "text_en": "Keypad"
+          },
+          {
+            "name": "Help request button",
+            "role": "Calls library staff for assistance",
+            "text_ko": "도움요청",
+            "text_en": "Request help"
+          },
+          {
+            "name": "Screen magnification button",
+            "role": "Enlarges display content for accessibility",
+            "text_ko": "확대",
+            "text_en": "Magnify"
+          },
+          {
+            "name": "Height adjustment switch",
+            "role": "Adjusts the physical height of the kiosk for wheelchair accessibility",
+            "text_ko": "높낮이",
+            "text_en": "Height adjustment"
+          }
+        ],
+        "patterns": []
+      },
+      "submitted_via": "inbox:47af03e3-b279-428a-987e-283dc3c94e6e"
     }
   ],
   "author_access": [
@@ -704,6 +1054,12 @@
       "name": "Meta Club",
       "kind": "app",
       "operator": "Metaverse Lab",
+      "place": "Daejeon"
+    },
+    "cnu-library": {
+      "name": "Chungnam National University Library",
+      "kind": "service",
+      "operator": "Chungnam National University",
       "place": "Daejeon"
     }
   }
