@@ -297,8 +297,10 @@
     var date = sel.map(dayKey).sort()[0] || "";
     var vids = sel.filter(function (u) { return u.kind === "video"; });
     var level = "archive", orderMode = "time";
+    var autoSplit = sel.length >= 8;
     var html = '<div class="sheet" id="sheetBox"><h2>New observation · ' + sel.length + ' files</h2>' +
       '<div class="seg" role="group" aria-label="Order"><button type="button" data-order="time" aria-pressed="true">Order by time taken</button><button type="button" data-order="mine" aria-pressed="false">Order as I selected</button></div>' +
+      '<label class="check"><input type="checkbox" id="o-split"' + (autoSplit ? " checked" : "") + '><span>Split automatically into separate observations (by app, object and scenario). Use this for a mixed batch.</span></label>' +
       '<div class="seg" role="group" aria-label="Level"><button type="button" data-level="archive" aria-pressed="true">Archive (public after review)</button><button type="button" data-level="private" aria-pressed="false">Private note</button></div>' +
       '<label class="field"><span>What happened</span><textarea id="o-ctx">' + esc(notes) + '</textarea></label>' +
       '<div class="row" style="align-items:stretch"><label class="field" style="flex:2;min-width:200px"><span>Place</span><input id="o-place" type="text" value="' + esc(places[0] || "") + '"></label>' +
@@ -336,6 +338,7 @@
       var gid = uuid();
       var g = await sb.from("groups").insert({
         id: gid, source: "owner", level: level, status: "queued", consent: true, order_mode: orderMode,
+        split: level === "archive" && el("o-split").checked,
         context: el("o-ctx").value.trim(), place: el("o-place").value.trim(), date: el("o-date").value, category: el("o-cat").value
       });
       if (g.error) { el("o-go").disabled = false; return toast(g.error.message, 5000); }
@@ -381,10 +384,12 @@
           '<div class="thumbs">' + groupItems(g).map(small).join("") + '</div>' +
           (g.pr_url && g.status === "in_review" ? '<a href="' + esc(g.pr_url) + '" target="_blank" rel="noopener">Review the draft on GitHub</a>' : "") +
           (g.error ? '<p class="small ' + (g.status === "failed" ? "status-bad" : "status-warn") + '">' + esc(g.error) + '</p>' : "") +
+          (g.status === "published" && g.level === "archive" && g.entry_id && g.entry_id.indexOf(",") < 0 ? '<div><button data-split="' + g.id + '">Split into separate observations</button></div>' : "") +
           (busy ? "" : '<div class="row">' +
             (g.status === "failed" ? '<button data-retry="' + g.id + '">Try again</button>' : "") +
             (offTopic ? '<button data-force="' + g.id + '">Process anyway</button>' : "") +
             '<button data-back="' + g.id + '">Back to New</button>' +
+            (g.level === "archive" && (g.status === "in_review" || g.status === "failed") ? '<button data-split="' + g.id + '">Split into separate observations</button>' : "") +
             '<button data-drop="' + g.id + '">Discard</button></div>') +
           '</div>';
       }).join("") + '</div>';
@@ -397,6 +402,21 @@
     });
     el("view").querySelectorAll("[data-retry]").forEach(function (b) {
       b.addEventListener("click", async function () { await sb.from("groups").update({ status: "queued", error: null }).eq("id", b.getAttribute("data-retry")); toast("Queued again"); load(); });
+    });
+    el("view").querySelectorAll("[data-split]").forEach(function (b) {
+      b.addEventListener("click", async function () {
+        var g = groups.find(function (x) { return x.id === b.getAttribute("data-split"); });
+        var gid = uuid(), published = g.status === "published";
+        var r = await sb.from("groups").insert({
+          id: gid, source: g.source, level: "archive", status: "queued", consent: true, split: true, force: g.force,
+          replaces: published ? g.entry_id : null, context: g.context, place: g.place, date: g.date, category: g.category,
+          guest_name: g.guest_name, guest_contact: g.guest_contact
+        });
+        if (r.error) return toast(r.error.message, 5000);
+        await sb.from("uploads").update({ group_id: gid }).eq("group_id", g.id);
+        await sb.from("groups").update({ status: published ? "declined" : "cancelled" }).eq("id", g.id);
+        toast(published ? "Queued: the published entry will be replaced by its parts after you merge" : "Queued for splitting"); load();
+      });
     });
     el("view").querySelectorAll("[data-force]").forEach(function (b) {
       b.addEventListener("click", async function () { await sb.from("groups").update({ status: "queued", error: null, force: true }).eq("id", b.getAttribute("data-force")); toast("Queued; the topic check is skipped"); load(); });
@@ -456,7 +476,7 @@
   function renderNotes() {
     var list = groups.filter(function (g) { return g.level === "private" && g.status === "done"; });
     if (!list.length) { el("view").innerHTML = '<p class="muted">No private notes yet. When making an observation, choose Private note.</p>'; return; }
-    var LABELS = { kind_of_place: "Kind of place", setup: "How it is set up", payment: "Payment", staffing: "Staffing", hours_and_access: "Hours and access", prices_seen: "Prices seen", how_it_likely_earns: "How it likely earns (hypotheses)", exists_at_home: "Does it exist in Czechia / the EU? (to check)", ideas: "Ideas", observed: "Observed", open: "Open questions" };
+    var LABELS = { kind_of_place: "Kind of place", setup: "How it is set up", payment: "Payment", staffing: "Staffing", hours_and_access: "Hours and access", prices_seen: "Prices seen", how_it_likely_earns: "How it likely earns (hypotheses)", exists_at_home: "Does it exist in Czechia / the EU? (to check)", ideas: "Ideas", what_ofst_could_offer: "What OFST could offer", observed: "Observed", open: "Open questions" };
     el("view").innerHTML = '<div class="list">' + list.map(function (g) {
       var n = (g.result && g.result.note) || {};
       var body = Object.keys(LABELS).map(function (k) {

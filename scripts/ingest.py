@@ -37,6 +37,7 @@ except ImportError:
 DATA = "data/observations.json"
 OUT = ".ingest"
 MODELS = list(dict.fromkeys(m for m in [os.environ.get("GEMINI_MODEL"), "gemini-flash-latest", "gemini-2.5-flash", "gemini-flash-lite-latest"] if m))
+LAYERS = ("discovery", "communication", "payment", "delivery", "unattended")
 DUP_DISTANCE = 10          # max differing bits (of 64) to call two images near-duplicates
 MAX_FRAMES_PER_VIDEO = 6
 MAX_CLIP_SECONDS = 20
@@ -205,6 +206,8 @@ Return ONLY a JSON object, no prose, with this shape:
                 "kind": "store | app | website | device | service | place",
                 "operator": "brand or company, if visible", "place": "city or area, if known"},
     "category": "Digital | Physical | Services | Systems",
+    "layers": ["one or more of: discovery (how businesses are found: maps, listings, blogs, reviews), communication (how businesses talk to customers: KakaoTalk channels, notifications), payment (how people pay), delivery (ordering for delivery, couriers, tracking), unattended (no seller: kiosks, self-checkouts, vending, unmanned shops, laundries, convenience stores). Most relevant first"],
+    "barrier": {"is_barrier": false, "what": "true only if the material or the author shows something the author could NOT do as a foreigner (no Korean phone number, no ARC, foreign card refused, identity verification); describe what was blocked"},
     "service": "brand or operator if visible, else ''",
     "scenario": "one sentence: what a person does here",
     "access": {"requires": ["only requirements that are visible or stated by the author"],
@@ -448,6 +451,8 @@ def build_archive_entry(files, meta, d, submitted_via, audio=None):
         "place": meta.get("place") or "",
         "date": meta.get("date") or None,
         "scenario": e.get("scenario", ""),
+        "layers": [x for x in (e.get("layers") or []) if x in LAYERS] or None,
+        "barrier": (e.get("barrier") or {}).get("what") if (e.get("barrier") or {}).get("is_barrier") else None,
         "access": e.get("access", {"requires": [], "unverified": []}),
         "media": media,
         "observed": e.get("observed", []),
@@ -484,6 +489,60 @@ def build_archive_entry(files, meta, d, submitted_via, audio=None):
     return entry, lines, summary
 
 
+SPLIT_PROMPT = """These files come from one upload batch, in time order (index from 0). Group them into separate observations
+for an archive of everyday interfaces in South Korea. One observation = one app, website, device, place or service AND one
+scenario. Screens of the same app in one flow belong together; a different app or a different physical object is a new group.
+A photo of a device and screenshots of the app that controls it may go together if they are one flow.
+Return ONLY JSON: {"groups": [{"files": [0, 1, 2], "label": "short description"}], "unrelated": [indexes that show no interface]}
+Every index appears exactly once. Keep time order inside each group."""
+
+
+def thumb_for_split(f):
+    kind, val = classify(f["raw"])
+    if kind == "image":
+        return val
+    tmp = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
+    tmp.write(f["raw"])
+    tmp.close()
+    start = (f.get("trim") or (None, None))[0] or 0
+    return frame_at(tmp.name, float(start) + 0.5)
+
+
+def plan_split(files, context=""):
+    """Ask Gemini how a batch splits into observations. Returns (groups, unrelated); groups are lists of indexes."""
+    parts = [{"text": SPLIT_PROMPT + "\n\nAuthor's note for the whole batch: " + (context or "none")}]
+    for i, f in enumerate(files):
+        im = thumb_for_split(f)
+        im.thumbnail((512, 512))
+        parts += [{"text": f"file {i}"}, image_part(im)]
+    res = gemini(parts, "MOCK_SPLIT")
+    n, seen, groups = len(files), set(), []
+    for g in res.get("groups", []):
+        idx = [i for i in g.get("files", []) if isinstance(i, int) and 0 <= i < n and i not in seen]
+        seen.update(idx)
+        if idx:
+            groups.append({"files": sorted(idx), "label": g.get("label", "")})
+    unrelated = [i for i in res.get("unrelated", []) if isinstance(i, int) and 0 <= i < n and i not in seen]
+    seen.update(unrelated)
+    rest = [i for i in range(n) if i not in seen]
+    if rest:
+        groups.append({"files": rest, "label": "remaining files"})
+    return groups, unrelated
+
+
+def remove_entry(d, eid):
+    """Remove an entry (replaced by a split) and return its media paths."""
+    keep, removed = [], []
+    for o in d["observations"]:
+        if o["id"] == eid:
+            removed = [m["src"] for m in o.get("media", [])]
+        else:
+            o["related"] = [r for r in o.get("related", []) if r != eid]
+            keep.append(o)
+    d["observations"] = keep
+    return removed
+
+
 NOTE_PROMPT = """You help the author keep PRIVATE field notes about places and small businesses in South Korea
 (vending machines, unmanned shops, laundries, kiosks, photo booths and similar). Return ONLY JSON:
 {"note": {
@@ -498,6 +557,7 @@ NOTE_PROMPT = """You help the author keep PRIVATE field notes about places and s
   "how_it_likely_earns": ["hypotheses about the business model, each clearly a hypothesis"],
   "exists_at_home": ["questions to check whether this exists in Czechia or the EU"],
   "ideas": ["short business ideas this suggests, marked as ideas"],
+  "what_ofst_could_offer": ["what a small design and web studio could build or sell to a European business wanting a setup like this, marked as ideas"],
   "open": ["questions to research"]
 }}
 Write in English. Keep Korean text verbatim when quoting signs. Do not invent numbers or facts that are not visible or said.

@@ -56,6 +56,7 @@ nav { flex-wrap: wrap; }
 .filters { display: flex; gap: 6px 20px; flex-wrap: wrap; }
 .filters button { color: var(--muted); }
 .filters button[aria-pressed="true"] { color: var(--fg); font-weight: 700; }
+.filters button:disabled { opacity: 0.4; cursor: default; }
 .filters .n { font-size: var(--s-sm); margin-left: 4px; font-variant-numeric: tabular-nums; }
 #q { font: inherit; color: var(--fg); background: var(--field); border: 0; border-radius: 0; padding: 8px 12px; width: 16rem; max-width: 100%; }
 #q::placeholder { color: var(--muted); }
@@ -115,6 +116,7 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
     <a class="name" href="#">Korea Interface Archive</a>
     <nav>
       <a href="#" id="nav-archive">Archive</a>
+      <a href="#layers" id="nav-layers">Layers</a>
       <a href="#patterns" id="nav-patterns">Patterns</a>
       <a href="#index" id="nav-index">Index</a>
       <a href="#about" id="nav-about">About</a>
@@ -135,7 +137,9 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
 <script>
 (function () {
   var DATA = null, filter = "All", query = "";
-  var ORDER = ["Digital", "Physical", "Services", "Systems"];
+  var LAYER_ORDER = ["discovery", "communication", "payment", "delivery", "unattended"];
+  var SHORT = { discovery: "Discovery", communication: "Communication", payment: "Payment", delivery: "Delivery", unattended: "No seller", barriers: "Barriers" };
+  function inLayer(o, l) { return l === "barriers" ? !!o.barrier : (o.layers || []).indexOf(l) >= 0; }
   var view = document.getElementById("view");
 
   function esc(s) {
@@ -148,7 +152,7 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
   function city(p) { return (p || "").split(",")[0]; }
 
   function matches(o) {
-    if (filter !== "All" && o.category !== filter) return false;
+    if (filter !== "All" && !inLayer(o, filter)) return false;
     if (!query) return true;
     var hay = [o.title, o.service, o.place, o.category, o.scenario, subjectName(o.subject)].concat(o.observed || [], o.open || []).join(" ").toLowerCase();
     return hay.indexOf(query) !== -1;
@@ -156,18 +160,17 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
 
   function renderArchive() {
     var obs = DATA.observations;
-    var cats = ORDER.filter(function (c) { return obs.some(function (o) { return o.category === c; }); });
-    obs.forEach(function (o) { if (cats.indexOf(o.category) === -1) cats.push(o.category); });
-    var count = function (c) { return obs.filter(function (o) { return c === "All" || o.category === c; }).length; };
+    var cats = LAYER_ORDER.concat(["barriers"]);
+    var count = function (c) { return obs.filter(function (o) { return c === "All" || inLayer(o, c); }).length; };
     var list = obs.filter(matches);
 
     view.innerHTML =
       '<div style="display:flex;flex-direction:column;gap:40px">' +
         '<div class="intro"><h1>South Korea interface archive</h1>' +
         '<p>Digital and physical interfaces of everyday life in South Korea, documented on site. ' + obs.length + ' observations so far.</p></div>' +
-        '<div class="tools"><div class="filters" role="group" aria-label="Category">' +
+        '<div class="tools"><div class="filters" role="group" aria-label="Layer">' +
           ["All"].concat(cats).map(function (c) {
-            return '<button type="button" data-cat="' + esc(c) + '" aria-pressed="' + (c === filter) + '">' + esc(c) + '<span class="n">' + count(c) + '</span></button>';
+            return '<button type="button" data-cat="' + esc(c) + '" aria-pressed="' + (c === filter) + '"' + (c !== "All" && !count(c) ? " disabled" : "") + '>' + esc(SHORT[c] || c) + '<span class="n">' + count(c) + '</span></button>';
           }).join("") +
         '</div><input id="q" type="search" placeholder="Search" aria-label="Search observations" value="' + esc(query) + '"></div>' +
         (list.length
@@ -192,8 +195,41 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
     return '<a class="card" href="#o-' + esc(o.id) + '">' +
       '<div class="img">' + (m ? '<img src="' + esc(m.src) + '" alt="' + esc(o.title) + '" loading="lazy">' : "") + '</div>' +
       '<div><div class="t">' + esc(o.title) + '</div>' +
-      '<div class="m">' + esc(o.category) + ' · ' + esc(city(o.place)) + ' · ' + esc(dateText(o.date)) + '</div></div></a>';
+      '<div class="m">' + esc(layerText(o)) + ' · ' + esc(city(o.place)) + ' · ' + esc(dateText(o.date)) + '</div></div></a>';
   }
+  function layerText(o) { return (o.layers || []).length ? SHORT[o.layers[0]] : (o.category || ""); }
+
+  function renderLayers() {
+    var L = DATA.layers || {};
+    view.innerHTML = '<div class="about"><div class="intro"><h1>Layers</h1><p>The archive follows five layers of everyday infrastructure. For each layer: who owns it, how a small business connects to it, and what takes its place in Europe.</p></div>' +
+      '<ul class="plist">' + LAYER_ORDER.map(function (k) {
+        var x = L[k] || {}, n = DATA.observations.filter(function (o) { return inLayer(o, k); }).length;
+        return '<li><a href="#l-' + k + '">' + esc(x.label || k) + '</a> <span class="small">' + n + '</span><div class="small">' + esc(x.examples || "") + '</div></li>';
+      }).join("") +
+      '<li><a href="#barriers">Verification wall</a> <span class="small">' + DATA.observations.filter(function (o) { return o.barrier; }).length + '</span><div class="small">What a foreigner without a Korean number or residence card cannot do</div></li></ul></div>';
+    window.scrollTo(0, 0);
+  }
+
+  function renderLayer(k) {
+    var x = DATA.layers[k], a = x.analysis || {};
+    var Q = [["owner", "Who owns it"], ["small_business", "How a small business connects"], ["europe", "What takes its place in Europe"]];
+    view.innerHTML = '<div class="item"><a class="back" href="#layers">← Layers</a>' +
+      '<div class="intro"><h1>' + esc(x.label) + '</h1><p>' + esc(x.description) + '</p></div>' +
+      '<div class="facts">' + Q.map(function (q) {
+        return '<section><h2>' + esc(q[1]) + '</h2>' + (a[q[0]] ? '<p style="max-width:38rem">' + esc(a[q[0]]) + '</p><p class="small" style="margin-top:6px">Author\'s analysis</p>' : '<p class="none">Not written yet.</p>') + '</section>';
+      }).join("") + '</div>' +
+      '<div class="grid">' + DATA.observations.filter(function (o) { return inLayer(o, k); }).map(cardHTML).join("") + '</div></div>';
+    window.scrollTo(0, 0);
+  }
+
+  function renderBarriers() {
+    var list = DATA.observations.filter(function (o) { return o.barrier; });
+    view.innerHTML = '<div class="item"><a class="back" href="#layers">← Layers</a>' +
+      '<div class="intro"><h1>Verification wall</h1><p>Things the author could not do as a foreigner: without a Korean phone number, without a residence card, with a foreign card. Recorded as observations in their own right.</p></div>' +
+      (list.length ? '<div class="grid">' + list.map(cardHTML).join("") + '</div>' : '<p class="empty">No barriers recorded yet.</p>') + '</div>';
+    window.scrollTo(0, 0);
+  }
+
   function subjectName(id) { var x = id && (DATA.subjects || {})[id]; return x ? x.name : ""; }
   function withSubject(id) { return DATA.observations.filter(function (o) { return o.subject === id; }); }
   var KINDS = { store: "Stores", app: "Apps", website: "Websites", device: "Devices", service: "Services", place: "Places" };
@@ -276,7 +312,8 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
       '<article class="item">' +
         '<a class="back" href="#">← Archive</a>' +
         '<div><h1>' + esc(o.title) + '</h1>' +
-        '<p class="meta">' + esc(o.category) + ' · ' + esc(o.service) + ' · ' + esc(o.place) + ' · ' + esc(dateText(o.date)) + '</p>' +
+        '<p class="meta">' + (o.layers || []).map(function (l) { return '<a href="#l-' + esc(l) + '">' + esc(SHORT[l] || l) + '</a>'; }).join(", ") + (o.layers && o.layers.length ? ' · ' : '') + esc([o.service, o.place, dateText(o.date)].filter(Boolean).join(" · ")) + '</p>' +
+        (o.barrier ? '<p class="meta"><a href="#barriers">Barrier</a>: ' + esc(o.barrier) + '</p>' : '') +
         (o.subject && DATA.subjects && DATA.subjects[o.subject] ? '<p class="meta">Part of <a href="#s-' + esc(o.subject) + '">' + esc(subjectName(o.subject)) + '</a>' + (withSubject(o.subject).length > 1 ? ' · ' + withSubject(o.subject).length + ' observations' : '') + '</p>' : '') + '</div>' +
         '<p class="scenario">' + esc(o.scenario) + '</p>' +
         '<div class="media">' + (o.media || []).map(function (m) {
@@ -333,8 +370,8 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
   function route() {
     if (!DATA) return;
     var h = location.hash.replace(/^#/, "");
-    var section = h === "about" ? "about" : (h === "patterns" || /^p-/.test(h)) ? "patterns" : (h === "index" || /^s-/.test(h)) ? "index" : "archive";
-    ["archive", "patterns", "index", "about"].forEach(function (s) {
+    var section = h === "about" ? "about" : (h === "patterns" || /^p-/.test(h)) ? "patterns" : (h === "index" || /^s-/.test(h)) ? "index" : (h === "layers" || h === "barriers" || /^l-/.test(h)) ? "layers" : "archive";
+    ["archive", "layers", "patterns", "index", "about"].forEach(function (s) {
       var a = document.getElementById("nav-" + s);
       if (s === section) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
     });
@@ -345,6 +382,9 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
     else if (pm && DATA.patterns && DATA.patterns[pm[1]]) { renderPattern(pm[1]); document.title = DATA.patterns[pm[1]].label + " · Korea Interface Archive"; }
     else if (h === "patterns") { renderPatterns(); document.title = "Patterns · Korea Interface Archive"; }
     else if (h === "index") { renderIndex(); document.title = "Index · Korea Interface Archive"; }
+    else if (h === "layers") { renderLayers(); document.title = "Layers · Korea Interface Archive"; }
+    else if (h === "barriers") { renderBarriers(); document.title = "Verification wall · Korea Interface Archive"; }
+    else if (/^l-/.test(h) && DATA.layers && DATA.layers[h.slice(2)]) { renderLayer(h.slice(2)); document.title = DATA.layers[h.slice(2)].label + " · Korea Interface Archive"; }
     else if (/^s-/.test(h) && DATA.subjects && DATA.subjects[h.slice(2)]) { renderSubject(h.slice(2)); document.title = DATA.subjects[h.slice(2)].name + " · Korea Interface Archive"; }
     else if (h === "about") { renderAbout(); document.title = "About · Korea Interface Archive"; }
     else { renderArchive(); document.title = "Korea Interface Archive"; }

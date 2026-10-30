@@ -101,16 +101,53 @@ def process_archive(g, files, audio):
         meta["rights"] = "Contributed by a guest who confirmed they took the material. Personal data blurred automatically; reviewed before publication."
         if g.get("guest_name"):
             meta["contributor"] = g["guest_name"]
-    entry, lines, summary = ingest.build_archive_entry(files, meta, d, f"inbox:{g['id']}", audio)
+    via = f"inbox:{g['id']}"
+    body, entries, notes = [], [], []
+
+    if g.get("split"):
+        groups, unrelated = ingest.plan_split(files, meta["context"])
+        if unrelated:
+            notes.append(f"Left out as unrelated: files {', '.join(str(i + 1) for i in unrelated)}.")
+        for k, grp in enumerate(groups):
+            sub = [files[i] for i in grp["files"]]
+            m = dict(meta, context=(meta["context"] + "\n" if meta["context"] else "") + f"This part of the batch: {grp['label']}")
+            try:
+                entry, lines, summary = ingest.build_archive_entry(sub, m, d, via, audio)
+            except SystemExit as e:
+                notes.append(f"Part {k + 1} ({grp['label']}, files {', '.join(str(i + 1) for i in grp['files'])}) skipped: {e}")
+                continue
+            entries.append(entry)
+            body += [f"# Part {k + 1}: files {', '.join(str(i + 1) for i in grp['files'])}", ""] + lines + [""]
+            if summary:
+                notes.append(f"{entry['id']}: {summary}")
+        if not entries:
+            raise SystemExit("Nothing could be built from this batch. " + " ".join(notes))
+    else:
+        entry, lines, summary = ingest.build_archive_entry(files, meta, d, via, audio)
+        entries.append(entry)
+        body += lines
+        if summary:
+            notes.append(summary)
+
+    removed = []
+    if g.get("replaces"):
+        removed = ingest.remove_entry(d, g["replaces"])
+        body = [f"Replaces entry {g['replaces']}, which is removed together with its images.", ""] + body
     with open(ingest.DATA, "w", encoding="utf-8") as f:
         json.dump(d, f, ensure_ascii=False, indent=2)
         f.write("\n")
+    for path in removed:
+        git("rm", "-q", "--ignore-unmatch", path, check=False)
     git("add", ingest.DATA, "media/")
-    git("commit", "-m", f"Add observation {entry['id']} from inbox")
+    ids = [e["id"] for e in entries]
+    label = ids[0] if len(ids) == 1 else f"{ids[0]}–{ids[-1]}"
+    git("commit", "-m", f"Add observation{'s' if len(ids) > 1 else ''} {label} from inbox")
     git("push", "-f", "origin", branch)
-    body = "\n".join(lines)
-    title = f"Observation {entry['id']}: {entry['title']}"
-    pr = subprocess.run(["gh", "pr", "create", "--head", branch, "--base", "main", "--title", title, "--body", body],
+    if notes:
+        body = ["### Notes", *[f"- {n}" for n in notes], ""] + body
+    title = (f"Observation {ids[0]}: {entries[0]['title']}" if len(ids) == 1
+             else f"Observations {label}: {len(ids)} parts of one batch")
+    pr = subprocess.run(["gh", "pr", "create", "--head", branch, "--base", "main", "--title", title, "--body", "\n".join(body)],
                         capture_output=True, text=True)
     if pr.returncode == 0:
         url = pr.stdout.strip().splitlines()[-1]
@@ -118,9 +155,10 @@ def process_archive(g, files, audio):
         existing = subprocess.run(["gh", "pr", "view", branch, "--json", "url", "-q", ".url"], capture_output=True, text=True)
         url = existing.stdout.strip() or f"https://github.com/{REPO}/compare/main...{branch}?expand=1"
     git("checkout", "main")
-    patch_group(g["id"], {"status": "in_review", "entry_id": entry["id"], "title": entry["title"], "pr_url": url,
-                          "error": summary or None})
-    print(f"draft {entry['id']}: {url}")
+    patch_group(g["id"], {"status": "in_review", "entry_id": ",".join(ids),
+                          "title": entries[0]["title"] if len(ids) == 1 else f"{len(ids)} observations: " + "; ".join(e["title"] for e in entries)[:300],
+                          "pr_url": url, "error": " ".join(notes)[:500] or None})
+    print(f"draft {label}: {url}")
 
 
 def process_private(g, files, audio):

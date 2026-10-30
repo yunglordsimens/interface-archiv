@@ -145,7 +145,12 @@
           "age-restricted-handoff"
         ]
       },
-      "subject": "emart24-cnu"
+      "subject": "emart24-cnu",
+      "layers": [
+        "unattended",
+        "payment"
+      ],
+      "barrier": null
     },
     {
       "id": "002",
@@ -262,7 +267,12 @@
           "recycling-instruction"
         ]
       },
-      "subject": "hanjin-express"
+      "subject": "hanjin-express",
+      "layers": [
+        "delivery",
+        "communication"
+      ],
+      "barrier": null
     },
     {
       "id": "003",
@@ -354,7 +364,12 @@
           "official-partner-badge"
         ]
       },
-      "subject": "ssg-com"
+      "subject": "ssg-com",
+      "layers": [
+        "payment",
+        "delivery"
+      ],
+      "barrier": null
     },
     {
       "id": "004",
@@ -603,7 +618,13 @@
         ],
         "patterns": []
       },
-      "submitted_via": "inbox:84e6b059-58be-4576-a240-b6967124010e"
+      "submitted_via": "inbox:84e6b059-58be-4576-a240-b6967124010e",
+      "barrier": null,
+      "layers": [
+        "payment",
+        "unattended",
+        "communication"
+      ]
     },
     {
       "id": "005",
@@ -953,7 +974,11 @@
         ],
         "patterns": []
       },
-      "submitted_via": "inbox:47af03e3-b279-428a-987e-283dc3c94e6e"
+      "submitted_via": "inbox:47af03e3-b279-428a-987e-283dc3c94e6e",
+      "barrier": null,
+      "layers": [
+        "unattended"
+      ]
     }
   ],
   "author_access": [
@@ -1030,7 +1055,7 @@
       "description": "A banner states the seller is an official partner and the product is genuine."
     }
   },
-  "schema_version": "0.3",
+  "schema_version": "0.4",
   "subjects": {
     "emart24-cnu": {
       "name": "emart24, Chungnam National University branch",
@@ -1061,6 +1086,58 @@
       "kind": "service",
       "operator": "Chungnam National University",
       "place": "Daejeon"
+    }
+  },
+  "layers": {
+    "discovery": {
+      "label": "How businesses are found",
+      "description": "Maps, place listings, blogs, reviews and short videos through which people find a shop, café or service.",
+      "examples": "Naver Map / Smart Place, Kakao Map, blogs, reviews, reels",
+      "analysis": {
+        "owner": "",
+        "small_business": "",
+        "europe": ""
+      }
+    },
+    "communication": {
+      "label": "How businesses talk to customers",
+      "description": "Channels, notifications and messages between a business and its customers.",
+      "examples": "KakaoTalk channels and notifications, SMS",
+      "analysis": {
+        "owner": "",
+        "small_business": "",
+        "europe": ""
+      }
+    },
+    "payment": {
+      "label": "How people pay",
+      "description": "Payment apps, cards, QR codes and the steps around paying.",
+      "examples": "Kakao Pay, Naver Pay, Toss, T-money",
+      "analysis": {
+        "owner": "",
+        "small_business": "",
+        "europe": ""
+      }
+    },
+    "delivery": {
+      "label": "How things are delivered",
+      "description": "Ordering for delivery, courier notices, tracking and proof of delivery.",
+      "examples": "Baemin, Coupang, couriers, photo at the door",
+      "analysis": {
+        "owner": "",
+        "small_business": "",
+        "europe": ""
+      }
+    },
+    "unattended": {
+      "label": "Where there is no seller",
+      "description": "Places and devices that work without staff.",
+      "examples": "Kiosks, self-checkouts, vending machines, unmanned shops, laundries, study cafés, convenience stores",
+      "analysis": {
+        "owner": "",
+        "small_business": "",
+        "europe": ""
+      }
     }
   }
 }

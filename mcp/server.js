@@ -32,7 +32,7 @@ function withMedia(o) {
 function summary(o) {
   return {
     id: o.id, title: o.title, category: o.category, country: o.country,
-    subject: o.subject || null, service: o.service, place: o.place, date: o.date, scenario: o.scenario,
+    subject: o.subject || null, layers: o.layers || [], barrier: o.barrier || null, service: o.service, place: o.place, date: o.date, scenario: o.scenario,
     patterns: o.breakdown?.patterns || [],
   };
 }
@@ -64,9 +64,11 @@ server.registerTool(
       category: z.string().optional().describe("Digital, Physical, Services or Systems"),
       pattern: z.string().optional().describe("Pattern id, see list_patterns"),
       subject: z.string().optional().describe("Subject id (a specific store, app, device or service), see list_subjects"),
+      layer: z.enum(["discovery", "communication", "payment", "delivery", "unattended"]).optional().describe("Infrastructure layer"),
+      barriers_only: z.boolean().optional().describe("Only things a foreigner could not do"),
     },
   },
-  async ({ query, category, pattern, subject }) => {
+  async ({ query, category, pattern, subject, layer, barriers_only }) => {
     const d = await load();
     const q = (query || "").toLowerCase().trim();
     const words = q ? q.split(/\s+/) : [];
@@ -74,6 +76,8 @@ server.registerTool(
       (!category || o.category.toLowerCase() === category.toLowerCase()) &&
       (!pattern || (o.breakdown?.patterns || []).includes(pattern)) &&
       (!subject || o.subject === subject) &&
+      (!layer || (o.layers || []).includes(layer)) &&
+      (!barriers_only || !!o.barrier) &&
       words.every((w) => haystack(o).includes(w)));
     return text({ count: hits.length, results: hits.map(summary), note: NOTE });
   }

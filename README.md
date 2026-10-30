@@ -8,6 +8,9 @@ A research archive of digital and physical interfaces of everyday life in South 
 
 ## What an entry contains
 
+Entries are organised by five layers of everyday infrastructure: **discovery** (how businesses are found), **communication** (how businesses talk to customers), **payment**, **delivery**, and **unattended** (places without a seller). Things a foreigner could not do are marked as **barriers** and collected on the *Verification wall* page.
+
+
 Each observation keeps four levels apart:
 
 - **observed** — what was seen directly
@@ -39,6 +42,14 @@ Issues from the owner and collaborators are processed right away. Issues from an
 - **Inbox** (`/inbox/`, owner only, sign-in by email link): sort new files (grouped into moments by capture time, near-duplicates flagged), discard, group several files into one observation (ordered by capture time unless you choose your own order), trim videos, mark it as *Archive* or *Private note*, approve guest submissions, read private notes.
 - Originals are stored in a private Supabase bucket. Row-level security lets guests only add, and only the owner read.
 - `.github/workflows/process-inbox.yml` runs every 10 minutes: queued archive observations become draft pull requests through the same Gemini pipeline; private notes are saved back to the inbox and never reach this repository.
+
+### Background upload from Google Drive
+
+`tools/drive-import.gs` is a Google Apps Script. Files dropped into one Drive folder (the Drive app keeps uploading in the background) are moved into the inbox every 10 minutes. Setup instructions are at the top of the file.
+
+### Mixed batches
+
+When making an observation from many files, *Split automatically* lets Gemini group the batch by app, object and scenario. All parts arrive as one pull request. A published entry can be split the same way; the pull request then also removes the original entry.
 
 ## Use it from an AI client (MCP)
 
