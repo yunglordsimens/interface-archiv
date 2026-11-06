@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-30",
+  "updated": "2026-11-06",
   "observations": [
     {
       "id": "001",
@@ -15,7 +15,8 @@
           "Physical presence"
         ],
         "unverified": [
-          "Which payment methods work with a foreign card"
+          "Which payment methods work with a foreign card",
+          "Can cash be used at this self-checkout?"
         ]
       },
       "media": [
@@ -549,7 +550,9 @@
         "Can non-residents or visitors use the washers if they download the app, or is resident dorm verification enforced?"
       ],
       "sources": [],
-      "related": [],
+      "related": [
+        "006"
+      ],
       "rights": "Own material. Personal data blurred automatically; reviewed before publication.",
       "breakdown": {
         "steps": [
@@ -861,14 +864,14 @@
           "caption": "User interacting with prompt modal on library seat kiosk touchscreen",
           "hash": "4732120fe3f26366",
           "from_video": true,
-          "t": 7.0
+          "t": 7
         },
         {
           "src": "media/005-42.jpg",
           "caption": "Unmanned store kiosk displaying live camera feed of customer at checkout",
           "hash": "91b1b464e68fa393",
           "from_video": true,
-          "t": 0.0
+          "t": 0
         },
         {
           "src": "media/005-43.jpg",
@@ -882,14 +885,14 @@
           "caption": "Item selected and total calculated on unmanned self POS screen",
           "hash": "3d4640c9cdac86ce",
           "from_video": true,
-          "t": 3.0
+          "t": 3
         },
         {
           "src": "media/005-45.jpg",
           "caption": "Card payment instructions displayed on unmanned checkout kiosk",
           "hash": "86f8b86c6486466c",
           "from_video": true,
-          "t": 5.0
+          "t": 5
         }
       ],
       "observed": [
@@ -979,6 +982,118 @@
       "layers": [
         "unattended"
       ]
+    },
+    {
+      "id": "006",
+      "title": "Campus laundry and student life app interface",
+      "subject": "metaclub",
+      "category": "Digital",
+      "country": "KR",
+      "service": "Meta Club",
+      "place": "Daejeon CNU dorm",
+      "date": "2026-10-29",
+      "scenario": "A student navigates a university dormitory service app to manage prepaid points for laundry and access campus-linked services.",
+      "access": {
+        "requires": [
+          "Meta Club smartphone application"
+        ],
+        "unverified": [
+          "Is the app exclusive to university dormitories or open to general users?",
+          "Which sections require registration or a prepaid Meta Money balance?"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/006-1.jpg",
+          "caption": "Main home screen of the Meta Club app showing top-up tooltip, balance, and banner promotions",
+          "hash": "969707071e868115"
+        },
+        {
+          "src": "media/006-2.jpg",
+          "caption": "Midsection of the home screen featuring team project listings and affiliate cashback options",
+          "hash": "9683818981869655"
+        },
+        {
+          "src": "media/006-3.jpg",
+          "caption": "Affiliate shopping brands grid offering cashback reward percentages",
+          "hash": "8686969696969155"
+        },
+        {
+          "src": "media/006-4.jpg",
+          "caption": "Upper portion of the sidebar navigation menu listing point management, community, and laundry services",
+          "hash": "8684808281808080"
+        },
+        {
+          "src": "media/006-5.jpg",
+          "caption": "Lower portion of the sidebar navigation menu listing ticketing, benefits, and customer support",
+          "hash": "86a0808080818081"
+        }
+      ],
+      "observed": [
+        "The account-name area in the header is blurred. A balance of '7,000P', the 'M' app icon, and the hamburger menu remain visible.",
+        "A tooltip prompt points directly to the balance reading: 'Tap your Meta Money to go to Top-Up.'",
+        "The bottom navigation bar contains five sections: 'Laundry', 'Exchange', 'Benefit', 'Teample', and 'Ticket'.",
+        "A hero promotional banner advertises a laundry-related discount: '훅딜 세탁하면 시크릿 할인'.",
+        "Below the banner, cards promote campus-related activities such as 'Incruit 와 팀플하기' with student competitions and mentoring.",
+        "A shopping affiliate section titled '쇼핑하고 캐시백받기' offers percentage-based point accruals for services including Coupang (2%), Today's House (3.4%), and E-mart Mall (2.7%).",
+        "The sidebar navigation drawer categorizes options into 'Meta Money' (Charge, Exchange, Refund, MetaMoney • Mileage History), 'Community' (Camfle, Teample), 'Life' (Laundry), 'Meta Club Ticket', 'Benefits', and 'Customer Service'."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "The Laundry navigation item appears alongside shopping rewards, student activities, and ticketing in the same application.",
+        "Cashback affiliate links and job portal integrations suggest monetization of student foot traffic alongside essential dorm amenities."
+      ],
+      "open": [
+        "Can unused prepaid 'Meta Money' be refunded to a standard bank account upon dormitory checkout?",
+        "Does the laundry tab show machine availability in real-time or cycle timers?"
+      ],
+      "sources": [],
+      "related": [
+        "004"
+      ],
+      "rights": "Own material. Personal data blurred automatically; reviewed before publication.",
+      "breakdown": {
+        "steps": [],
+        "elements": [
+          {
+            "name": "Point balance & top-up tooltip",
+            "role": "Displays current Meta Money balance and prompts the user on how to recharge",
+            "text_ko": "7,000P",
+            "text_en": "7,000P"
+          },
+          {
+            "name": "Laundry promotion banner",
+            "role": "Advertises special discounts activated when doing laundry",
+            "text_ko": "훅딜\n세탁하면\n시크릿 할인",
+            "text_en": "Hook Deal: Secret discount when doing laundry"
+          },
+          {
+            "name": "Student project section header",
+            "role": "Links users to team project matching and competitions via Incruit",
+            "text_ko": "Incruit 와 팀플하기",
+            "text_en": "Do team projects with Incruit"
+          },
+          {
+            "name": "Shopping cashback section header",
+            "role": "Directs users to affiliate partners to earn reward points",
+            "text_ko": "쇼핑하고 캐시백받기",
+            "text_en": "Shop and receive cashback"
+          },
+          {
+            "name": "Sidebar laundry category",
+            "role": "Provides access to dormitory laundry features under everyday life services",
+            "text_ko": "Life\nLaundry",
+            "text_en": "Life / Laundry"
+          }
+        ],
+        "patterns": []
+      },
+      "submitted_via": "inbox:42eecabd-c739-4ab0-8089-3106947c5a4b",
+      "layers": [
+        "payment",
+        "unattended"
+      ],
+      "barrier": null
     }
   ],
   "author_access": [
