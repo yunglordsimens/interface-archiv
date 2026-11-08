@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-06",
+  "updated": "2026-11-08",
   "observations": [
     {
       "id": "001",
@@ -374,14 +374,14 @@
     },
     {
       "id": "004",
-      "title": "University dormitory laundry payment and campus life app",
+      "title": "Paying for a dormitory washing machine with MetaMoney",
       "subject": "metaclub",
       "category": "Digital",
       "country": "KR",
       "service": "Meta Club",
       "place": "Daejeon CNU dorm",
       "date": "2026-10-29",
-      "scenario": "A student selects a dormitory washing machine, confirms laundry detergent instructions, and pays using in-app points before exploring student community features.",
+      "scenario": "A student selects a CNU dorm washer, connects over Bluetooth, pays 1,200P and checks the cycle in the usage history.",
       "access": {
         "requires": [
           "Meta Club smartphone application",
@@ -390,7 +390,7 @@
           "Proximity to the washing machine during Bluetooth pairing and payment"
         ],
         "unverified": [
-          "Is university student email verification required to access campus-specific laundry rooms and community boards?"
+          "Is dormitory or student verification required to access the campus laundry rooms?"
         ]
       },
       "media": [
@@ -455,66 +455,6 @@
           "hash": "86a6889484908686"
         },
         {
-          "src": "media/004-13.jpg",
-          "caption": "Discounted gift voucher redemption catalog within the Meta Club app",
-          "hash": "868b121101018101"
-        },
-        {
-          "src": "media/004-14.jpg",
-          "caption": "Extracurricular contests board for university students",
-          "hash": "a200888082008280"
-        },
-        {
-          "src": "media/004-15.jpg",
-          "caption": "Supporters and training program listings for students",
-          "hash": "ae9080808080a080"
-        },
-        {
-          "src": "media/004-16.jpg",
-          "caption": "Modal prompt prompting the user to set a community nickname",
-          "hash": "b28833334d218288"
-        },
-        {
-          "src": "media/004-17.jpg",
-          "caption": "Form field for setting community nickname",
-          "hash": "86a1888000008092"
-        },
-        {
-          "src": "media/004-18.jpg",
-          "caption": "User info profile screen showing empty leader activity tab",
-          "hash": "9644107000000000"
-        },
-        {
-          "src": "media/004-19.jpg",
-          "caption": "Virtual keyboard input while setting up community nickname",
-          "hash": "86a1808a8ce02fc4"
-        },
-        {
-          "src": "media/004-20.jpg",
-          "caption": "Confirmation notice stating nickname registration is complete",
-          "hash": "8610b06884008e8e"
-        },
-        {
-          "src": "media/004-21.jpg",
-          "caption": "User info profile screen showing empty member comments tab",
-          "hash": "9654307000000000"
-        },
-        {
-          "src": "media/004-22.jpg",
-          "caption": "Contest detail view with team recruitment button",
-          "hash": "a2a140e282d0c00c"
-        },
-        {
-          "src": "media/004-23.jpg",
-          "caption": "Team recruitment posting creation form",
-          "hash": "c688929080808092"
-        },
-        {
-          "src": "media/004-24.jpg",
-          "caption": "Team description input field and posting submission button",
-          "hash": "869088808080c0b2"
-        },
-        {
           "src": "media/004-25.jpg",
           "caption": "FAQ screen with quick QR scan shortcut button at the bottom",
           "hash": "86c894949086868e"
@@ -523,11 +463,6 @@
           "src": "media/004-26.jpg",
           "caption": "Recent usage history view displaying active wash in progress",
           "hash": "8680c28ad0b2a28e"
-        },
-        {
-          "src": "media/004-27.jpg",
-          "caption": "Meta Club side navigation drawer categorizing Community, Life, Tickets, Benefits, and Support",
-          "hash": "8684808080818080"
         }
       ],
       "observed": [
@@ -537,13 +472,11 @@
         "Standard washer cycle costs 1,200P, deducted from MetaMoney points balance.",
         "Before payment proceeds, a full-screen warning modal requires confirmation that the user is standing directly in front of the machine and will keep the screen active.",
         "The app shows a list of CNU dorm buildings (생활관 7동, 11동, 12동, 10동, 8동, 13동, 9동) for selecting laundry rooms.",
-        "A dedicated usage history logs the exact machine, room location, timestamp, and status ('In Use', 'Completed') with a 'Try Again' button if the machine fails to start.",
-        "The app includes peripheral campus features: gift voucher purchases with discounts, student contest/extracurricular boards, team recruitment, and student profile/nickname setup."
+        "A dedicated usage history logs the exact machine, room location, timestamp, and status ('In Use', 'Completed') with a 'Try Again' button if the machine fails to start."
       ],
       "confirmed": [],
       "interpretation": [
-        "The strict proximity warning modal suggests payments commonly fail or trigger machine lockouts if users walk away before Bluetooth handshake completes.",
-        "Integrating laundry controls with gift card discounts and team project recruitment suggests the app acts as a broader university campus lifestyle platform."
+        "The strict proximity warning modal suggests payments commonly fail or trigger machine lockouts if users walk away before Bluetooth handshake completes."
       ],
       "open": [
         "What happens if payment succeeds in the app but the washing machine hardware fails to trigger a start signal?",
@@ -551,7 +484,8 @@
       ],
       "sources": [],
       "related": [
-        "006"
+        "006",
+        "007"
       ],
       "rights": "Own material. Personal data blurred automatically; reviewed before publication.",
       "breakdown": {
@@ -625,8 +559,7 @@
       "barrier": null,
       "layers": [
         "payment",
-        "unattended",
-        "communication"
+        "unattended"
       ]
     },
     {
@@ -985,14 +918,14 @@
     },
     {
       "id": "006",
-      "title": "Campus laundry and student life app interface",
+      "title": "Finding points, offers and services from the Meta Club home screen",
       "subject": "metaclub",
       "category": "Digital",
       "country": "KR",
       "service": "Meta Club",
       "place": "Daejeon CNU dorm",
       "date": "2026-10-29",
-      "scenario": "A student navigates a university dormitory service app to manage prepaid points for laundry and access campus-linked services.",
+      "scenario": "A student checks their MetaMoney balance and explores where to find top-up, cashback, gift vouchers and campus services from the home screen and menu.",
       "access": {
         "requires": [
           "Meta Club smartphone application"
@@ -1027,6 +960,16 @@
           "src": "media/006-5.jpg",
           "caption": "Lower portion of the sidebar navigation menu listing ticketing, benefits, and customer support",
           "hash": "86a0808080818081"
+        },
+        {
+          "src": "media/004-13.jpg",
+          "caption": "Discounted gift voucher redemption catalog within the Meta Club app",
+          "hash": "868b121101018101"
+        },
+        {
+          "src": "media/004-27.jpg",
+          "caption": "Meta Club side navigation drawer categorizing Community, Life, Tickets, Benefits, and Support",
+          "hash": "8684808080818080"
         }
       ],
       "observed": [
@@ -1036,7 +979,8 @@
         "A hero promotional banner advertises a laundry-related discount: '훅딜 세탁하면 시크릿 할인'.",
         "Below the banner, cards promote campus-related activities such as 'Incruit 와 팀플하기' with student competitions and mentoring.",
         "A shopping affiliate section titled '쇼핑하고 캐시백받기' offers percentage-based point accruals for services including Coupang (2%), Today's House (3.4%), and E-mart Mall (2.7%).",
-        "The sidebar navigation drawer categorizes options into 'Meta Money' (Charge, Exchange, Refund, MetaMoney • Mileage History), 'Community' (Camfle, Teample), 'Life' (Laundry), 'Meta Club Ticket', 'Benefits', and 'Customer Service'."
+        "The sidebar navigation drawer categorizes options into 'Meta Money' (Charge, Exchange, Refund, MetaMoney • Mileage History), 'Community' (Camfle, Teample), 'Life' (Laundry), 'Meta Club Ticket', 'Benefits', and 'Customer Service'.",
+        "The exchange area shows a catalog of discounted gift vouchers."
       ],
       "confirmed": [],
       "interpretation": [
@@ -1049,7 +993,8 @@
       ],
       "sources": [],
       "related": [
-        "004"
+        "004",
+        "007"
       ],
       "rights": "Own material. Personal data blurred automatically; reviewed before publication.",
       "breakdown": {
@@ -1094,6 +1039,134 @@
         "unattended"
       ],
       "barrier": null
+    },
+    {
+      "id": "007",
+      "title": "Finding a student contest and drafting a team recruitment post",
+      "subject": "metaclub",
+      "category": "Digital",
+      "country": "KR",
+      "service": "Meta Club",
+      "place": "Daejeon, Chungnam National University",
+      "date": "2026-10-29",
+      "scenario": "A student browses opportunities in Meta Club, sets a community nickname, opens a contest and drafts a post to recruit teammates.",
+      "access": {
+        "requires": [
+          "Meta Club smartphone application",
+          "Community nickname to use the posting flow"
+        ],
+        "unverified": [
+          "Is student verification required to post?"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/004-14.jpg",
+          "caption": "Extracurricular contests board for university students",
+          "hash": "a200888082008280"
+        },
+        {
+          "src": "media/004-15.jpg",
+          "caption": "Supporters and training program listings for students",
+          "hash": "ae9080808080a080"
+        },
+        {
+          "src": "media/004-16.jpg",
+          "caption": "Modal prompt prompting the user to set a community nickname",
+          "hash": "b28833334d218288"
+        },
+        {
+          "src": "media/004-17.jpg",
+          "caption": "Form field for setting community nickname",
+          "hash": "86a1888000008092"
+        },
+        {
+          "src": "media/004-18.jpg",
+          "caption": "User info profile screen showing empty leader activity tab",
+          "hash": "9644107000000000"
+        },
+        {
+          "src": "media/004-19.jpg",
+          "caption": "Virtual keyboard input while setting up community nickname",
+          "hash": "86a1808a8ce02fc4"
+        },
+        {
+          "src": "media/004-20.jpg",
+          "caption": "Confirmation notice stating nickname registration is complete",
+          "hash": "8610b06884008e8e"
+        },
+        {
+          "src": "media/004-21.jpg",
+          "caption": "User info profile screen showing empty member comments tab",
+          "hash": "9654307000000000"
+        },
+        {
+          "src": "media/004-22.jpg",
+          "caption": "Contest detail view with team recruitment button",
+          "hash": "a2a140e282d0c00c"
+        },
+        {
+          "src": "media/004-23.jpg",
+          "caption": "Team recruitment posting creation form",
+          "hash": "c688929080808092"
+        },
+        {
+          "src": "media/004-24.jpg",
+          "caption": "Team description input field and posting submission button",
+          "hash": "869088808080c0b2"
+        }
+      ],
+      "observed": [
+        "Meta Club lists student contests and supporters or training programs.",
+        "The community prompts for a nickname and confirms registration.",
+        "A contest detail screen opens a team recruitment form with a team description field and a submit button."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "The recruitment action ties a potential team to a specific contest."
+      ],
+      "open": [
+        "Was a recruitment post submitted successfully?",
+        "Is university verification required before posting?"
+      ],
+      "sources": [],
+      "related": [
+        "004",
+        "006"
+      ],
+      "rights": "Own material. Personal data blurred automatically; reviewed before publication.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Student opportunities",
+            "action": "Browses contests and training programs."
+          },
+          {
+            "n": 2,
+            "where": "Community nickname prompt",
+            "action": "Enters a nickname and sees the registration confirmation."
+          },
+          {
+            "n": 3,
+            "where": "Contest details",
+            "action": "Opens the team recruitment form."
+          },
+          {
+            "n": 4,
+            "where": "Recruitment form",
+            "action": "Reaches the team description field and submit button."
+          }
+        ],
+        "elements": [],
+        "patterns": []
+      },
+      "submitted_via": "inbox:84e6b059-58be-4576-a240-b6967124010e",
+      "barrier": null,
+      "layers": [
+        "discovery",
+        "communication"
+      ]
     }
   ],
   "author_access": [
