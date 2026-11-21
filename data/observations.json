@@ -1949,8 +1949,8 @@
     },
     {
       "what": "ARC (residence card)",
-      "status": "yes (obtained 2026-11-19; earlier entries documented without ARC)",
-      "since": "2026-11-19"
+      "status": "no (not yet collected as of 2026-11-21)",
+      "since": null
     }
   ],
   "patterns": {
