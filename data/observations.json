@@ -1939,6 +1939,690 @@
         "discovery"
       ],
       "barrier": null
+    },
+    {
+      "id": "018",
+      "title": "Paik's Coffee self-ordering kiosk, payment grid and counter signage",
+      "subject": "paiks-coffee",
+      "category": "Physical",
+      "country": "KR",
+      "service": "Paik's Coffee (빽다방)",
+      "place": "Daejeon, Paik's Coffee Dunsan Hyangchon branch (대전둔산향촌점)",
+      "date": "2026-10-07",
+      "scenario": "Customizing an iced drink in English mode on a cafe self-ordering kiosk, selecting from domestic and overseas payment methods, and reading counter pickup and menu signage.",
+      "access": {
+        "requires": [
+          "Physical presence",
+          "Payment card (domestic or overseas) or supported mobile wallet (Apple Pay, Samsung Pay, Kakao Pay, Naver Pay, PAYCO, WeChat Pay, Ali Pay)"
+        ],
+        "unverified": [
+          "Whether foreign Visa/Mastercard cards work via Apple Pay on the Smartro terminal or only by inserting through the 'Overseas Card' option",
+          "Whether Baemin pickup coupons via the counter QR require Korean identity verification (본인인증)",
+          "Whether customers can pay with cash at the counter as referenced by the side step guide"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/018-1.jpg",
+          "caption": "English-mode drink customization screen for Air Foam Americano (Iced) at ₩2,200 with mandatory ice option, espresso/syrup/topping add-ons, and overlapping translated label.",
+          "hash": "1d2823052525232d",
+          "from_video": true,
+          "t": 0.3
+        },
+        {
+          "src": "media/018-2.jpg",
+          "caption": "Main kiosk menu grid (Menu → Summary) with left category sidebar and floating confirmation toast 'AIR FOAM AME... added.'",
+          "hash": "2805151792979b1a",
+          "from_video": true,
+          "t": 7.6
+        },
+        {
+          "src": "media/018-3.jpg",
+          "caption": "Order summary confirming 'Take out' mode and CTA 'I'll pay ₩2,200 for 1 menu.' above the Apple Pay sticker and Kakao/Naver e-receipt NFC tag.",
+          "hash": "9b978747c18e0e6c",
+          "from_video": true,
+          "t": 2.5
+        },
+        {
+          "src": "media/018-4.jpg",
+          "caption": "Payment method selection grid with separate 'Credit · Debit Card' and 'Overseas Card' buttons alongside Samsung Pay, Paik's Membership, Kakao Pay, Naver Pay, PAYCO, WeChat Pay, Ali Pay, and Split Payment.",
+          "hash": "17372b0f8f871e38",
+          "from_video": true,
+          "t": 3.8
+        },
+        {
+          "src": "media/018-5.jpg",
+          "caption": "Card insertion prompt above the Smartro IC/NFC payment terminal and Apple Pay sticker.",
+          "hash": "27034149c3b81e59",
+          "from_video": true,
+          "t": 14.6
+        },
+        {
+          "src": "media/018-6.jpg",
+          "caption": "Counter display featuring seasonal traditional drinks, founder caricature, Baemin pickup coupon QR sticker, visit-review prompt, and Onnuri digital voucher QR.",
+          "hash": "e1c9ca0eabb89622"
+        },
+        {
+          "src": "media/018-7.jpg",
+          "caption": "Illustrated bilingual menu board using thousands-of-won shorthand pricing (1.7, 2.0, 3.2) and a handwritten masking-tape note on iced tea prep time.",
+          "hash": "e473715b7b6bb3e3"
+        },
+        {
+          "src": "media/018-8.jpg",
+          "caption": "Store archway sign ('SINCE 2006 PAIK'S COFFEE') with a ceiling KCE dome CCTV camera overlooking the doorway.",
+          "hash": "1f1f9fd43433f323"
+        }
+      ],
+      "observed": [
+        "The kiosk runs in English mode with a top progress breadcrumb (Menu → Summary), left-hand category tabs (coffee, drink, LOW-SUGAR, PAIKS CCINO, Juice/Ade, Smoothie/Shake, Tea/Brown Sugar Bubble, Ice Cream, Dessert, MD products) and illustrated product tiles.",
+        "On the customization screen for 'AIR FOAM AMERICANO(ICED)' (₩2,200), 'Ice Selection 3 (Required 1, Max 1)' forces a selection even though only one option ('CUBED ICE ₩0') exists.",
+        "English translation glitches appear directly in the UI: 'ADD 1 SHOTS OF ESPRESSO', literal first-person CTAs ('I'll pay ₩2,200.', 'I'll pay ₩2,200 for 1 menu.'), and long text ('Honey/Syrup (When adding, 20g of honey and 3 pumps of syrup are prov...') colliding with the '^ Close' collapse button.",
+        "The payment screen separates 'Credit · Debit Card' from a dedicated 'Overseas Card' tile, alongside Samsung Pay, Paik's Membership/Coupon/Mobile gift card, Kakao Pay, Naver Pay, PAYCO, WeChat Pay, Ali Pay, and a 'Split Payment' button at the bottom.",
+        "Physical hardware and stickers around the screen add a printed 5-step Korean guide (STEP 1–5) on the right wall, an Apple Pay sticker above a Smartro IC/NFC reader, and a '모바일 전자영수증 Touch for Paperless' NFC sticker for Kakao and Naver.",
+        "Selecting card payment displays an illustrated prompt to insert the card into the Smartro slot and not remove it until completion.",
+        "At the counter, promotional acrylic displays combine seasonal drinks ('전통음료' — cinnamon punch, jujube tea, ssanghwa tea), a teal Baemin pickup QR sticker ('백다방도 배민으로 바로 픽업! 할인쿠폰 받기'), a review prompt ('빽다방 방문후기 남기기!'), and an Onnuri digital gift voucher QR.",
+        "The printed counter menu board pairs Korean and English drink names with product photos, lists prices in decimal thousands (e.g., 1.7 for ₩1,700), and includes a handwritten masking-tape note: 'Tea 종류 ICE는 기본 5분 이상 소요됩니다! :)' ('Iced tea varieties take at least 5 minutes! :)').",
+        "A ceiling-mounted KCE dome CCTV camera sits directly above the 'SINCE 2006 PAIK'S COFFEE' exit archway."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "Separating 'Overseas Card' from domestic 'Credit · Debit Card' reflects distinct routing or VAN/acquirer handling for foreign-issued cards on Korean POS terminals.",
+        "Machine-translated strings and text collisions in English mode suggest the kiosk UI was laid out primarily for concise Korean labels and localized automatically without layout reflow testing.",
+        "Layering kiosk ordering with Baemin pickup QRs, Onnuri voucher QRs, and Kakao/Naver NFC e-receipt tags shows how a single compact takeaway counter plugs into multiple domestic delivery, municipal voucher, and messenger ecosystems simultaneously."
+      ],
+      "open": [
+        "Does tapping a foreign card via Apple Pay require choosing 'Overseas Card' or 'Credit · Debit Card' first?",
+        "How does 'Split Payment' divide a single order across multiple cards or wallets on this kiosk?",
+        "Does tapping the Kakao/Naver paperless receipt NFC tag work without prior opt-in inside the respective apps?"
+      ],
+      "sources": [],
+      "related": [
+        "011",
+        "001",
+        "019"
+      ],
+      "rights": "Own photos and video frames.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Kiosk menu & customization modal",
+            "action": "Pick a drink, review mandatory ice option and optional shots/syrups/toppings, and tap to add",
+            "text_ko": "",
+            "text_en": "AIR FOAM AMERICANO(ICED) · Ice Selection 3 (Required 1, Max 1) · I'll pay ₩2,200."
+          },
+          {
+            "n": 2,
+            "where": "Menu confirmation toast",
+            "action": "Confirm item added toast and proceed via Takeout summary",
+            "text_ko": "",
+            "text_en": "AIR FOAM AME... added. · Takeout >"
+          },
+          {
+            "n": 3,
+            "where": "Order summary screen",
+            "action": "Verify order method ('Take out') and total, then tap pay",
+            "text_ko": "",
+            "text_en": "\"Take out\" order method selected. · I'll pay ₩2,200 for 1 menu."
+          },
+          {
+            "n": 4,
+            "where": "Payment method grid",
+            "action": "Choose among domestic card, Overseas Card, domestic/Chinese wallets, membership coupon, or split payment",
+            "text_ko": "",
+            "text_en": "Credit · Debit Card · Samsung Pay · Overseas Card · Kakao Pay · Naver Pay · PAYCO · WeChat Pay · Ali Pay · Split Payment"
+          },
+          {
+            "n": 5,
+            "where": "Smartro card terminal",
+            "action": "Insert or tap card following the illustrated card-slot prompt",
+            "text_ko": "",
+            "text_en": "Card payment · Insert the card into the card slot and do not remove it until the payment is..."
+          }
+        ],
+        "elements": [
+          {
+            "name": "Customization accordion",
+            "role": "Mandatory and optional modifiers with live price increments (+₩500 / +₩600 / +₩1,200)",
+            "text_ko": "",
+            "text_en": "Ice Selection 3 (Required 1, Max 1) · Extra Shot 2 · Honey/Syrup · Add topping 1"
+          },
+          {
+            "name": "Payment method grid",
+            "role": "Separates domestic cards, overseas cards, local wallets, Chinese wallets, and store coupons",
+            "text_ko": "",
+            "text_en": "Credit · Debit Card · Overseas Card · Samsung Pay · Kakao Pay · Naver Pay · PAYCO · WeChat Pay · Ali Pay"
+          },
+          {
+            "name": "NFC paperless receipt sticker",
+            "role": "Phone tap target mounted on the kiosk frame for digital receipts",
+            "text_ko": "모바일 전자영수증 · kakao · NAVER",
+            "text_en": "Mobile electronic receipt · Touch for Paperless"
+          },
+          {
+            "name": "Baemin pickup QR sticker",
+            "role": "Counter sticker promoting app pickup ordering and discount coupons",
+            "text_ko": "백다방도 배민으로 바로 픽업! · 할인쿠폰 받기",
+            "text_en": "Pick up Paik's Coffee directly with Baemin! · Get discount coupon"
+          },
+          {
+            "name": "Handwritten prep-time note",
+            "role": "Masking-tape exception notice added by store staff onto the printed menu board",
+            "text_ko": "Tea 종류 ICE는 기본 5분 이상 소요됩니다! :)",
+            "text_en": "Iced tea varieties take at least 5 minutes by default! :)"
+          }
+        ],
+        "patterns": [
+          "streetfront-order-kiosk",
+          "foreign-card-separate-option",
+          "paperless-nfc-receipt",
+          "step-guide-mirrored",
+          "qr-code-bridge"
+        ]
+      },
+      "layers": [
+        "unattended",
+        "payment",
+        "delivery"
+      ],
+      "barrier": null
+    },
+    {
+      "id": "019",
+      "title": "zero STORE unmanned checkout with Toss FacePay, live self-view and bank-transfer fallback",
+      "subject": "zero-store",
+      "category": "Physical",
+      "country": "KR",
+      "service": "zero STORE (제로스토어) / Toss FacePay",
+      "place": "Daejeon, zero STORE unmanned shop",
+      "date": "2026-10-27",
+      "scenario": "Scanning an ice cream bar at an unstaffed neighborhood shop equipped with quad CCTV, a Toss FacePay dual-camera kiosk, live customer self-view, and printed bank-transfer and mobile-phone fallbacks.",
+      "access": {
+        "requires": [
+          "Physical presence",
+          "Payment card, Naver Pay, PAYCO, Toss FacePay (pre-enrolled), or Korean bank transfer"
+        ],
+        "unverified": [
+          "Whether Toss FacePay enrollment requires an Alien Registration Card (ARC) and Korean bank account",
+          "Whether foreign-issued cards work on the countertop IC/NFC card terminal",
+          "How customers notify the owner after paying via the posted bank-transfer fallback"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/019-1.jpg",
+          "caption": "Wall-mounted SMACO quad-split CCTV monitor showing four live store angles (Camera 01–04) with timestamp 2026-10-27 14:08:20.",
+          "hash": "ff00666e4e46e068",
+          "from_video": true,
+          "t": 0.3
+        },
+        {
+          "src": "media/019-2.jpg",
+          "caption": "Top-mounted dual camera hardware (round webcam plus horizontal depth/face sensor bar) and Toss FacePay ('페이스페이 결제 매장') stickers on the kiosk frame.",
+          "hash": "67679f81c0f06cfc",
+          "from_video": true,
+          "t": 3.9
+        },
+        {
+          "src": "media/019-3.jpg",
+          "caption": "Full self-checkout screen showing live self-view camera feed (face blurred), 1+1/2+1 scan rule, scanned ₩1,000 ice cream row, Toss FacePay / Naver Pay / PAYCO stickers, card reader, and bank-transfer fallback notice (account details and countertop card blurred).",
+          "hash": "cccc6c7c7cd6b6d7"
+        },
+        {
+          "src": "media/019-4.jpg",
+          "caption": "Close-up of zero STORE printed disclaimers ('유통기한 필수체크', '영양성분 필수체크') and red '계좌이체 환영' bank-transfer sign (face, account number, and holder name blurred).",
+          "hash": "b49090d9d8f8b537"
+        },
+        {
+          "src": "media/019-5.jpg",
+          "caption": "Countertop IC/NFC payment reader, ice cream bar ('스크류바'), and zero STORE emergency contact card ('비상연락처'; mobile numbers and forgotten card on counter blurred).",
+          "hash": "fc7919988a4850f0",
+          "from_video": true,
+          "t": 6.9
+        }
+      ],
+      "observed": [
+        "A wall-mounted SMACO monitor displays a 4-way live CCTV split (Camera 01–04) covering the aisles, freezers, entrance door, and checkout counter with an on-screen timestamp (2026-10-27 14:08:20).",
+        "Two separate optical units sit atop the self-checkout kiosk—a circular webcam and a horizontal multi-lens sensor bar—paired with blue-and-white Toss FacePay stickers ('페이스페이 결제 매장 · toss') mounted down the left side.",
+        "The top half of the touchscreen continuously mirrors a live front-facing video feed of the customer standing at the kiosk.",
+        "Below the self-view feed, a bold yellow-and-white banner instructs shoppers to scan every unit of bundled deals: '1+1 2+1 묶음할인 전체 수량 모두 꼭 스캔해주세요 — 증정상품까지 스캔해야 할인이 적용됩니다.' ('For 1+1 / 2+1 bundle discounts, scan the full quantity including free items for the discount to apply.').",
+        "A quick-pick tile on the left adds a shopping bag ('봉투 100원 / 환경부담금 +100원'). Scanning one ice cream item populates the cart table: '#1 (ICE) 롯데) 0칼로리 스크... · 수량 1개 · 주문 금액 1,000원' with −/+ quantity controls and an × remove icon.",
+        "Lower kiosk stickers advertise 'N pay' and '페이코로 결제하세요 (PAYCO)' beside an integrated barcode scanner window and contactless/IC card reader.",
+        "A printed zero STORE card ('잠깐, 꼭 읽어주세요') taped to the right bezel shifts inspection duties onto the buyer with two red headings: '유통기한 필수체크' (mandatory check of expiration date before purchase due to unmanned store conditions) and '영양성분 필수체크' (check nutrition/calorie/sugar labels).",
+        "Directly beneath the disclaimer sits a red '계좌이체 환영' ('Bank transfer welcome') card listing a bank account number and personal account holder name (blurred).",
+        "On the counter beside the card reader, a laminated '제로스토어 비상연락처' ('zero STORE Emergency Contact') sheet lists two mobile phone numbers (blurred)."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "Combining overhead quad CCTV, an eye-level live self-view feed, and a Toss FacePay biometric camera turns the checkout screen into both a payment sensor and a visible surveillance mirror.",
+        "The printed food-safety disclaimer ('유통기한 필수체크') explicitly transfers quality-inspection responsibility from absent store staff to the customer.",
+        "Posting a personal bank account ('계좌이체 환영') and two personal mobile numbers ('비상연락처') acts as a low-tech human fallback layer underneath automated self-checkout and biometric payment."
+      ],
+      "open": [
+        "How fast is Toss FacePay recognition on this dual-camera hardware, and does the kiosk prompt for FacePay automatically when a face enters frame?",
+        "How does the store reconcile manual bank transfers when no receipt or kiosk transaction is generated?",
+        "Is Toss FacePay usable by foreign residents once they have an ARC and Korean bank account?"
+      ],
+      "sources": [],
+      "related": [
+        "010",
+        "021",
+        "001"
+      ],
+      "rights": "Own photos and video frames. Customer face in live self-view, bank account number, account holder name, emergency mobile phone numbers, and a payment card left on the counter are blurred.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Store aisle & overhead monitor",
+            "action": "Pick frozen or packaged snacks under a visible SMACO 4-camera CCTV monitor",
+            "text_ko": "Camera 01–04",
+            "text_en": "Quad-split live CCTV display"
+          },
+          {
+            "n": 2,
+            "where": "Self-checkout kiosk screen",
+            "action": "Scan item barcode (including free items in 1+1/2+1 bundles) while visible in the live self-view camera feed",
+            "text_ko": "1+1 2+1 묶음할인 전체 수량 모두 꼭 스캔해주세요",
+            "text_en": "Please scan the full quantity for 1+1 / 2+1 bundle discounts"
+          },
+          {
+            "n": 3,
+            "where": "Kiosk terminal or manual fallback",
+            "action": "Pay via card, Naver Pay, PAYCO, Toss FacePay, or fall back to the posted bank-transfer notice",
+            "text_ko": "페이스페이 결제 매장 · 계좌이체 환영",
+            "text_en": "FacePay payment store · Bank transfer welcome"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Toss FacePay stickers & dual cameras",
+            "role": "Biometric payment branding paired with top-mounted webcam and depth sensor bar",
+            "text_ko": "페이스페이 결제 매장 · toss",
+            "text_en": "Toss FacePay payment store"
+          },
+          {
+            "name": "Bundle scan rule banner",
+            "role": "Prevents missed promo discounts on 1+1 / 2+1 items",
+            "text_ko": "1+1 2+1 묶음할인 전체 수량 모두 꼭 스캔해주세요 · 증정상품까지 스캔해야 할인이 적용됩니다.",
+            "text_en": "Scan the full quantity for 1+1 / 2+1 bundle discounts; free bonus items must also be scanned."
+          },
+          {
+            "name": "No-barcode bag tile",
+            "role": "Quick-add button for paid plastic bags with environmental fee note",
+            "text_ko": "환경부담금 +100원 · 봉투 100원",
+            "text_en": "Environmental levy +100 ₩ · Bag 100 ₩"
+          },
+          {
+            "name": "Unmanned self-check disclaimer",
+            "role": "Asks customers to verify expiry dates and nutrition labels themselves",
+            "text_ko": "잠깐, 꼭 읽어주세요 · 유통기한 필수체크 · 영양성분 필수체크",
+            "text_en": "Wait, please read · Mandatory expiry date check · Mandatory nutrition check"
+          },
+          {
+            "name": "Bank-transfer fallback card",
+            "role": "Printed bank account and holder name beside the POS terminal (blurred)",
+            "text_ko": "계좌이체 환영 · 계좌번호 (blurred) · 예금주 (blurred)",
+            "text_en": "Bank transfer welcome · Account number (blurred) · Holder (blurred)"
+          },
+          {
+            "name": "Emergency contact sticker",
+            "role": "Countertop card with two owner mobile numbers for troubleshooting (blurred)",
+            "text_ko": "제로스토어 · 비상연락처 (blurred)",
+            "text_en": "zero STORE · Emergency contact (blurred)"
+          }
+        ],
+        "patterns": [
+          "visible-cctv-deterrence",
+          "biometric-face-payment",
+          "bank-transfer-fallback",
+          "owner-mobile-emergency-contact",
+          "no-barcode-quick-pick"
+        ]
+      },
+      "layers": [
+        "unattended",
+        "payment"
+      ],
+      "barrier": null
+    },
+    {
+      "id": "020",
+      "title": "emart24 Taekbaero unmanned parcel kiosk interactive flow",
+      "subject": "emart24-cnu",
+      "category": "Physical",
+      "country": "KR",
+      "service": "emart24 택배로 / Lotte Logistics (롯데택배)",
+      "place": "Daejeon, emart24 Chungnam National University branch (E24충남대학교점)",
+      "date": "2026-10-19",
+      "scenario": "Navigating the touchscreen screens of a convenience store parcel kiosk—comparing walk-in vs app-reserved drop-off, domestic vs international routing, waybill lookup/reprint, and self-service help guides.",
+      "access": {
+        "requires": [
+          "Physical presence at an emart24 store with a parcel kiosk",
+          "Pre-booked reservation number (for 예약 접수) or sender/recipient details (for 현장 접수)"
+        ],
+        "unverified": [
+          "Whether walk-in domestic or international registration requires Korean mobile phone SMS verification",
+          "Whether parcel shipping payment is settled on the kiosk or at the convenience store checkout counter after printing the label"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/020-1.jpg",
+          "caption": "Kiosk home screen at E24충남대학교점 showing courier pickup cutoffs (weekdays 17:00, Saturday 12:00), Lotte Logistics badge, and split entry for walk-in ('현장 접수') vs reserved ('예약 접수') drop-off beneath the built-in scale platform.",
+          "hash": "2b502b3b3aa68cfd",
+          "from_video": true,
+          "t": 1.0
+        },
+        {
+          "src": "media/020-2.jpg",
+          "caption": "Walk-in destination selection after tapping '현장 접수': domestic delivery ('국내택배') vs international express shipping ('국제택배').",
+          "hash": "11b899938b96de6f",
+          "from_video": true,
+          "t": 4.8
+        },
+        {
+          "src": "media/020-3.jpg",
+          "caption": "Reservation lookup screen ('예약 내용을 확인 할게요') prompting for a booking code via an on-screen numeric keypad.",
+          "hash": "3098999dd5cbdaee",
+          "from_video": true,
+          "t": 9.3
+        },
+        {
+          "src": "media/020-4.jpg",
+          "caption": "Waybill lookup and reprint screen ('운송장 조회 / 운송장 재출력') with corporate support numbers (1688-1211 / 1588-2121) and numeric keypad.",
+          "hash": "15b89115d5d3dbfe",
+          "from_video": true,
+          "t": 14.8
+        },
+        {
+          "src": "media/020-5.jpg",
+          "caption": "Self-service help menu ('포스트박스 사용해보셨나요?') listing five guides including thermal waybill roll replacement ('운송장 롤 교체'), rates, prohibited items, and packing instructions.",
+          "hash": "18b0d953d7c1c3fe",
+          "from_video": true,
+          "t": 16.8
+        }
+      ],
+      "observed": [
+        "The integrated scale sits directly atop the kiosk with a yellow label reading '택배 물품은 여기로! 저울에 올려주세요' ('Parcels go here! Place on the scale').",
+        "The home screen header displays online status ('ON LINE 000111'), branch ID ('E24충남대학교점 240329990'), software version ('PG VER 20260910002'), a terms button ('약관'), and the Lotte Logistics ('롯데택배') logo.",
+        "A dark banner at the top states daily courier pickup cutoffs: '수거마감 평일 : 17:00시 / 토요일 : 12:00시' with small print noting pickup times may vary with traffic.",
+        "Two primary cards divide the workflow into '현장 접수' ('Register at this store') and '예약 접수' ('Already reserved via emart24 app / partner').",
+        "Tapping '현장 접수' opens a two-option screen: '국내택배' ('Send to the address I want') and '국제택배' ('Ship overseas via express courier').",
+        "Tapping '예약 접수' opens a numeric keypad screen ('예약 내용을 확인 할게요 · 예약번호를 입력해 주세요') to retrieve an existing booking by reservation number.",
+        "The bottom bar provides '이용안내' (Usage guide) and '운송장 조회/재출력' (Waybill lookup / reprint). The lookup screen toggles between '운송장 조회' and '운송장 재출력' and prints two customer center numbers: 1688-1211 (convenience store parcel) and 1588-2121 (Lotte Logistics).",
+        "The help screen ('* 포스트박스 사용해보셨나요? * · 24시간 어디서나 택배 접수 가능') includes five tiles: '운송장 롤 교체' (Replace waybill roll), '편의점 택배란?' (What is convenience store parcel?), '운임안내' (Rates), '접수불가 품목' (Prohibited items), and '포장방법' (Packing method).",
+        "The entire interface observed is in Korean only, with no visible language switcher on the main or sub-screens; a visible desktop mouse cursor arrow appears on screen after taps."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "Exposing both '현장 접수' (walk-in) and '예약 접수' (app pre-booking) shows how phone pre-entry reduces typing time on a shared public kiosk while keeping walk-in drop-off possible.",
+        "Confirming '국제택배' directly on the walk-in screen partially answers the open question from observation 013 about international shipping availability at emart24 kiosks.",
+        "Placing '운송장 롤 교체' (waybill roll replacement) directly in the public help menu suggests either staff or experienced users rely on the same touchscreen interface for basic consumable maintenance."
+      ],
+      "open": [
+        "Which international courier partner handles '국제택배' from emart24, and does it require filling customs forms on the kiosk or in advance on mobile?",
+        "After weighing and printing a waybill on this kiosk, is payment completed at the main convenience store register?",
+        "Does walking through '현장 접수' require a Korean phone number or resident verification at later steps?"
+      ],
+      "sources": [],
+      "related": [
+        "013",
+        "001",
+        "002",
+        "014"
+      ],
+      "rights": "Own video frames.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Home screen (emart24 택배로)",
+            "action": "Check pickup cutoff time and choose between walk-in ('현장 접수') and app reservation ('예약 접수')",
+            "text_ko": "수거마감 평일 : 17:00시 / 토요일 : 12:00시 · 현장 접수 · 예약 접수",
+            "text_en": "Pickup cutoff weekdays 17:00 / Sat 12:00 · Walk-in registration · Reserved registration"
+          },
+          {
+            "n": 2,
+            "where": "Walk-in routing screen",
+            "action": "Select domestic parcel or overseas express parcel",
+            "text_ko": "국내택배 (내가 원하는 주소로 보낼게요.) · 국제택배 (특송사를 통해 해외로 보낼게요.)",
+            "text_en": "Domestic parcel · International parcel (via express courier)"
+          },
+          {
+            "n": 3,
+            "where": "Reservation lookup screen",
+            "action": "Enter numeric booking code from the emart24 app or partner platform",
+            "text_ko": "예약 내용을 확인 할게요 · 예약번호를 입력해 주세요",
+            "text_en": "Let's check your reservation · Please enter your reservation number"
+          },
+          {
+            "n": 4,
+            "where": "Waybill lookup / reprint screen",
+            "action": "Toggle between tracking lookup and waybill sticker reprint using the tracking number",
+            "text_ko": "운송장 조회 · 운송장 재출력 · 운송장 번호를 입력해 주세요.",
+            "text_en": "Waybill lookup · Reprint waybill · Please enter the waybill number."
+          },
+          {
+            "n": 5,
+            "where": "Usage guide screen ('포스트박스')",
+            "action": "Open guides for replacing waybill paper rolls, rates, prohibited items, or packing",
+            "text_ko": "포스트박스 사용해보셨나요? · 운송장 롤 교체 · 편의점 택배란? · 운임안내 · 접수불가 품목 · 포장방법",
+            "text_en": "Have you used Postbox? · Replace waybill roll · What is CVS parcel? · Rates · Prohibited items · Packing"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Pickup cutoff banner",
+            "role": "States weekday and Saturday courier collection deadlines",
+            "text_ko": "수거마감 평일 : 17:00시 / 토요일 : 12:00시",
+            "text_en": "Pickup cutoff weekdays 17:00 / Saturday 12:00"
+          },
+          {
+            "name": "Entry mode split cards",
+            "role": "Separates on-kiosk entry from pre-booked mobile reservations",
+            "text_ko": "현장 접수 (이 점포에서 접수할게요) · 예약 접수 (예약하고 왔어요 · 이마트24 앱 / 제휴사)",
+            "text_en": "Walk-in registration · Reserved registration (emart24 app / partners)"
+          },
+          {
+            "name": "Domestic / international cards",
+            "role": "Routes parcel to local courier or international express network",
+            "text_ko": "국내택배 · 국제택배",
+            "text_en": "Domestic parcel · International parcel"
+          },
+          {
+            "name": "Waybill reprint toggle",
+            "role": "Self-recovery when a thermal label fails to print or gets damaged",
+            "text_ko": "운송장 조회 · 운송장 재출력",
+            "text_en": "Waybill lookup · Reprint waybill"
+          },
+          {
+            "name": "Consumable guide tile",
+            "role": "Shows instructions for changing the waybill paper roll on the public help grid",
+            "text_ko": "운송장 롤 교체",
+            "text_en": "Replace waybill roll"
+          }
+        ],
+        "patterns": [
+          "retail-hosted-utility-kiosk",
+          "same-day-shipping-cutoff",
+          "self-service-consumable-maintenance"
+        ]
+      },
+      "layers": [
+        "delivery",
+        "unattended"
+      ],
+      "barrier": null
+    },
+    {
+      "id": "021",
+      "title": "Gumeonggage Ajeossi unmanned snack kiosk, Post-it wall and smart alcohol fridge",
+      "subject": "gumeonggage-ajeossi",
+      "category": "Physical",
+      "country": "KR",
+      "service": "Gumeonggage Ajeossi (구멍가게 아저씨) / Order Queen",
+      "place": "Daejeon, unmanned snack & ice-cream shop",
+      "date": "2026-10-21",
+      "scenario": "Entering a compact unstaffed snack, toy and ice-cream store, viewing its card-only kiosk surrounded by handwritten Post-it notes and an automated alcohol fridge, and tapping through the Order Queen checkout interface.",
+      "access": {
+        "requires": [
+          "Physical presence",
+          "Card, Kakao Pay, Naver Pay, PAYCO, or manual bank transfer"
+        ],
+        "unverified": [
+          "Which Korean ID or mobile authentication method unlocks the '신선한 술 냉장고' alcohol refrigerator, and whether foreign residents or visitors can pass its verification",
+          "Whether foreign-issued cards work on the Order Queen kiosk terminal"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/021-1.jpg",
+          "caption": "Unmanned checkout station with '카드전용' (Card only) sign, 24-hour CCTV notice, yellow bank-transfer and help-phone stickers (account details and mobile numbers blurred), wall of customer Post-it notes, insulated bags, and plush bear.",
+          "hash": "8591988f978ac834",
+          "from_video": true,
+          "t": 0.5
+        },
+        {
+          "src": "media/021-2.jpg",
+          "caption": "Store interior showing an unattended age-verification alcohol refrigerator ('신선한 술 냉장고 / 인생 술장고', '한번 인증하면 평생 자동인증') alongside toys, snacks, and an overhead CCTV dome camera.",
+          "hash": "9c85b4d2949e4381",
+          "from_video": true,
+          "t": 5.5
+        },
+        {
+          "src": "media/021-3.jpg",
+          "caption": "Kiosk welcome screen featuring the '구멍가게 아저씨' mascot, red '시작하기 Start' button, Kakao Pay and Naver Pay stickers, and top bank-transfer/support stickers (account number, holder name, and mobile number blurred).",
+          "hash": "eca69ed6da538e8f",
+          "from_video": true,
+          "t": 13.0
+        },
+        {
+          "src": "media/021-4.jpg",
+          "caption": "Order Queen scanning screen with quick-pick bag tiles ('큰봉투(1장) 100원', '보냉백 600원') using generic cutlery icons above a two-step barcode scan and payment prompt (top stickers blurred).",
+          "hash": "635347476b6bb3c7",
+          "from_video": true,
+          "t": 16.5
+        },
+        {
+          "src": "media/021-5.jpg",
+          "caption": "Cart list after selecting the barcode-less insulated bag ('#1 보냉백 · 수량 1개 · 주문 금액 600원') with illuminated barcode scanner and '결제하기' CTA (top stickers blurred).",
+          "hash": "e682870e1617938d",
+          "from_video": true,
+          "t": 21.1
+        }
+      ],
+      "observed": [
+        "The yellow-themed self-checkout kiosk sits beneath a bold '카드전용' ('Card only') sign and a wall covered in dozens of handwritten customer Post-it notes and drawings.",
+        "Above '카드전용', a printed store notice states: '24시간 cctv 녹화중입니다.' (24-hour CCTV recording), '파손·절도 발생시 신고 및 손해배상 청구합니다.' (damage or theft will be reported with damages claimed), asks visitors to return baskets and cancelled items, and lists a mobile inquiry number (blurred).",
+        "Two yellow stickers taped across the top bezel of the kiosk provide a '계좌이체' (bank transfer) account at Hana Bank with account number and holder name (blurred), plus a '사용방법을 모르거나 도움이 필요하실 때' ('If you don't know how to use it or need help') mobile number (blurred).",
+        "Payment hardware below the screen carries stickers for '카카오페이 됩니다 (Kakao Pay)', 'N pay', and 'PAYCO', alongside a thermal receipt slot ('영수증을 잡아당기지 마세요' — do not pull the receipt), an optical barcode scanner window, and a card slot.",
+        "Inside the store, a yellow-framed alcohol refrigerator labeled '신선한 술 냉장고 / 인생 술장고' ('Fresh alcohol fridge / Life alcohol fridge') has a locked glass door with an embedded verification tablet and sign reading '한번 인증하면 평생 자동인증' ('Verify once, automatic verification for life').",
+        "The kiosk runs 'Order Queen' ('오더퀸 솔루션') software: an idle screen displays the '구멍가게 아저씨' mascot and a bilingual red CTA ('시작하기 / Start').",
+        "Tapping Start opens a two-part screen: the upper half shows two quick-pick buttons for items without barcodes—'큰봉투(1장) 100원' (large bag, ₩100) and '보냉백 600원' (insulated bag, ₩600)—both using generic restaurant plate-and-cutlery icons; the lower orange panel gives two numbered instructions ('1. 상품 바코드를 스캔하세요. / 2. 하단의 원하는 결제방식을 선택하여 결제해주세요!').",
+        "Tapping '보냉백' replaces the orange prompt with a cart table ('선택하신 주문내역: #1 보냉백 · 수량 1개 · 주문 금액 600원'), activates the red optical barcode scanner light below the screen, and exposes '주문취소' (Cancel order) and '결제하기' (Pay)."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "Like zero STORE (019), this unstaffed shop layers informal human workarounds—handwritten Post-it notes, a plush bear, a Hana Bank transfer fallback, and a mobile help number—directly onto a strict '카드전용' + 24-hour CCTV self-checkout kiosk.",
+        "The generic fork-plate-spoon icons on '큰봉투' and '보냉백' suggest off-the-shelf restaurant kiosk software (Order Queen) repurposed for unmanned retail without custom retail iconography.",
+        "Whereas staffed convenience stores like emart24 (001) halt self-checkout and hand alcohol purchases to a cashier, this fully unstaffed shop replaces staff age checks with an automated verification refrigerator ('인생 술장고')."
+      ],
+      "open": [
+        "What exact authentication method (PASS app, resident registration number, mobile ID, or card) does '인생 술장고' use to verify age once and auto-verify thereafter, and is it accessible to foreign residents?",
+        "Why do unmanned shops post '카드전용' ('Card only') prominently while simultaneously taping a bank-transfer account directly onto the kiosk bezel?",
+        "How often do owners read or moderate the customer Post-it wall?"
+      ],
+      "sources": [],
+      "related": [
+        "019",
+        "010",
+        "001"
+      ],
+      "rights": "Own video frames. Hana Bank account number, account holder name, and store mobile contact numbers on wall and kiosk stickers are blurred.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Checkout counter",
+            "action": "Approach the '카드전용' kiosk flanked by Post-it wall, CCTV notice, bank-transfer fallback, and insulated bags",
+            "text_ko": "카드전용 · 24시간 cctv 녹화중입니다. · 계좌이체",
+            "text_en": "Card only · 24-hour CCTV recording · Bank transfer"
+          },
+          {
+            "n": 2,
+            "where": "Kiosk welcome screen",
+            "action": "Tap the red Start CTA on the Gumeonggage Ajeossi idle screen",
+            "text_ko": "구멍가게 아저씨 · 시작하기",
+            "text_en": "Gumeonggage Ajeossi · Start"
+          },
+          {
+            "n": 3,
+            "where": "Order Queen scan screen",
+            "action": "Scan item barcodes or tap quick-pick bag tiles ('큰봉투', '보냉백')",
+            "text_ko": "1. 상품 바코드를 스캔하세요. · 2. 하단의 원하는 결제방식을 선택하여 결제해주세요!",
+            "text_en": "1. Scan the product barcode. · 2. Choose your preferred payment method below to pay!"
+          },
+          {
+            "n": 4,
+            "where": "Cart summary & scanner",
+            "action": "Review line items and total, then tap Pay ('결제하기')",
+            "text_ko": "선택하신 주문내역 · #1 보냉백 · 수량 1개 · 주문 금액 600원 · 결제하기",
+            "text_en": "Selected order · #1 Insulated bag · Qty 1 · Order total 600 ₩ · Pay"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Card-only & deterrence signs",
+            "role": "Declares cashless checkout and 24-hour CCTV theft reporting above the kiosk",
+            "text_ko": "카드전용 · 24시간 cctv 녹화중입니다. · 파손·절도 발생시 신고 및 손해배상 청구합니다.",
+            "text_en": "Card only · 24-hour CCTV recording · Damage/theft will be reported with damages claimed."
+          },
+          {
+            "name": "Bank-transfer & help stickers",
+            "role": "Hana Bank transfer fallback and mobile support number taped to top bezel (blurred)",
+            "text_ko": "계좌이체 · 하나은행 (blurred) · 사용방법을 모르거나 도움이 필요하실 때 (blurred)",
+            "text_en": "Bank transfer · Hana Bank (blurred) · When you need help (blurred)"
+          },
+          {
+            "name": "Smart alcohol refrigerator",
+            "role": "Locked unmanned alcohol cabinet with embedded age-verification tablet",
+            "text_ko": "신선한 술 냉장고 · 인생 술장고 · 한번 인증하면 평생 자동인증",
+            "text_en": "Fresh alcohol fridge · Life alcohol fridge · Verify once, automatic verification for life"
+          },
+          {
+            "name": "Repurposed bag quick-pick tiles",
+            "role": "No-barcode bag buttons displaying generic restaurant plate/cutlery icons",
+            "text_ko": "큰봉투(1장) 100원 · 보냉백 600원",
+            "text_en": "Large bag (1) 100 ₩ · Insulated bag 600 ₩"
+          },
+          {
+            "name": "Order Queen instruction panel",
+            "role": "Two-step scan and payment guide before first item is added",
+            "text_ko": "1. 상품 바코드를 스캔하세요. · 2. 하단의 원하는 결제방식을 선택하여 결제해주세요!",
+            "text_en": "1. Scan the product barcode. · 2. Select your payment method at the bottom to pay!"
+          },
+          {
+            "name": "Customer Post-it wall",
+            "role": "Handwritten visitor notes surrounding the unmanned checkout station",
+            "text_ko": "",
+            "text_en": "Handwritten customer sticky notes"
+          }
+        ],
+        "patterns": [
+          "visible-cctv-deterrence",
+          "bank-transfer-fallback",
+          "owner-mobile-emergency-contact",
+          "no-barcode-quick-pick",
+          "unattended-age-verification-fridge",
+          "customer-postit-wall"
+        ]
+      },
+      "layers": [
+        "unattended",
+        "payment"
+      ],
+      "barrier": null
     }
   ],
   "author_access": [
@@ -1949,8 +2633,8 @@
     },
     {
       "what": "ARC (residence card)",
-      "status": "yes (obtained 2026-11-19; earlier entries documented without ARC)",
-      "since": "2026-11-19"
+      "status": "no (not yet collected as of 2026-11-21)",
+      "since": null
     }
   ],
   "patterns": {
@@ -2081,6 +2765,38 @@
     "asymmetric-promo-modal": {
       "label": "Asymmetric promotional modal",
       "description": "A full-screen discount overlay pairs a large high-contrast confirm CTA with a tiny low-contrast text exit link."
+    },
+    "foreign-card-separate-option": {
+      "label": "Separate 'Overseas Card' checkout button",
+      "description": "A payment kiosk splits foreign-issued cards into a dedicated button separate from domestic credit and debit cards."
+    },
+    "paperless-nfc-receipt": {
+      "label": "NFC tap tag for mobile e-receipt",
+      "description": "A kiosk mounts a Kakao/Naver NFC sticker on its frame so customers can tap a phone to receive a paperless receipt."
+    },
+    "biometric-face-payment": {
+      "label": "Biometric face-payment terminal at checkout",
+      "description": "A self-checkout kiosk mounts a dedicated depth/face camera and Toss FacePay signage so registered users can pay with their face."
+    },
+    "bank-transfer-fallback": {
+      "label": "Bank-transfer fallback on card-only kiosk",
+      "description": "An unstaffed card-only kiosk posts a printed bank-transfer sign beside the screen as a manual fallback when cards fail or are unavailable."
+    },
+    "owner-mobile-emergency-contact": {
+      "label": "Mobile number posted as unmanned store support",
+      "description": "An unstaffed shop prints mobile phone numbers directly on or beside the kiosk for customer help, payment errors, or incident notices."
+    },
+    "self-service-consumable-maintenance": {
+      "label": "On-screen guide for replacing kiosk consumables",
+      "description": "An unmanned parcel kiosk puts a waybill paper roll replacement guide directly on its customer-facing help screen."
+    },
+    "unattended-age-verification-fridge": {
+      "label": "Identity-verified self-service alcohol refrigerator",
+      "description": "An unmanned shop locks alcohol behind a refrigerator with an embedded verification tablet instead of routing purchases to staff."
+    },
+    "customer-postit-wall": {
+      "label": "Customer Post-it wall beside unmanned checkout",
+      "description": "An unstaffed neighborhood shop surrounds its self-checkout kiosk with handwritten visitor sticky notes, creating social presence without staff."
     }
   },
   "schema_version": "0.4",
@@ -2162,6 +2878,24 @@
       "kind": "app",
       "operator": "Temu",
       "place": ""
+    },
+    "paiks-coffee": {
+      "name": "Paik's Coffee (빽다방)",
+      "kind": "store",
+      "operator": "Paik's Coffee",
+      "place": "Daejeon"
+    },
+    "zero-store": {
+      "name": "zero STORE (제로스토어)",
+      "kind": "store",
+      "operator": "zero STORE",
+      "place": "Daejeon"
+    },
+    "gumeonggage-ajeossi": {
+      "name": "Gumeonggage Ajeossi (구멍가게 아저씨)",
+      "kind": "store",
+      "operator": "Gumeonggage Ajeossi",
+      "place": "Daejeon"
     }
   },
   "layers": {
