@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Korea Interface Archive</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23111111'/%3E%3Crect x='6' y='6' width='20' height='20' fill='none' stroke='%23ffffff' stroke-width='2.5'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
@@ -77,7 +77,7 @@ nav { flex-wrap: wrap; }
 .item .scenario { font-size: var(--s-lg); margin: 0; max-width: 40rem; }
 .media { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 4px; }
 .media figure { margin: 0; flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px; max-width: min(100%, 520px); }
-.media img, .media video { height: min(78vh, 760px); width: auto; max-width: 100%; object-fit: contain; background: var(--ph); display: block; }
+.media img, .media video { height: auto; max-height: min(78vh, 760px); width: auto; max-width: 100%; object-fit: contain; background: var(--ph); display: block; }
 .media figcaption { color: var(--muted); font-size: var(--s-sm); max-width: 32rem; }
 .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px 48px; max-width: 1100px; }
 .facts section { min-width: 0; }
@@ -153,16 +153,31 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
 
   function matches(o) {
     if (filter !== "All" && !inLayer(o, filter)) return false;
-    if (!query) return true;
-    var hay = [o.title, o.service, o.place, o.category, o.scenario, subjectName(o.subject)].concat(o.observed || [], o.open || []).join(" ").toLowerCase();
-    return hay.indexOf(query) !== -1;
+    var qNorm = query.trim().toLowerCase();
+    if (!qNorm) return true;
+    var b = o.breakdown || {};
+    var bParts = []
+      .concat((b.steps || []).map(function (s) { return [s.action, s.where, s.text_ko, s.text_en].join(" "); }))
+      .concat((b.elements || []).map(function (e) { return [e.name, e.role, e.text_ko, e.text_en].join(" "); }))
+      .concat((b.patterns || []).map(function (p) { return p + " " + patternLabel(p); }));
+    var hay = [o.title, o.service, o.place, o.category, o.scenario, subjectName(o.subject)]
+      .concat(o.observed || [], o.open || [], bParts).join(" ").toLowerCase();
+    return hay.indexOf(qNorm) !== -1;
+  }
+
+  function renderArchiveGrid() {
+    var host = document.getElementById("archive-results");
+    if (!host) return;
+    var list = DATA.observations.filter(matches);
+    host.innerHTML = list.length
+      ? '<div class="grid">' + list.map(cardHTML).join("") + '</div>'
+      : '<p class="empty">Nothing matches this search.</p>';
   }
 
   function renderArchive() {
     var obs = DATA.observations;
     var cats = LAYER_ORDER.concat(["barriers"]);
     var count = function (c) { return obs.filter(function (o) { return c === "All" || inLayer(o, c); }).length; };
-    var list = obs.filter(matches);
 
     view.innerHTML =
       '<div style="display:flex;flex-direction:column;gap:40px">' +
@@ -173,20 +188,24 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
             return '<button type="button" data-cat="' + esc(c) + '" aria-pressed="' + (c === filter) + '"' + (c !== "All" && !count(c) ? " disabled" : "") + '>' + esc(SHORT[c] || c) + '<span class="n">' + count(c) + '</span></button>';
           }).join("") +
         '</div><input id="q" type="search" placeholder="Search" aria-label="Search observations" value="' + esc(query) + '"></div>' +
-        (list.length
-          ? '<div class="grid">' + list.map(cardHTML).join("") + '</div>'
-          : '<p class="empty">Nothing matches this search.</p>') +
+        '<div id="archive-results"></div>' +
       '</div>';
 
+    renderArchiveGrid();
+
     view.querySelectorAll("[data-cat]").forEach(function (b) {
-      b.addEventListener("click", function () { filter = b.getAttribute("data-cat"); renderArchive(); });
+      b.addEventListener("click", function () {
+        filter = b.getAttribute("data-cat");
+        view.querySelectorAll("[data-cat]").forEach(function (x) {
+          x.setAttribute("aria-pressed", String(x.getAttribute("data-cat") === filter));
+        });
+        renderArchiveGrid();
+      });
     });
     var q = document.getElementById("q");
     q.addEventListener("input", function () {
-      query = q.value.trim().toLowerCase();
-      var pos = q.selectionStart;
-      renderArchive();
-      var nq = document.getElementById("q"); nq.focus(); try { nq.setSelectionRange(pos, pos); } catch (e) {}
+      query = q.value;
+      renderArchiveGrid();
     });
   }
 
@@ -225,8 +244,10 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
   function renderBarriers() {
     var list = DATA.observations.filter(function (o) { return o.barrier; });
     view.innerHTML = '<div class="item"><a class="back" href="#layers">← Layers</a>' +
-      '<div class="intro"><h1>Verification wall</h1><p>Things the author could not do as a foreigner: without a Korean phone number, without a residence card, with a foreign card. Recorded as observations in their own right.</p></div>' +
-      (list.length ? '<div class="grid">' + list.map(cardHTML).join("") + '</div>' : '<p class="empty">No barriers recorded yet.</p>') + '</div>';
+      '<div class="intro"><h1>Verification wall</h1><p>Things the author could not do as a foreigner: without a Korean phone number, without an Alien Registration Card (ARC), or when blocked by ARS phone verification and 본인인증 (real-name checks). Recorded as observations in their own right.</p></div>' +
+      (list.length
+        ? '<div class="grid">' + list.map(cardHTML).join("") + '</div>'
+        : '<p class="empty">ARC obtained 2026-11-19 — earlier entries (001–017) were documented without ARC; dedicated ARS / ARC / 본인인증 barrier screenshots are being prepared for this section.</p>') + '</div>';
     window.scrollTo(0, 0);
   }
 
@@ -359,7 +380,8 @@ footer { margin-top: auto; display: flex; justify-content: space-between; gap: 8
           '<li>Each image gets a visual fingerprint, so repeated or near-identical material is flagged before publication.</li>' +
           '<li>Drafts are prepared with a language model (Gemini) and reviewed by a person. The model never adds facts from outside the material; anything it suggests beyond what is visible is listed as an open question.</li>' +
         '</ul></div>' +
-        '<div><h2>Data</h2><p>Every entry is also published as structured data: <a href="data/observations.json" target="_blank" rel="noopener">observations.json</a>. Besides the observation itself, each entry breaks the interface down into steps, elements with their original Korean text and a translation, and recurring patterns, so it can be used as a reference by people and software.</p></div>' +
+        '<div><h2>Data</h2><p>Every entry is also published as structured data: <a href="data/observations.json" target="_blank" rel="noopener">observations.json</a>, and exposed via a local MCP server (<a href="https://github.com/yunglordsimens/interface-archiv" target="_blank" rel="noopener">GitHub repository</a>). Besides the observation itself, each entry breaks the interface down into steps, elements with their original Korean text and a translation, and recurring patterns, so it can be used as a reference by people and software.</p></div>' +
+        '<div><h2>Author</h2><p>Documented and maintained by Mariia Chernobai (UMPRUM Prague · exchange semester at Chungnam National University, Daejeon).</p></div>' +
         '<div><h2>Scope</h2><p>This version covers South Korea. The method, data schema and code do not depend on the country and can be reused to document another one.</p></div>' +
         '<div><h2>Limits</h2><p>The sample is small and comes mostly from one person living in Daejeon in autumn 2026. It does not describe South Korea as a whole.</p></div>' +
         '<div><h2>Support</h2><p>Field documentation was supported by a travel stipend from Nadání Josefa, Marie a Zdeňky Hlávkových during an exchange semester at Chungnam National University.</p></div>' +

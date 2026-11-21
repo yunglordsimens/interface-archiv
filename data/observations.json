@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-08",
+  "updated": "2026-11-21",
   "observations": [
     {
       "id": "001",
@@ -24,6 +24,16 @@
           "src": "media/001-1.jpg",
           "caption": "Self-checkout screen with the printed step guide above it.",
           "hash": "59794f0f9b8f5c22"
+        },
+        {
+          "src": "media/005-14.jpg",
+          "caption": "Payment completed screen on emart24 self-checkout POS",
+          "hash": "0d27270d2fa3b292"
+        },
+        {
+          "src": "media/005-29.jpg",
+          "caption": "Payment completed confirmation on emart24 self POS",
+          "hash": "f33f1b0b23230393"
         }
       ],
       "observed": [
@@ -47,7 +57,11 @@
         "What does the 가져가세요 note refer to?"
       ],
       "sources": [],
-      "related": [],
+      "related": [
+        "010",
+        "013",
+        "016"
+      ],
       "rights": "Own photo.",
       "breakdown": {
         "steps": [
@@ -202,7 +216,9 @@
       ],
       "sources": [],
       "related": [
-        "003"
+        "003",
+        "013",
+        "014"
       ],
       "rights": "Own screenshots. Phone number, tracking number, address, sender and parcel labels are blurred.",
       "breakdown": {
@@ -553,7 +569,11 @@
             "text_en": "The washing machine displays error codes like dE1, dE2, UE, OE, or IE and does not work."
           }
         ],
-        "patterns": []
+        "patterns": [
+          "qr-code-bridge",
+          "bluetooth-proximity-gate",
+          "prepaid-wallet-points"
+        ]
       },
       "submitted_via": "inbox:84e6b059-58be-4576-a240-b6967124010e",
       "barrier": null,
@@ -569,7 +589,7 @@
       "category": "Digital",
       "country": "KR",
       "service": "Chungnam National University",
-      "place": "",
+      "place": "Daejeon, Chungnam National University",
       "date": "2026-10-17",
       "scenario": "A university student uses a mobile app and on-site touchscreen kiosk to authenticate, reserve reading room seats, and pass through access gates.",
       "access": {
@@ -582,41 +602,6 @@
         ]
       },
       "media": [
-        {
-          "src": "media/005-1.jpg",
-          "caption": "KakaoTalk chat discussing midterm study chapters and cyber campus",
-          "hash": "d11f0b13630b134b"
-        },
-        {
-          "src": "media/005-2.jpg",
-          "caption": "TikTok Tako AI chat advice on walking workout",
-          "hash": "86c8908084a88083"
-        },
-        {
-          "src": "media/005-3.jpg",
-          "caption": "TikTok Tako AI chat advice continuation",
-          "hash": "8680a48884848443"
-        },
-        {
-          "src": "media/005-4.jpg",
-          "caption": "TikTok well-being box breathing screen",
-          "hash": "870719074f05270f"
-        },
-        {
-          "src": "media/005-5.jpg",
-          "caption": "TikTok Time and well-being sound and breathing menu",
-          "hash": "e0f09e9c8e968cb4"
-        },
-        {
-          "src": "media/005-6.jpg",
-          "caption": "TikTok Time and well-being daily affirmation selection",
-          "hash": "d8c89898a2e0ba9e"
-        },
-        {
-          "src": "media/005-7.jpg",
-          "caption": "TikTok prompt to choose affirmation keywords",
-          "hash": "9ed1f12d017afa92"
-        },
         {
           "src": "media/005-8.jpg",
           "caption": "Google Lens translation of library QR access gate guidelines",
@@ -643,101 +628,6 @@
           "hash": "9eb4a5b296b60eb1"
         },
         {
-          "src": "media/005-13.jpg",
-          "caption": "Shopping promotion popup with discount banner",
-          "hash": "610a0f4b4959c815"
-        },
-        {
-          "src": "media/005-14.jpg",
-          "caption": "Payment completed screen on emart24 self-checkout POS",
-          "hash": "0d27270d2fa3b292"
-        },
-        {
-          "src": "media/005-15.jpg",
-          "caption": "Chungjeon Dwaeji power bank rental kiosk at convenience store",
-          "hash": "9d059f9f94948483"
-        },
-        {
-          "src": "media/005-16.jpg",
-          "caption": "Unmanned parcel scale and registration kiosk at emart24",
-          "hash": "1d8d8bcc4c8868f9"
-        },
-        {
-          "src": "media/005-17.jpg",
-          "caption": "Prepaid gift card display stand in retail store",
-          "hash": "79d35961493362b2"
-        },
-        {
-          "src": "media/005-18.jpg",
-          "caption": "Grocery store window poster with Kakao open chat room QR code",
-          "hash": "c9c3031f39383a7e"
-        },
-        {
-          "src": "media/005-19.jpg",
-          "caption": "Unmanned convenience store self-checkout counter and notice board",
-          "hash": "c2d3d34f074ad191"
-        },
-        {
-          "src": "media/005-20.jpg",
-          "caption": "Takoyaki shop storefront with order kiosk visible inside",
-          "hash": "b1b066c4448d8485"
-        },
-        {
-          "src": "media/005-21.jpg",
-          "caption": "Storefront door of takoyaki shop",
-          "hash": "1b7bb9352d4dc9e3"
-        },
-        {
-          "src": "media/005-22.jpg",
-          "caption": "Isaac Toast store entrance with order kiosk inside",
-          "hash": "7d43cd59e5e5e9cd"
-        },
-        {
-          "src": "media/005-23.jpg",
-          "caption": "Isaac Toast ordering kiosk through front window",
-          "hash": "5b076c6ecc747071"
-        },
-        {
-          "src": "media/005-24.jpg",
-          "caption": "Isaac Toast entrance and payment service signage",
-          "hash": "7d43cd7971e561c9"
-        },
-        {
-          "src": "media/005-25.jpg",
-          "caption": "Paik's Coffee storefront with hygiene certificate and kiosks",
-          "hash": "3e032b3831393126"
-        },
-        {
-          "src": "media/005-26.jpg",
-          "caption": "Paik's Coffee ordering kiosks with beverage menu promos",
-          "hash": "a810153796363636"
-        },
-        {
-          "src": "media/005-27.jpg",
-          "caption": "Frozen bread and food items in convenience store freezer",
-          "hash": "9b33b632b747c2d1"
-        },
-        {
-          "src": "media/005-28.jpg",
-          "caption": "Cafeteria meal tray with rice, stew, and side dishes",
-          "hash": "3a3a13311c4c4c24"
-        },
-        {
-          "src": "media/005-29.jpg",
-          "caption": "Payment completed confirmation on emart24 self POS",
-          "hash": "f33f1b0b23230393"
-        },
-        {
-          "src": "media/005-30.jpg",
-          "caption": "CJ Logistics text message confirming parcel delivery at dormitory shelf",
-          "hash": "92918089d2f28890"
-        },
-        {
-          "src": "media/005-31.jpg",
-          "caption": "Desk with prepared instant noodles and boiled egg",
-          "hash": "1655874b59bab8b8"
-        },
-        {
           "src": "media/005-32.jpg",
           "caption": "Chungnam National University library reading room seat reservation kiosk",
           "hash": "391494f8d04b6971"
@@ -746,37 +636,6 @@
           "src": "media/005-33.jpg",
           "caption": "Close-up of university library seat reservation kiosk screen and controls",
           "hash": "3b3137949ca4b258"
-        },
-        {
-          "src": "media/005-34.jpg",
-          "caption": "Quad-split CCTV monitor in unmanned store",
-          "hash": "3f00b266a6a0b82c"
-        },
-        {
-          "src": "media/005-35.jpg",
-          "caption": "Naver Map transit directions from university campus to Sungsimdang",
-          "hash": "868098844240234b"
-        },
-        {
-          "src": "media/005-36.jpg",
-          "caption": "Shelves and product display inside small community mart",
-          "hash": "83b20ad8ed66aeff",
-          "from_video": true,
-          "t": 0.5
-        },
-        {
-          "src": "media/005-37.jpg",
-          "caption": "Packaged snack shelves inside grocery shop",
-          "hash": "d177369296a33467",
-          "from_video": true,
-          "t": 4.5
-        },
-        {
-          "src": "media/005-38.jpg",
-          "caption": "Checkout counter and self-checkout kiosk in community mart",
-          "hash": "968d2d2f41c3f83e",
-          "from_video": true,
-          "t": 6.8
         },
         {
           "src": "media/005-39.jpg",
@@ -798,34 +657,6 @@
           "hash": "4732120fe3f26366",
           "from_video": true,
           "t": 7
-        },
-        {
-          "src": "media/005-42.jpg",
-          "caption": "Unmanned store kiosk displaying live camera feed of customer at checkout",
-          "hash": "91b1b464e68fa393",
-          "from_video": true,
-          "t": 0
-        },
-        {
-          "src": "media/005-43.jpg",
-          "caption": "Scanning promotional bundled ice cream item at self-checkout kiosk",
-          "hash": "a6f19989cc366626",
-          "from_video": true,
-          "t": 1.7
-        },
-        {
-          "src": "media/005-44.jpg",
-          "caption": "Item selected and total calculated on unmanned self POS screen",
-          "hash": "3d4640c9cdac86ce",
-          "from_video": true,
-          "t": 3
-        },
-        {
-          "src": "media/005-45.jpg",
-          "caption": "Card payment instructions displayed on unmanned checkout kiosk",
-          "hash": "86f8b86c6486466c",
-          "from_video": true,
-          "t": 5
         }
       ],
       "observed": [
@@ -837,15 +668,18 @@
       ],
       "confirmed": [],
       "interpretation": [
-        "The author interpreted the seat allocation request ('좌석 이용 신청') as purchasing tickets ('покупка билетов').",
-        "The partial English localization in the university app can cause confusion for international students despite selecting English as the interface language."
+        "Mixed English and Korean labels across the kiosk and mobile app make seat allocation ('좌석 이용 신청') ambiguous for international students who are unfamiliar with Korean reading-room workflows.",
+        "The kiosk pairs a dynamic 60-second mobile QR credential with extensive physical accessibility controls (tactile keypad, audio jack, magnification, and motorized height adjustment)."
       ],
       "open": [
         "Does the seat reservation kiosk support a full English interface mode when toggling the on-screen language selector?",
         "How long does an allocated seat reservation remain active before expiring if the student fails to swipe into the reading room gate?"
       ],
       "sources": [],
-      "related": [],
+      "related": [
+        "004",
+        "006"
+      ],
       "rights": "Own material. Personal data blurred automatically; reviewed before publication.",
       "breakdown": {
         "steps": [
@@ -908,7 +742,12 @@
             "text_en": "Height adjustment"
           }
         ],
-        "patterns": []
+        "patterns": [
+          "dynamic-qr-id",
+          "physical-accessibility-hardware",
+          "text-size-toggle",
+          "qr-code-bridge"
+        ]
       },
       "submitted_via": "inbox:47af03e3-b279-428a-987e-283dc3c94e6e",
       "barrier": null,
@@ -1031,7 +870,10 @@
             "text_en": "Life / Laundry"
           }
         ],
-        "patterns": []
+        "patterns": [
+          "prepaid-wallet-points",
+          "superapp-campus-bundle"
+        ]
       },
       "submitted_via": "inbox:42eecabd-c739-4ab0-8089-3106947c5a4b",
       "layers": [
@@ -1159,7 +1001,10 @@
           }
         ],
         "elements": [],
-        "patterns": []
+        "patterns": [
+          "superapp-campus-bundle",
+          "nickname-gate-community"
+        ]
       },
       "submitted_via": "inbox:84e6b059-58be-4576-a240-b6967124010e",
       "barrier": null,
@@ -1167,6 +1012,933 @@
         "discovery",
         "communication"
       ]
+    },
+    {
+      "id": "008",
+      "title": "TikTok Tako AI assistant and Time & well-being (Mindflow)",
+      "subject": "tiktok",
+      "category": "Digital",
+      "country": "KR",
+      "service": "TikTok",
+      "place": "Daejeon (mobile app)",
+      "date": "2026-10-17",
+      "scenario": "Using TikTok's built-in Tako AI chat and Time & well-being breathing, soundscape and daily affirmation tools inside the feed app.",
+      "access": {
+        "requires": [
+          "TikTok mobile application"
+        ],
+        "unverified": [
+          "Whether Tako AI and the Time & well-being affirmation flow are rolled out identically across EU and Korean regions"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/005-4.jpg",
+          "caption": "TikTok well-being box breathing screen",
+          "hash": "870719074f05270f"
+        },
+        {
+          "src": "media/005-5.jpg",
+          "caption": "TikTok Time and well-being sound and breathing menu",
+          "hash": "e0f09e9c8e968cb4"
+        },
+        {
+          "src": "media/005-6.jpg",
+          "caption": "TikTok Time and well-being daily affirmation selection",
+          "hash": "d8c89898a2e0ba9e"
+        },
+        {
+          "src": "media/005-7.jpg",
+          "caption": "TikTok prompt to choose affirmation keywords",
+          "hash": "9ed1f12d017afa92"
+        },
+        {
+          "src": "media/005-2.jpg",
+          "caption": "TikTok Tako AI chat advice on walking workout",
+          "hash": "86c8908084a88083"
+        },
+        {
+          "src": "media/005-3.jpg",
+          "caption": "TikTok Tako AI chat advice continuation",
+          "hash": "8680a48884848443"
+        }
+      ],
+      "observed": [
+        "Time & well-being includes guided box breathing, ambient sound menus, and a daily affirmation selector with keyword prompts.",
+        "Tako AI sits directly inside the TikTok interface as a conversational assistant answering everyday lifestyle prompts (such as walking workouts)."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "Mindfulness controls (breathing, affirmations) and conversational AI are embedded inside the same short-video app rather than external system settings."
+      ],
+      "open": [
+        "How frequently do users trigger the Time & well-being flow voluntarily versus via screen-time nudges?"
+      ],
+      "sources": [],
+      "related": [],
+      "rights": "Own screenshots. Personal data checked before publication.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Time & well-being menu",
+            "action": "Open breathing and sound controls inside TikTok"
+          },
+          {
+            "n": 2,
+            "where": "Box breathing screen",
+            "action": "Follow paced inhale/hold/exhale animation"
+          },
+          {
+            "n": 3,
+            "where": "Daily affirmation prompt",
+            "action": "Select affirmation keywords to generate a daily card"
+          },
+          {
+            "n": 4,
+            "where": "Tako AI chat",
+            "action": "Ask a freeform question and receive structured advice inside the app"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Box breathing screen",
+            "role": "Paced breathing timer embedded in well-being hub",
+            "text_ko": "",
+            "text_en": "Time and well-being · Box breathing"
+          },
+          {
+            "name": "Affirmation keyword picker",
+            "role": "Tag selector tailoring daily well-being prompts",
+            "text_ko": "",
+            "text_en": "Choose affirmation keywords"
+          },
+          {
+            "name": "Tako AI chat thread",
+            "role": "In-app conversational assistant",
+            "text_ko": "",
+            "text_en": "Tako AI"
+          }
+        ],
+        "patterns": [
+          "in-app-wellbeing-hub",
+          "embedded-ai-assistant"
+        ]
+      },
+      "submitted_via": "inbox:47af03e3-b279-428a-987e-283dc3c94e6e",
+      "layers": [
+        "communication",
+        "discovery"
+      ],
+      "barrier": null
+    },
+    {
+      "id": "009",
+      "title": "KakaoTalk non-friend safety bar and storefront Open Chat QR",
+      "subject": "kakaotalk",
+      "category": "Digital",
+      "country": "KR",
+      "service": "KakaoTalk (카카오톡)",
+      "place": "Daejeon",
+      "date": "2026-10-17",
+      "scenario": "Receiving messages from a non-added contact inside KakaoTalk and connecting to a local shop via a physical window poster with a Kakao Open Chat QR code.",
+      "access": {
+        "requires": [
+          "KakaoTalk account (requires phone number verification)",
+          "Physical presence for storefront QR poster"
+        ],
+        "unverified": [
+          "Whether KakaoTalk Open Chat channels for local stores restrict accounts registered with non-Korean phone numbers"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/005-1.jpg",
+          "caption": "KakaoTalk chat screen with top Add / Block / Report bar, inline message reactions, date divider and bottom # search shortcut (names and message content blurred)",
+          "hash": "d11f0b13630b134b"
+        },
+        {
+          "src": "media/005-18.jpg",
+          "caption": "Grocery store window poster with Kakao open chat room QR code",
+          "hash": "c9c3031f39383a7e"
+        }
+      ],
+      "observed": [
+        "When messaging a contact not yet in the address book, KakaoTalk pins a floating top action bar offering Add, Block, and Report directly over the chat header.",
+        "Individual messages support inline emoji reactions and date divider jump pills; the compose bar includes a dedicated '#' search icon on the right.",
+        "A neighborhood grocery storefront displays a printed window poster inviting passersby to scan a QR code to join the shop's KakaoTalk Open Chat room."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "Local physical shops use KakaoTalk Open Chat rooms as an informal broadcast and customer-support channel instead of maintaining a standalone website."
+      ],
+      "open": [
+        "How common are storefront KakaoTalk Open Chat QR posters among small independent grocery stores in Korea?"
+      ],
+      "sources": [],
+      "related": [
+        "010"
+      ],
+      "rights": "Own screenshot and photo. All personal names and private message content are blurred.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Storefront window",
+            "action": "Scan printed KakaoTalk Open Chat QR poster to reach the local shop"
+          },
+          {
+            "n": 2,
+            "where": "KakaoTalk chat room",
+            "action": "Review non-friend warning bar (Add / Block / Report), react to messages, or tap '#' for in-chat search"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Non-friend action bar",
+            "role": "Pinned trust/safety strip for unknown senders",
+            "text_ko": "",
+            "text_en": "Add · Block · Report"
+          },
+          {
+            "name": "Hash search trigger",
+            "role": "Built-in search entry right inside the message composer",
+            "text_ko": "#",
+            "text_en": "# search"
+          },
+          {
+            "name": "Open Chat window QR",
+            "role": "Physical-to-messenger bridge on a shop window",
+            "text_ko": "카카오톡 오픈채팅",
+            "text_en": "KakaoTalk Open Chat QR"
+          }
+        ],
+        "patterns": [
+          "qr-code-bridge",
+          "non-friend-safety-bar"
+        ]
+      },
+      "submitted_via": "inbox:47af03e3-b279-428a-987e-283dc3c94e6e",
+      "layers": [
+        "communication",
+        "discovery"
+      ],
+      "barrier": null
+    },
+    {
+      "id": "010",
+      "title": "Unmanned neighborhood store self-checkout and live CCTV mirror",
+      "subject": "unmanned-mart-daejeon",
+      "category": "Physical",
+      "country": "KR",
+      "service": "Unmanned convenience / snack store",
+      "place": "Daejeon",
+      "date": "2026-10-17",
+      "scenario": "Browsing shelves, scanning bundled promotional items and paying by card at a fully unstaffed neighborhood shop monitored by visible CCTV feeds.",
+      "access": {
+        "requires": [
+          "Physical presence",
+          "Payment card or supported Korean mobile wallet"
+        ],
+        "unverified": [
+          "Whether foreign Visa/Mastercard cards work consistently on this kiosk terminal"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/005-19.jpg",
+          "caption": "Unmanned convenience store self-checkout counter and notice board",
+          "hash": "c2d3d34f074ad191"
+        },
+        {
+          "src": "media/005-34.jpg",
+          "caption": "Quad-split CCTV monitor in unmanned store",
+          "hash": "3f00b266a6a0b82c"
+        },
+        {
+          "src": "media/005-36.jpg",
+          "caption": "Shelves and product display inside small community mart",
+          "hash": "83b20ad8ed66aeff",
+          "from_video": true,
+          "t": 0.5
+        },
+        {
+          "src": "media/005-37.jpg",
+          "caption": "Packaged snack shelves inside grocery shop",
+          "hash": "d177369296a33467",
+          "from_video": true,
+          "t": 4.5
+        },
+        {
+          "src": "media/005-38.jpg",
+          "caption": "Checkout counter and self-checkout kiosk in community mart",
+          "hash": "968d2d2f41c3f83e",
+          "from_video": true,
+          "t": 6.8
+        },
+        {
+          "src": "media/005-42.jpg",
+          "caption": "Unmanned store kiosk displaying live camera feed of customer at checkout",
+          "hash": "91b1b464e68fa393",
+          "from_video": true,
+          "t": 0
+        },
+        {
+          "src": "media/005-43.jpg",
+          "caption": "Scanning promotional bundled ice cream item at self-checkout kiosk",
+          "hash": "a6f19989cc366626",
+          "from_video": true,
+          "t": 1.7
+        },
+        {
+          "src": "media/005-44.jpg",
+          "caption": "Item selected and total calculated on unmanned self POS screen",
+          "hash": "3d4640c9cdac86ce",
+          "from_video": true,
+          "t": 3
+        },
+        {
+          "src": "media/005-45.jpg",
+          "caption": "Card payment instructions displayed on unmanned checkout kiosk",
+          "hash": "86f8b86c6486466c",
+          "from_video": true,
+          "t": 5
+        }
+      ],
+      "observed": [
+        "No cashier is present; customers enter directly, pick packaged snacks or ice cream from open shelves and proceed to a freestanding touchscreen checkout counter.",
+        "A wall-mounted quad-split CCTV monitor displays four live camera angles over the aisles, and the checkout kiosk itself shows a live customer camera feed on-screen during scanning.",
+        "A printed notice board next to the terminal explains checkout rules and contact steps for errors.",
+        "Scanning a promotional bundled ice cream item adds it to the cart, calculates totals automatically and prompts card insertion/tap."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "Visible surveillance (both overhead quad-CCTV monitors and an on-kiosk front camera) acts as the primary social deterrent replacing a staffed counter."
+      ],
+      "open": [
+        "How are scanning mistakes or double charges refunded when no staff member is on site?"
+      ],
+      "sources": [],
+      "related": [
+        "001",
+        "009"
+      ],
+      "rights": "Own photos and video frames.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Store aisles",
+            "action": "Select snacks or frozen items under visible quad-split CCTV monitoring"
+          },
+          {
+            "n": 2,
+            "where": "Self-checkout kiosk",
+            "action": "Scan item barcode while the kiosk displays a live customer camera feed"
+          },
+          {
+            "n": 3,
+            "where": "POS total screen",
+            "action": "Verify item total and follow on-screen card payment instructions"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Quad-split CCTV display",
+            "role": "Visible in-store monitoring replacing staff presence",
+            "text_ko": "",
+            "text_en": "4-camera live CCTV monitor"
+          },
+          {
+            "name": "Kiosk customer camera",
+            "role": "Live self-view embedded inside the POS screen",
+            "text_ko": "",
+            "text_en": "Live camera feed at checkout"
+          },
+          {
+            "name": "Printed notice board",
+            "role": "Physical rules and troubleshooting guide beside the kiosk",
+            "text_ko": "",
+            "text_en": "Self-checkout notice board"
+          }
+        ],
+        "patterns": [
+          "visible-cctv-deterrence",
+          "step-guide-mirrored"
+        ]
+      },
+      "submitted_via": "inbox:47af03e3-b279-428a-987e-283dc3c94e6e",
+      "layers": [
+        "unattended",
+        "payment"
+      ],
+      "barrier": null
+    },
+    {
+      "id": "011",
+      "title": "Street-facing food and coffee ordering kiosks (Paik's Coffee, Isaac Toast, Takoyaki)",
+      "subject": "street-order-kiosks-daejeon",
+      "category": "Physical",
+      "country": "KR",
+      "service": "Paik's Coffee / Isaac Toast / Takoyaki shop",
+      "place": "Daejeon",
+      "date": "2026-10-17",
+      "scenario": "Ordering takeaway drinks or street food via standalone touch kiosks placed directly at or facing the shop entrance.",
+      "access": {
+        "requires": [
+          "Physical presence",
+          "Payment card or mobile payment"
+        ],
+        "unverified": [
+          "Whether all three shops accept foreign-issued cards and provide English UI toggles"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/005-25.jpg",
+          "caption": "Paik's Coffee storefront with hygiene certificate and kiosks",
+          "hash": "3e032b3831393126"
+        },
+        {
+          "src": "media/005-26.jpg",
+          "caption": "Paik's Coffee ordering kiosks with beverage menu promos",
+          "hash": "a810153796363636"
+        },
+        {
+          "src": "media/005-22.jpg",
+          "caption": "Isaac Toast store entrance with order kiosk inside",
+          "hash": "7d43cd59e5e5e9cd"
+        },
+        {
+          "src": "media/005-23.jpg",
+          "caption": "Isaac Toast ordering kiosk through front window",
+          "hash": "5b076c6ecc747071"
+        },
+        {
+          "src": "media/005-24.jpg",
+          "caption": "Isaac Toast entrance and payment service signage",
+          "hash": "7d43cd7971e561c9"
+        },
+        {
+          "src": "media/005-20.jpg",
+          "caption": "Takoyaki shop storefront with order kiosk visible inside",
+          "hash": "b1b066c4448d8485"
+        },
+        {
+          "src": "media/005-21.jpg",
+          "caption": "Storefront door of takoyaki shop",
+          "hash": "1b7bb9352d4dc9e3"
+        }
+      ],
+      "observed": [
+        "Across three separate small takeaway venues (Paik's Coffee, Isaac Toast, and a local takoyaki shop), ordering kiosks sit right behind the glass entrance or directly inside the doorway.",
+        "Paik's Coffee runs multiple side-by-side kiosks displaying promotional drink banners alongside a hygiene certificate on the storefront.",
+        "Isaac Toast pairs its window-visible ordering kiosk with exterior signage listing accepted payment services."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "Self-service ordering kiosks are standard even in tiny single-room takeaway shops, separating order entry and payment from food preparation."
+      ],
+      "open": [
+        "Can customers still place an order directly with staff at the counter if a foreign card fails at the kiosk?"
+      ],
+      "sources": [],
+      "related": [
+        "001",
+        "010"
+      ],
+      "rights": "Own photos.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Storefront entrance",
+            "action": "Check accepted payment signage and seasonal menu posters on the window"
+          },
+          {
+            "n": 2,
+            "where": "Touchscreen kiosk",
+            "action": "Browse beverage/food menu, customize options and pay before pickup"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Entrance kiosk cluster",
+            "role": "Replaces staffed ordering counter at high-turnover takeaway cafes",
+            "text_ko": "키오스크",
+            "text_en": "Self-ordering kiosk"
+          },
+          {
+            "name": "Payment method stickers",
+            "role": "Communicates supported card/wallet ecosystems on the doorway",
+            "text_ko": "",
+            "text_en": "Accepted payment signage"
+          }
+        ],
+        "patterns": [
+          "streetfront-order-kiosk"
+        ]
+      },
+      "submitted_via": "inbox:47af03e3-b279-428a-987e-283dc3c94e6e",
+      "layers": [
+        "unattended",
+        "payment"
+      ],
+      "barrier": null
+    },
+    {
+      "id": "012",
+      "title": "Chungjeon Dwaeji power bank rental kiosk",
+      "subject": "chungjeon-dwaeji",
+      "category": "Physical",
+      "country": "KR",
+      "service": "Chungjeon Dwaeji (충전돼지)",
+      "place": "Daejeon, convenience store",
+      "date": "2026-10-17",
+      "scenario": "Renting a portable phone battery from a compact countertop dispenser located inside a convenience store.",
+      "access": {
+        "requires": [
+          "Physical presence",
+          "Smartphone QR scan / rental app or mobile payment"
+        ],
+        "unverified": [
+          "Whether rental registration works without a Korean phone number or Korean payment card"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/005-15.jpg",
+          "caption": "Chungjeon Dwaeji power bank rental kiosk at convenience store",
+          "hash": "9d059f9f94948483"
+        }
+      ],
+      "observed": [
+        "A compact branded power-bank dock ('충전돼지' / Chungjeon Dwaeji) sits directly inside a convenience store holding multiple slotted portable chargers.",
+        "Users rent and return batteries via QR/app instructions printed on the station without interacting with store staff."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "Convenience stores act as physical host nodes for third-party unattended utility infrastructure (power banks, parcel scales, gift cards)."
+      ],
+      "open": [
+        "Can a battery rented at one convenience store chain be returned at a kiosk inside a different brand's store?"
+      ],
+      "sources": [],
+      "related": [
+        "001",
+        "013"
+      ],
+      "rights": "Own photo.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Power bank dock",
+            "action": "Scan QR on the Chungjeon Dwaeji station to unlock a charged battery"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Slotted battery dock",
+            "role": "Self-service hardware dispenser hosted inside retail stores",
+            "text_ko": "충전돼지",
+            "text_en": "Chungjeon Dwaeji power bank rental"
+          }
+        ],
+        "patterns": [
+          "qr-code-bridge",
+          "retail-hosted-utility-kiosk"
+        ]
+      },
+      "submitted_via": "inbox:47af03e3-b279-428a-987e-283dc3c94e6e",
+      "layers": [
+        "unattended",
+        "payment"
+      ],
+      "barrier": null
+    },
+    {
+      "id": "013",
+      "title": "emart24 unmanned parcel scale and registration kiosk",
+      "subject": "emart24-cnu",
+      "category": "Physical",
+      "country": "KR",
+      "service": "emart24 택배",
+      "place": "Daejeon, emart24 Chungnam National University branch",
+      "date": "2026-10-17",
+      "scenario": "Weighing a parcel, entering sender/recipient details and printing a shipping label at a self-service parcel station inside a convenience store.",
+      "access": {
+        "requires": [
+          "Physical presence",
+          "Recipient Korean address and phone number"
+        ],
+        "unverified": [
+          "Whether international shipping or guest checkout without a Korean phone number is supported"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/005-16.jpg",
+          "caption": "Unmanned parcel scale and registration kiosk at emart24",
+          "hash": "1d8d8bcc4c8868f9"
+        }
+      ],
+      "observed": [
+        "An integrated digital scale and touchscreen kiosk sits inside emart24 for weighing boxes and registering domestic parcel shipments.",
+        "The hardware combines a flat weighing platform directly beneath the touch screen and label printer."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "Neighborhood convenience stores double as 24-hour self-service post offices integrated with national courier networks."
+      ],
+      "open": [
+        "Is payment completed directly on the parcel kiosk or at the main convenience store counter after printing the label?"
+      ],
+      "sources": [],
+      "related": [
+        "001",
+        "002",
+        "012",
+        "014"
+      ],
+      "rights": "Own photo.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Built-in scale platform",
+            "action": "Place parcel on the integrated scale to calculate shipping weight"
+          },
+          {
+            "n": 2,
+            "where": "Touchscreen kiosk",
+            "action": "Enter booking or address details and print the waybill sticker"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Scale + touchscreen unit",
+            "role": "Combined hardware weighing and waybill registration station",
+            "text_ko": "택배",
+            "text_en": "Parcel kiosk"
+          }
+        ],
+        "patterns": [
+          "retail-hosted-utility-kiosk"
+        ]
+      },
+      "submitted_via": "inbox:47af03e3-b279-428a-987e-283dc3c94e6e",
+      "layers": [
+        "delivery",
+        "unattended"
+      ],
+      "barrier": null
+    },
+    {
+      "id": "014",
+      "title": "CJ Logistics SMS parcel delivery confirmation with photo",
+      "subject": "cj-logistics",
+      "category": "Systems",
+      "country": "KR",
+      "service": "CJ Logistics (CJ대한통운)",
+      "place": "Daejeon, university dormitory",
+      "date": "2026-10-17",
+      "scenario": "Receiving an automated text message with an attached photo proving where a courier left a parcel on the dormitory shelf.",
+      "access": {
+        "requires": [
+          "Korean mobile phone number (SMS)",
+          "Korean delivery address"
+        ],
+        "unverified": [
+          "Whether notifications can be routed to KakaoTalk or email instead of SMS for foreign numbers"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/005-30.jpg",
+          "caption": "CJ Logistics text message confirming parcel delivery at dormitory shelf",
+          "hash": "92918089d2f28890"
+        }
+      ],
+      "observed": [
+        "CJ Logistics sends a text message confirming parcel drop-off at the university dormitory parcel shelf.",
+        "Like Hanjin Express (002), the notification includes a photo showing the exact shelf location of the delivered package."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "Attaching a drop-off photo inside a standard SMS/MMS notification is a cross-carrier norm in South Korean last-mile delivery."
+      ],
+      "open": [
+        "Are delivery photos uploaded via a dedicated courier app that triggers the SMS automatically?"
+      ],
+      "sources": [],
+      "related": [
+        "002",
+        "013"
+      ],
+      "rights": "Own screenshot. Personal data blurred before publication.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Text message",
+            "action": "Receive delivery confirmation SMS with drop-off location photo"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Drop-off photo attachment",
+            "role": "Visual proof showing where the parcel was placed in the dorm",
+            "text_ko": "CJ대한통운",
+            "text_en": "CJ Logistics delivery photo"
+          }
+        ],
+        "patterns": [
+          "sms-as-interface",
+          "photo-proof-of-delivery"
+        ]
+      },
+      "submitted_via": "inbox:47af03e3-b279-428a-987e-283dc3c94e6e",
+      "layers": [
+        "delivery",
+        "communication"
+      ],
+      "barrier": null
+    },
+    {
+      "id": "015",
+      "title": "Naver Map public transit directions",
+      "subject": "naver-map",
+      "category": "Digital",
+      "country": "KR",
+      "service": "Naver Map (네이버 지도)",
+      "place": "Daejeon (CNU campus to Sungsimdang)",
+      "date": "2026-10-17",
+      "scenario": "Checking bus and subway route options inside Naver Map to travel from Chungnam National University to a local landmark bakery.",
+      "access": {
+        "requires": [
+          "Naver Map mobile app (no Korean login required for basic navigation)"
+        ],
+        "unverified": [
+          "Which features inside Naver Map (such as saving reviews, reservations or Smart Order) require Naver real-name verification"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/005-35.jpg",
+          "caption": "Naver Map transit directions from university campus to Sungsimdang",
+          "hash": "868098844240234b"
+        }
+      ],
+      "observed": [
+        "Naver Map displays multi-modal public transit routes between Chungnam National University and Sungsimdang with segment timings and transfer cues.",
+        "Local map apps (Naver Map / KakaoMap) are used in place of Google Maps for everyday walking and transit routing in South Korea."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "Because Google Maps lacks full turn-by-turn routing in South Korea, local discovery and navigation default to Naver Map."
+      ],
+      "open": [
+        "How well do English place searches resolve small independent cafes compared to Korean queries inside Naver Map?"
+      ],
+      "sources": [],
+      "related": [],
+      "rights": "Own screenshot.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Naver Map route screen",
+            "action": "Compare public transit routes, travel times and transfer stops"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Transit route summary",
+            "role": "Shows segmented walk/bus/subway times and transfer stops",
+            "text_ko": "네이버 지도",
+            "text_en": "Naver Map transit directions"
+          }
+        ],
+        "patterns": [
+          "local-map-ecosystem"
+        ]
+      },
+      "submitted_via": "inbox:47af03e3-b279-428a-987e-283dc3c94e6e",
+      "layers": [
+        "discovery"
+      ],
+      "barrier": null
+    },
+    {
+      "id": "016",
+      "title": "Retail prepaid gift card stand with anti-scam warning",
+      "subject": "emart24-cnu",
+      "category": "Physical",
+      "country": "KR",
+      "service": "emart24 / SSG Money / Google Play",
+      "place": "Daejeon, convenience store",
+      "date": "2026-10-17",
+      "scenario": "Buying physical prepaid value cards for digital ecosystems (SSG Money, Google Play, TikTok Live, Naver Webtoon, Xbox) at a convenience store display rack.",
+      "access": {
+        "requires": [
+          "Physical presence",
+          "Payment at store register to activate card"
+        ],
+        "unverified": [
+          "Whether prepaid SSG Money cards can be redeemed on an account without Korean identity verification (본인인증)"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/005-17.jpg",
+          "caption": "Prepaid gift card display stand in retail store",
+          "hash": "79d35961493362b2"
+        }
+      ],
+      "observed": [
+        "A freestanding black 'GIFT CARD' rack next to 2+1 snack shelves sells fixed-denomination prepaid cards: SSG Money Card (₩10,000 / ₩50,000 / ₩100,000), Google Play (₩30,000 / ₩50,000), TikTok Live coins (₩25,000 / ₩50,000), TeenCash, Overwatch, Naver Webtoon, and Xbox.",
+        "Header text notes cards can be used immediately after checkout activation ('계산대에서 결제 후 바로 사용 가능합니다').",
+        "A prominent pink circular Google Play warning sticker at the top right warns shoppers against voice-phishing scams demanding gift card codes over phone, SMS or SNS."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "Physical gift card racks bridge cash/in-store spending into closed Korean and global digital wallets, while prominent anti-phishing warnings indicate scam abuse is common enough to require point-of-sale friction."
+      ],
+      "open": [
+        "Do Korean convenience store cashiers verbally confirm anti-scam warnings for high-value gift card purchases?"
+      ],
+      "sources": [],
+      "related": [
+        "001",
+        "003"
+      ],
+      "rights": "Own photo.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Gift card display stand",
+            "action": "Pick a fixed-denomination card and see the pink anti-phishing warning"
+          },
+          {
+            "n": 2,
+            "where": "Store checkout",
+            "action": "Pay at the counter to activate the prepaid code"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Activation header",
+            "role": "Explains prepaid cards activate upon checkout payment",
+            "text_ko": "기프트카드는 해당 브랜드 매장에서 사용하는 선불카드입니다. 계산대에서 결제 후 바로 사용 가능합니다.",
+            "text_en": "Prepaid card for the respective brand; usable immediately after checkout payment."
+          },
+          {
+            "name": "Anti-scam sticker",
+            "role": "Warns against sharing codes over phone, SMS or SNS",
+            "text_ko": "가족, 기관 또는 본사 등을 사칭하여 구글 기프트 카드 코드를 요구하는 경우, 사기 범죄의 가능성이 높습니다.",
+            "text_en": "If someone impersonating family, an agency, or HQ asks for Google Gift Card codes, it is likely a scam."
+          }
+        ],
+        "patterns": [
+          "physical-to-digital-prepaid",
+          "anti-scam-point-of-sale-warning"
+        ]
+      },
+      "submitted_via": "inbox:47af03e3-b279-428a-987e-283dc3c94e6e",
+      "layers": [
+        "payment",
+        "unattended"
+      ],
+      "barrier": null
+    },
+    {
+      "id": "017",
+      "title": "Temu Korea instant cart savings promotion modal",
+      "subject": "temu-kr",
+      "category": "Digital",
+      "country": "KR",
+      "service": "Temu",
+      "place": "Daejeon (mobile app)",
+      "date": "2026-10-17",
+      "scenario": "Browsing products with 'Ships from KR' filters and encountering a full-screen 'Instant Cart Savings' discount popup modal.",
+      "access": {
+        "requires": [
+          "Temu mobile application"
+        ],
+        "unverified": [
+          "Whether Korean customs clearance code (PCCC) is required at checkout for non-'Ships from KR' items"
+        ]
+      },
+      "media": [
+        {
+          "src": "media/005-13.jpg",
+          "caption": "Shopping promotion popup with discount banner",
+          "hash": "610a0f4b4959c815"
+        }
+      ],
+      "observed": [
+        "A full-screen overlay ('Instant Cart Savings') interrupts search results with an '81% OFF' stamp, slashed anchor price (₩11,858 → ₩2,137), a green 'Save ₩9,721' badge and a single wide orange 'Confirm' CTA.",
+        "The exit link ('Leave the promotion >') sits as small plain text above the modal rather than a prominent close button.",
+        "Behind the modal, the Korean-localized storefront highlights 'Ships from KR', 'Free shipping', and '₩5,300 Credit for delay' alongside '국내배송 / 오늘출발 / KC인증' badges."
+      ],
+      "confirmed": [],
+      "interpretation": [
+        "Cross-border e-commerce apps competing in Korea pair aggressive gamified discount modals with localized trust badges ('Ships from KR', KC certification, delay credits) to match domestic delivery expectations."
+      ],
+      "open": [
+        "What minimum cart threshold applies before the discounted 'Instant Cart Savings' item can actually be checked out?"
+      ],
+      "sources": [],
+      "related": [
+        "003"
+      ],
+      "rights": "Own screenshot. Account avatar/name area blurred.",
+      "breakdown": {
+        "steps": [
+          {
+            "n": 1,
+            "where": "Search feed",
+            "action": "Browse items with 'Ships from KR' and delay-credit banners"
+          },
+          {
+            "n": 2,
+            "where": "Instant Cart Savings modal",
+            "action": "Choose between the prominent 'Confirm' button or small 'Leave the promotion >' exit text"
+          }
+        ],
+        "elements": [
+          {
+            "name": "Gamified discount modal",
+            "role": "Interrupts browsing with high-contrast 81% OFF anchor pricing",
+            "text_ko": "",
+            "text_en": "Instant Cart Savings · 81% OFF · Save ₩9,721 · Confirm"
+          },
+          {
+            "name": "Subtle exit control",
+            "role": "Low-prominence text link to dismiss the promotion",
+            "text_ko": "",
+            "text_en": "Leave the promotion >"
+          },
+          {
+            "name": "Domestic trust badges",
+            "role": "Localized shipping and safety stamps on product cards",
+            "text_ko": "국내배송 · 오늘출발 · KC인증",
+            "text_en": "Domestic shipping · Ships today · KC certified"
+          }
+        ],
+        "patterns": [
+          "same-day-shipping-cutoff",
+          "asymmetric-promo-modal"
+        ]
+      },
+      "submitted_via": "inbox:47af03e3-b279-428a-987e-283dc3c94e6e",
+      "layers": [
+        "payment",
+        "discovery"
+      ],
+      "barrier": null
     }
   ],
   "author_access": [
@@ -1177,8 +1949,8 @@
     },
     {
       "what": "ARC (residence card)",
-      "status": "pending",
-      "since": null
+      "status": "yes (obtained 2026-11-19; earlier entries documented without ARC)",
+      "since": "2026-11-19"
     }
   ],
   "patterns": {
@@ -1241,6 +2013,74 @@
     "official-partner-badge": {
       "label": "Official partner badge",
       "description": "A banner states the seller is an official partner and the product is genuine."
+    },
+    "qr-code-bridge": {
+      "label": "QR code as physical-to-digital bridge",
+      "description": "A printed or displayed QR code connects a physical object, door, machine or shop window directly to a mobile app or chat."
+    },
+    "bluetooth-proximity-gate": {
+      "label": "Proximity warning before hardware payment",
+      "description": "An app forces confirmation that the user is physically standing in front of a machine before sending a Bluetooth payment signal."
+    },
+    "prepaid-wallet-points": {
+      "label": "Prepaid closed-loop points balance",
+      "description": "Everyday utility payments (such as dorm laundry) deduct from a pre-charged in-app points wallet rather than charging a card per use."
+    },
+    "superapp-campus-bundle": {
+      "label": "Utility bundled with commerce and community",
+      "description": "An essential everyday tool (like dorm laundry) lives inside an app packed with cashback offers, vouchers, contests and community boards."
+    },
+    "nickname-gate-community": {
+      "label": "Nickname setup gate before posting",
+      "description": "A service prompts for a dedicated community nickname right before letting a user draft or publish a post."
+    },
+    "dynamic-qr-id": {
+      "label": "Time-limited dynamic QR credential",
+      "description": "A mobile ID card regenerates its QR code on a short countdown timer (such as 60 seconds) for gate and kiosk entry."
+    },
+    "physical-accessibility-hardware": {
+      "label": "Hardware accessibility controls on public kiosk",
+      "description": "A touchscreen kiosk includes physical tactile keypad, audio jack, magnification, staff-call and motorized height-adjustment controls."
+    },
+    "in-app-wellbeing-hub": {
+      "label": "Embedded mindfulness and time-management tools",
+      "description": "Guided breathing, ambient sounds and daily affirmations live directly inside a high-engagement social feed app."
+    },
+    "embedded-ai-assistant": {
+      "label": "Conversational AI inside a content app",
+      "description": "An AI chat assistant is built natively into a video/social application alongside normal browsing."
+    },
+    "non-friend-safety-bar": {
+      "label": "Pinned Add / Block / Report bar for unknown senders",
+      "description": "A messenger keeps a floating three-action trust strip at the top of a conversation until the sender is added as a contact."
+    },
+    "visible-cctv-deterrence": {
+      "label": "Visible live CCTV and self-view camera at checkout",
+      "description": "An unstaffed shop displays overhead multi-angle CCTV monitors and a live camera feed of the customer on the POS screen."
+    },
+    "streetfront-order-kiosk": {
+      "label": "Street-facing self-ordering kiosk",
+      "description": "Even compact takeaway cafes and snack shops place touch ordering kiosks directly at the entrance to separate ordering from preparation."
+    },
+    "retail-hosted-utility-kiosk": {
+      "label": "Third-party utility kiosk hosted inside convenience store",
+      "description": "Convenience stores host self-service third-party stations (power bank rental, parcel weighing) without staff involvement."
+    },
+    "local-map-ecosystem": {
+      "label": "Domestic map platform as default discovery layer",
+      "description": "Local navigation and place discovery run on domestic map apps (Naver Map / KakaoMap) rather than Google Maps."
+    },
+    "physical-to-digital-prepaid": {
+      "label": "Physical prepaid cards for digital ecosystems",
+      "description": "Convenience store racks sell fixed-value physical cards that convert retail spend into domestic and global digital wallets."
+    },
+    "anti-scam-point-of-sale-warning": {
+      "label": "Anti-phishing warning on gift card display",
+      "description": "A prominent warning sticker on the physical rack alerts shoppers not to share prepaid card codes over phone, SMS or messengers."
+    },
+    "asymmetric-promo-modal": {
+      "label": "Asymmetric promotional modal",
+      "description": "A full-screen discount overlay pairs a large high-contrast confirm CTA with a tiny low-contrast text exit link."
     }
   },
   "schema_version": "0.4",
@@ -1274,6 +2114,54 @@
       "kind": "service",
       "operator": "Chungnam National University",
       "place": "Daejeon"
+    },
+    "tiktok": {
+      "name": "TikTok",
+      "kind": "app",
+      "operator": "ByteDance",
+      "place": ""
+    },
+    "kakaotalk": {
+      "name": "KakaoTalk",
+      "kind": "app",
+      "operator": "Kakao",
+      "place": ""
+    },
+    "unmanned-mart-daejeon": {
+      "name": "Unmanned neighborhood store",
+      "kind": "store",
+      "operator": "Local unmanned retail",
+      "place": "Daejeon"
+    },
+    "street-order-kiosks-daejeon": {
+      "name": "Street-facing food & coffee kiosks",
+      "kind": "device",
+      "operator": "Paik's Coffee / Isaac Toast / local shops",
+      "place": "Daejeon"
+    },
+    "chungjeon-dwaeji": {
+      "name": "Chungjeon Dwaeji (충전돼지)",
+      "kind": "device",
+      "operator": "Chungjeon Dwaeji",
+      "place": "Daejeon"
+    },
+    "cj-logistics": {
+      "name": "CJ Logistics (CJ대한통운)",
+      "kind": "service",
+      "operator": "CJ Logistics",
+      "place": ""
+    },
+    "naver-map": {
+      "name": "Naver Map (네이버 지도)",
+      "kind": "app",
+      "operator": "Naver",
+      "place": ""
+    },
+    "temu-kr": {
+      "name": "Temu (Korea storefront)",
+      "kind": "app",
+      "operator": "Temu",
+      "place": ""
     }
   },
   "layers": {
